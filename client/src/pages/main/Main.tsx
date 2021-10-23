@@ -3,8 +3,8 @@
 
 import Navbar from "../../components/Navbar";
 import LeftProfile from "../../components/LeftProfile";
-import Add from "../../components/Add";
 import Feed from "../../components/Feed";
+import Rightbar from "../../components/Rightbar";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 const useStyles = makeStyles((theme: Theme) => ({
   right: {
@@ -13,9 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   container: {
-    maxWidth: 1200,
-    margin: "auto",
-    paddingTop: theme.spacing(2),
+    padding: "0 1rem",
   },
 }));
 const Main = () => {
@@ -31,10 +29,9 @@ const Main = () => {
           <Feed />
         </Grid>
         <Grid item sm={3} className={classes.right}>
-          {/*   <Rightbar /> */}
+          <Rightbar />
         </Grid>
       </Grid>
-      <Add />
     </div>
   );
 };

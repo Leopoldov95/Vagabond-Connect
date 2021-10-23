@@ -1,4 +1,5 @@
 import * as React from "react";
+import ReactFlagsSelect from "react-flags-select";
 import {
   Container,
   Fab,
@@ -8,15 +9,19 @@ import {
   Modal,
   TextField,
   Tooltip,
+  Typography,
+  Avatar,
+  Divider,
+  Card,
   RadioGroup,
   FormControlLabel,
   Radio,
   FormLabel,
   Snackbar,
 } from "@material-ui/core";
-import { Add as AddIcon } from "@material-ui/icons";
+import { Add as AddIcon, ImageOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
-import { lightGreen } from "@material-ui/core/colors";
+import { lightGreen, blueGrey } from "@material-ui/core/colors";
 
 interface Props {
   children: any;
@@ -54,17 +59,45 @@ const useStyles = makeStyles((theme) => ({
       height: "100vh",
     },
   },
+  cardContainer: {
+    padding: theme.spacing(2),
+    marginBottom: theme.spacing(3),
+  },
+  cardContent: {
+    display: "flex",
+    marginTop: 10,
+  },
+  button: {
+    backgroundColor: blueGrey[50],
+    textTransform: "none",
+    display: "flex",
+    justifyContent: "flex-start",
+    borderRadius: 8,
+    width: "100%",
+    "&:hover": {
+      backgroundColor: blueGrey[100],
+    },
+  },
   form: {
     padding: theme.spacing(2),
   },
   item: {
     marginBottom: theme.spacing(3),
   },
+  imgButton: {
+    backgroundColor: lightGreen[600],
+    color: "white",
+    marginTop: theme.spacing(2),
+    "&:hover": {
+      backgroundColor: lightGreen[500],
+    },
+  },
 }));
 function Add() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
+  const [selected, setSelected] = React.useState("");
   const handleClose = (event?: any, reason?: any) => {
     if (reason === "clickaway") {
       return;
@@ -75,11 +108,32 @@ function Add() {
 
   return (
     <>
-      <Tooltip title="Add" aria-label="add" onClick={() => setOpen(true)}>
+      {/* <Tooltip title="Add" aria-label="add" onClick={() => setOpen(true)}>
         <Fab className={classes.fab}>
           <AddIcon />
         </Fab>
-      </Tooltip>
+      </Tooltip> */}
+      <Card className={classes.cardContainer}>
+        <Typography gutterBottom variant="h6">
+          Post Something
+        </Typography>
+        <Divider />
+        <div className={classes.cardContent}>
+          <Avatar
+            alt="post_owner_icon"
+            src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
+            style={{ marginRight: 10 }}
+          />
+          <Button
+            variant="contained"
+            className={classes.button}
+            disableElevation
+            onClick={() => setOpen(true)}
+          >
+            Share Your Adventures...
+          </Button>
+        </div>
+      </Card>
       <Modal open={open}>
         <Container className={classes.container}>
           <form className={classes.form} autoComplete="off">
@@ -96,19 +150,38 @@ function Add() {
                 label="Description"
                 id="outlined-multiline-static"
                 size="small"
-                defaultValue="Tell your story..."
                 multiline
                 variant="outlined"
                 rows={4}
                 style={{ width: "100%" }}
               ></TextField>
+              <input
+                type="file"
+                hidden
+                id="icon-button-file"
+                accept="image/*"
+              />
+              <label htmlFor="icon-button-file">
+                <Button
+                  variant="contained"
+                  startIcon={<ImageOutlined />}
+                  className={classes.imgButton}
+                >
+                  Upload Image
+                </Button>
+              </label>
             </div>
             <div className={classes.item}>
-              <TextField select label="Visibility" value="Public">
+              <Typography>Location:</Typography>
+              <ReactFlagsSelect
+                selected={selected}
+                onSelect={(code) => setSelected(code)}
+              />
+              {/*  <TextField select label="Visibility" value="Public">
                 <MenuItem value="Public">Public</MenuItem>
                 <MenuItem value="Private">Private</MenuItem>
                 <MenuItem value="Unlisted">Unlisted</MenuItem>
-              </TextField>
+              </TextField> */}
             </div>
             <div>
               <FormLabel component="legend">Who can comment?</FormLabel>
@@ -127,12 +200,6 @@ function Add() {
                   value="Nobody"
                   control={<Radio size="small" />}
                   label="Nobody"
-                />
-                <FormControlLabel
-                  value="Custome"
-                  disabled
-                  control={<Radio size="small" />}
-                  label="Custom (premium accounts)"
                 />
               </RadioGroup>
             </div>

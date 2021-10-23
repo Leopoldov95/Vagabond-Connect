@@ -1,9 +1,10 @@
-/* import { combineReducers } from "redux";
+/*  import { combineReducers } from "redux";
 
  const RootReducer = combineReducers(reducers:{
 
 });
 
-export default RootReducer; */
+export default RootReducer; 
+ */
 
 export {};

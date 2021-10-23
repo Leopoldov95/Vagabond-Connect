@@ -15,6 +15,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   container: {
     display: "flex",
     flexDirection: "column",
+    textAlign: "center",
     position: "sticky",
     top: theme.spacing(10),
     padding: 0,

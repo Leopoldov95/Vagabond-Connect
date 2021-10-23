@@ -35,9 +35,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     justifyContent: "space-between",
     backgroundColor: lightGreen[700],
-    maxWidth: 1200,
-    width: "100%",
-    margin: "auto",
   },
   logoLg: {
     display: "none",
@@ -164,7 +161,11 @@ function Navbar() {
           </Typography>
           <div className={classes.search}>
             <Search />
-            <InputBase placeholder="Search..." className={classes.input} />
+            <InputBase
+              placeholder="Search..."
+              className={classes.input}
+              fullWidth
+            />
             <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
           </div>
           <div className={classes.icons}>

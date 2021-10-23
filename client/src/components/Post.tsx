@@ -1,7 +1,7 @@
 import {
   makeStyles,
   Card,
-  CardActionArea,
+  InputBase,
   CardMedia,
   CardContent,
   Typography,
@@ -11,7 +11,8 @@ import {
   Avatar,
   TextField,
 } from "@material-ui/core";
-import { Favorite, FavoriteBorder, Comment } from "@material-ui/icons";
+import { Favorite, FavoriteBorder, Comment, Room } from "@material-ui/icons";
+import { blueGrey } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme) => ({
   media: {
     height: "250px",
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     marginBottom: theme.spacing(5),
     padding: theme.spacing(2),
+    textAlign: "center",
   },
   buttonText: {
     fontSize: 12,
@@ -32,6 +34,13 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     display: "flex",
   },
+  mapText: {
+    fontSize: 14,
+    display: "flex",
+    alignItems: "center",
+    color: "#888",
+    justifyContent: "center",
+  },
   writeComment: {
     display: "flex",
     alignItems: "center",
@@ -39,6 +48,9 @@ const useStyles = makeStyles((theme) => ({
   },
   comment: {
     width: "70%",
+    backgroundColor: blueGrey[50],
+    padding: "10px 1.4rem",
+    borderRadius: 16,
   },
 }));
 const Post = () => {
@@ -69,27 +81,30 @@ const Post = () => {
           </Typography>
         </div>
       </div>
-      <CardActionArea>
-        <CardMedia
-          className={classes.media}
-          title="travel"
-          image="https://images.unsplash.com/photo-1462759353907-b2ea5ebd72e7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2831&q=80"
-        />
-        <CardContent>
-          <Typography gutterBottom variant="h5">
-            New Zealand Hobbiton
-          </Typography>
-          <Typography variant="body2">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non
-            laboriosam nihil aspernatur odit quam eum nostrum laborum, nulla
-            deserunt necessitatibus architecto ratione impedit consequuntur vel
-            ab nesciunt minus esse vitae? Lorem ipsum dolor sit amet
-            consectetur, adipisicing elit. Non laboriosam nihil aspernatur odit
-            quam eum nostrum laborum, nulla deserunt necessitatibus architecto
-            ratione impedit consequuntur vel ab nesciunt minus esse vitae?
-          </Typography>
-        </CardContent>
-      </CardActionArea>
+      {/*   <CardActionArea> */}
+      <CardMedia
+        className={classes.media}
+        title="travel"
+        image="https://images.unsplash.com/photo-1462759353907-b2ea5ebd72e7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2831&q=80"
+      />
+      <CardContent>
+        <Typography gutterBottom variant="h5">
+          New Zealand Hobbiton
+        </Typography>
+        <Typography gutterBottom className={classes.mapText}>
+          <Room /> New Zealand, Oceania
+        </Typography>
+        <Typography variant="body2">
+          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non
+          laboriosam nihil aspernatur odit quam eum nostrum laborum, nulla
+          deserunt necessitatibus architecto ratione impedit consequuntur vel ab
+          nesciunt minus esse vitae? Lorem ipsum dolor sit amet consectetur,
+          adipisicing elit. Non laboriosam nihil aspernatur odit quam eum
+          nostrum laborum, nulla deserunt necessitatibus architecto ratione
+          impedit consequuntur vel ab nesciunt minus esse vitae?
+        </Typography>
+      </CardContent>
+      {/*  </CardActionArea> */}
       <Divider />
       <CardActions>
         <Button size="small" color="primary">
@@ -109,13 +124,10 @@ const Post = () => {
           src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
           style={{ marginRight: 10 }}
         />
-        <TextField
-          variant="outlined"
-          label="Comment"
+        <InputBase
           placeholder="Write your comment..."
           multiline
           className={classes.comment}
-          size="small"
         />
       </div>
     </Card>
