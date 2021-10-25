@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   alpha,
   AppBar,
@@ -59,6 +60,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   icon: {
     /*  marginRight: theme.spacing(1), */
+  },
+  link: {
+    textAlign: "center",
+    textDecoration: "none",
+    color: "inherit",
   },
   text: {
     fontWeight: 500,
@@ -174,16 +180,20 @@ function Navbar() {
               onClick={() => setOpen(true)}
             />
             <div className={classes.item}>
-              <Home className={classes.icon} />
-              <Typography className={classes.text}>Homepage</Typography>
+              <Link to="/" className={classes.link}>
+                <Home className={classes.icon} />
+                <Typography className={classes.text}>Homepage</Typography>
+              </Link>
             </div>
             <div className={classes.item}>
               <Person className={classes.icon} />
               <Typography className={classes.text}>Friends</Typography>
             </div>
             <div className={classes.item}>
-              <LibraryBooks className={classes.icon} />
-              <Typography className={classes.text}>Resources</Typography>
+              <Link to="/resources" className={classes.link}>
+                <LibraryBooks className={classes.icon} />
+                <Typography className={classes.text}>Resources</Typography>
+              </Link>
             </div>
             <div className={classes.item}>
               {/*    <Badge
