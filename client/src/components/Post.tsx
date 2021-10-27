@@ -1,7 +1,6 @@
 import {
   makeStyles,
   Card,
-  InputBase,
   CardMedia,
   CardContent,
   Typography,
@@ -9,10 +8,10 @@ import {
   Button,
   Divider,
   Avatar,
-  TextField,
 } from "@material-ui/core";
-import { Favorite, FavoriteBorder, Comment, Room } from "@material-ui/icons";
-import { blueGrey } from "@material-ui/core/colors";
+import { FavoriteBorder, Comment, Room } from "@material-ui/icons";
+
+import Comments from "./Comments";
 const useStyles = makeStyles((theme) => ({
   media: {
     height: "250px",
@@ -40,17 +39,6 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     color: "#888",
     justifyContent: "center",
-  },
-  writeComment: {
-    display: "flex",
-    alignItems: "center",
-    marginTop: theme.spacing(2),
-  },
-  comment: {
-    width: "70%",
-    backgroundColor: blueGrey[50],
-    padding: "10px 1.4rem",
-    borderRadius: 16,
   },
 }));
 const Post = () => {
@@ -118,18 +106,7 @@ const Post = () => {
         </Button>
       </CardActions>
       <Divider />
-      <div className={classes.writeComment}>
-        <Avatar
-          alt="post_owner_icon"
-          src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
-          style={{ marginRight: 10 }}
-        />
-        <InputBase
-          placeholder="Write your comment..."
-          multiline
-          className={classes.comment}
-        />
-      </div>
+      <Comments />
     </Card>
   );
 };

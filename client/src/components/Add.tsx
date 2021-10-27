@@ -2,13 +2,10 @@ import * as React from "react";
 import ReactFlagsSelect from "react-flags-select";
 import {
   Container,
-  Fab,
   Button,
   makeStyles,
-  MenuItem,
   Modal,
   TextField,
-  Tooltip,
   Typography,
   Avatar,
   Divider,
@@ -19,9 +16,10 @@ import {
   FormLabel,
   Snackbar,
 } from "@material-ui/core";
-import { Add as AddIcon, ImageOutlined } from "@material-ui/icons";
+import { ImageOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 import { lightGreen, blueGrey } from "@material-ui/core/colors";
+import { ThemeContext } from "@emotion/react";
 
 interface Props {
   children: any;
@@ -84,20 +82,35 @@ const useStyles = makeStyles((theme) => ({
   item: {
     marginBottom: theme.spacing(3),
   },
+  input: {
+    display: "none",
+  },
+  upload: {
+    display: "flex",
+    alignItems: "center",
+    marginTop: theme.spacing(2),
+  },
   imgButton: {
     backgroundColor: lightGreen[600],
     color: "white",
-    marginTop: theme.spacing(2),
     "&:hover": {
       backgroundColor: lightGreen[500],
     },
   },
 }));
-function Add() {
+const Add = () => {
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
+  const [formData, setFormData] = React.useState<any>({
+    title: "",
+    description: "",
+    selectedFile: null,
+    selectedFlag: "",
+    commentAccess: "",
+  });
   const [selected, setSelected] = React.useState("");
+  //const [selectedFile, setSelectedFile] = React.useState<any>(null);
   const handleClose = (event?: any, reason?: any) => {
     if (reason === "clickaway") {
       return;
@@ -105,14 +118,16 @@ function Add() {
 
     setOpenAlert(false);
   };
+  const handleChange = (e?: any) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleCapture = ({ target }: any) => {
+    //setFormData.selectedFile(target.files[0]);
+    setFormData({ ...formData, selectedFile: target.files[0] });
+  };
 
   return (
     <>
-      {/* <Tooltip title="Add" aria-label="add" onClick={() => setOpen(true)}>
-        <Fab className={classes.fab}>
-          <AddIcon />
-        </Fab>
-      </Tooltip> */}
       <Card className={classes.cardContainer}>
         <Typography gutterBottom variant="h6">
           Post Something
@@ -143,6 +158,8 @@ function Add() {
                 id="standard-basic"
                 size="small"
                 style={{ width: "100%" }}
+                name="title"
+                onChange={handleChange}
               ></TextField>
             </div>
             <div className={classes.item}>
@@ -154,22 +171,36 @@ function Add() {
                 variant="outlined"
                 rows={4}
                 style={{ width: "100%" }}
+                name="description"
+                onChange={handleChange}
               ></TextField>
-              <input
-                type="file"
-                hidden
-                id="icon-button-file"
-                accept="image/*"
-              />
-              <label htmlFor="icon-button-file">
-                <Button
-                  variant="contained"
-                  startIcon={<ImageOutlined />}
-                  className={classes.imgButton}
-                >
-                  Upload Image
-                </Button>
-              </label>
+              <div className={classes.upload}>
+                <input
+                  accept="image/*"
+                  className={classes.input}
+                  id="contained-button-file"
+                  multiple
+                  type="file"
+                  onChange={handleCapture}
+                />
+                <label htmlFor="contained-button-file">
+                  <Button
+                    variant="contained"
+                    startIcon={<ImageOutlined />}
+                    className={classes.imgButton}
+                    component="span"
+                  >
+                    Upload
+                  </Button>
+                </label>
+                {formData.selectedFile ? (
+                  <Typography component="span" style={{ marginLeft: 10 }}>
+                    {formData.selectedFile!.name}
+                  </Typography>
+                ) : (
+                  ""
+                )}
+              </div>
             </div>
             <div className={classes.item}>
               <Typography>Location:</Typography>
@@ -235,6 +266,6 @@ function Add() {
       </Snackbar>
     </>
   );
-}
+};
 
 export default Add;

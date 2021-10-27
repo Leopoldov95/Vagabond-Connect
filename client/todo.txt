@@ -1,0 +1,10 @@
+- install "react-file-base64" to handle image data
+- if post belongs to user. add triple dot to add delete function
+- see how to handle likes 
+
+-- WHAT NEEDS TO BE REDUXED---
+- is user signed in?
+- user data and info
+- creating new post
+- deleting post
+- editing post
