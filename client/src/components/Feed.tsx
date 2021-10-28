@@ -2,15 +2,11 @@ import { makeStyles, Container, Theme } from "@material-ui/core";
 import Post from "./Post";
 import Add from "./Add";
 
-const useStyles = makeStyles((theme: Theme) => ({
-  container: {
-    paddingTop: theme.spacing(10),
-  },
-}));
+const useStyles = makeStyles((theme: Theme) => ({}));
 function Feed() {
   const classes = useStyles();
   return (
-    <Container className={classes.container}>
+    <Container>
       <Add />
       <Post />
       <Post />

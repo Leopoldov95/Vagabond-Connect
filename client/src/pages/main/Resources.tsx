@@ -11,7 +11,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
-import { sections, information } from "./resource";
+import { sections, information } from "./resources/resource";
 import Navbar from "../../components/Navbar";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {

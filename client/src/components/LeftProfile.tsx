@@ -19,7 +19,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "sticky",
     top: theme.spacing(10),
     padding: 0,
-    marginTop: theme.spacing(10),
     boxShadow:
       "0px 2px 1px -1px rgb(0, 0, 0, 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
   },

@@ -19,7 +19,6 @@ import {
 import { ImageOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 import { lightGreen, blueGrey } from "@material-ui/core/colors";
-import { ThemeContext } from "@emotion/react";
 
 interface Props {
   children: any;
@@ -106,11 +105,10 @@ const Add = () => {
     title: "",
     description: "",
     selectedFile: null,
-    selectedFlag: "",
+    country: "",
     commentAccess: "",
   });
-  const [selected, setSelected] = React.useState("");
-  //const [selectedFile, setSelectedFile] = React.useState<any>(null);
+
   const handleClose = (event?: any, reason?: any) => {
     if (reason === "clickaway") {
       return;
@@ -205,8 +203,9 @@ const Add = () => {
             <div className={classes.item}>
               <Typography>Location:</Typography>
               <ReactFlagsSelect
-                selected={selected}
-                onSelect={(code) => setSelected(code)}
+                selected={formData.country}
+                //onSelect={(code) => setSelected(code)}
+                onSelect={(code) => setFormData({ ...formData, country: code })}
               />
               {/*  <TextField select label="Visibility" value="Public">
                 <MenuItem value="Public">Public</MenuItem>
@@ -216,21 +215,24 @@ const Add = () => {
             </div>
             <div>
               <FormLabel component="legend">Who can comment?</FormLabel>
-              <RadioGroup>
+              <RadioGroup onChange={handleChange}>
                 <FormControlLabel
                   value="Everyone"
                   control={<Radio size="small" />}
                   label="Everyone"
+                  name="commentAccess"
                 />
                 <FormControlLabel
                   value="Friends"
                   control={<Radio size="small" />}
                   label="Friends"
+                  name="commentAccess"
                 />
                 <FormControlLabel
                   value="Nobody"
                   control={<Radio size="small" />}
                   label="Nobody"
+                  name="commentAccess"
                 />
               </RadioGroup>
             </div>
