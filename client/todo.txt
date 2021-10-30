@@ -1,6 +1,13 @@
 - install "react-file-base64" to handle image data
-- if post belongs to user. add triple dot to add delete function
+- if post belongs to user. add triple dot to add delete function or edit
 - see how to handle likes 
+- make sure that the post component is dynamic, will only show what is needed based if feed or Profile
+
+---- Profile Components and features ----
+- follower count
+- posts
+- countrys visited
+
 
 -- WHAT NEEDS TO BE REDUXED---
 - is user signed in?

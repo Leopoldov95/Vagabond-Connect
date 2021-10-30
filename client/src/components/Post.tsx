@@ -8,8 +8,9 @@ import {
   Button,
   Divider,
   Avatar,
+  IconButton,
 } from "@material-ui/core";
-import { FavoriteBorder, Comment, Room } from "@material-ui/icons";
+import { FavoriteBorder, Comment, Room, MoreVert } from "@material-ui/icons";
 
 import Comments from "./Comments";
 const useStyles = makeStyles((theme) => ({
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
   postOwner: {
     marginBottom: theme.spacing(1),
     display: "flex",
+    justifyContent: "space-between",
   },
   mapText: {
     fontSize: 14,
@@ -47,26 +49,33 @@ const Post = () => {
   return (
     <Card className={classes.card}>
       <div className={classes.postOwner}>
-        <div>
-          <Avatar
-            style={{ marginRight: 10 }}
-            alt="post_owner_icon"
-            src="https://images-cdn.9gag.com/photo/aK7r78Q_700b.jpg"
-          />
+        <div style={{ display: "flex" }}>
+          <div>
+            <Avatar
+              style={{ marginRight: 10 }}
+              alt="post_owner_icon"
+              src="https://images-cdn.9gag.com/photo/aK7r78Q_700b.jpg"
+            />
+          </div>
+          <div>
+            <Typography
+              style={{
+                fontWeight: "bold",
+                display: "flex",
+                justifyContent: "left",
+              }}
+            >
+              The Wok
+            </Typography>
+            <Typography style={{ color: "#555", fontSize: 14 }}>
+              {new Date().toLocaleString("en-US")}
+            </Typography>
+          </div>
         </div>
         <div>
-          <Typography
-            style={{
-              fontWeight: "bold",
-              display: "flex",
-              justifyContent: "left",
-            }}
-          >
-            The Wok
-          </Typography>
-          <Typography style={{ color: "#555", fontSize: 14 }}>
-            {new Date().toLocaleString("en-US")}
-          </Typography>
+          <IconButton aria-label="settings">
+            <MoreVert />
+          </IconButton>
         </div>
       </div>
       {/*   <CardActionArea> */}

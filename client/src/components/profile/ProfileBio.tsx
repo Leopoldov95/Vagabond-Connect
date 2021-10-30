@@ -5,16 +5,18 @@ const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(4),
     textAlign: "center",
+    maxWidth: 1280,
+    margin: "auto",
   },
 }));
 const ProfileBio = () => {
   const classes = useStyles();
   return (
     <Grid container className={classes.container}>
-      <Typography gutterBottom variant="h4" style={{ margin: "auto" }}>
+      <Typography variant="h4" style={{ margin: "1rem auto" }}>
         Giga Chad
       </Typography>
-      <Typography variant="body2">
+      <Typography variant="body1">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
         nobis dicta totam voluptatem ipsum hic error tempore? Incidunt suscipit
         in amet neque dolorem recusandae sunt ipsum, tempora aliquid
