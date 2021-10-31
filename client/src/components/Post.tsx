@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   makeStyles,
   Card,
@@ -9,8 +10,17 @@ import {
   Divider,
   Avatar,
   IconButton,
+  Menu,
+  MenuItem,
 } from "@material-ui/core";
-import { FavoriteBorder, Comment, Room, MoreVert } from "@material-ui/icons";
+import {
+  FavoriteBorder,
+  Comment,
+  Room,
+  MoreVert,
+  Edit,
+  Delete,
+} from "@material-ui/icons";
 
 import Comments from "./Comments";
 const useStyles = makeStyles((theme) => ({
@@ -25,6 +35,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(5),
     padding: theme.spacing(2),
     textAlign: "center",
+  },
+  icon: {
+    marginRight: theme.spacing(1),
   },
   buttonText: {
     fontSize: 12,
@@ -43,9 +56,47 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
 }));
+
 const Post = () => {
   /* make sure to create a state to manage likes  */
   const classes = useStyles();
+  const menuId = "post-settings";
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>
+        <Edit className={classes.icon} />
+        Edit
+      </MenuItem>
+      <MenuItem style={{ color: "red" }} onClick={handleMenuClose}>
+        <Delete className={classes.icon} />
+        Delete
+      </MenuItem>
+    </Menu>
+  );
+
   return (
     <Card className={classes.card}>
       <div className={classes.postOwner}>
@@ -68,12 +119,12 @@ const Post = () => {
               The Wok
             </Typography>
             <Typography style={{ color: "#555", fontSize: 14 }}>
-              {new Date().toLocaleString("en-US")}
+              {/*  {new Date().toLocaleString("en-US")} */} Oct 31st, 2021
             </Typography>
           </div>
         </div>
         <div>
-          <IconButton aria-label="settings">
+          <IconButton aria-label="settings" onClick={handleProfileMenuOpen}>
             <MoreVert />
           </IconButton>
         </div>
@@ -116,6 +167,7 @@ const Post = () => {
       </CardActions>
       <Divider />
       <Comments />
+      {renderMenu}
     </Card>
   );
 };

@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   profile: {
     display: "flex",
     flexDirection: "column",
-    backgroundColor: lightGreen[300],
+    backgroundColor: lightGreen[500],
     color: "white",
     alignItems: "center",
     paddingTop: theme.spacing(3),
