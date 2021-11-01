@@ -207,11 +207,11 @@ const Add = () => {
                 //onSelect={(code) => setSelected(code)}
                 onSelect={(code) => setFormData({ ...formData, country: code })}
               />
-              {/*  <TextField select label="Visibility" value="Public">
-                <MenuItem value="Public">Public</MenuItem>
-                <MenuItem value="Private">Private</MenuItem>
-                <MenuItem value="Unlisted">Unlisted</MenuItem>
-              </TextField> */}
+              {/*   <img
+                style={{ height: 100, width: 100 }}
+                alt="test"
+                src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${formData.country.toLowerCase()}.svg`}
+              /> */}
             </div>
             <div>
               <FormLabel component="legend">Who can comment?</FormLabel>
@@ -223,9 +223,9 @@ const Add = () => {
                   name="commentAccess"
                 />
                 <FormControlLabel
-                  value="Friends"
+                  value="Followers"
                   control={<Radio size="small" />}
-                  label="Friends"
+                  label="Followers"
                   name="commentAccess"
                 />
                 <FormControlLabel
