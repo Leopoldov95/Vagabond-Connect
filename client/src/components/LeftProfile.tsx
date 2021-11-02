@@ -7,8 +7,9 @@ import {
   Divider,
   Link,
 } from "@material-ui/core";
-import { Room } from "@material-ui/icons";
+import { Link as RouterLink } from "react-router-dom";
 import { lightGreen } from "@material-ui/core/colors";
+import allCountries from "./country/allCountries";
 import * as React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: lightGreen[500],
     color: "white",
     alignItems: "center",
-    paddingTop: theme.spacing(3),
+    padding: "24px 0",
     justifyContent: "center",
   },
   lgIcon: {
@@ -52,6 +53,10 @@ const useStyles = makeStyles((theme: Theme) => ({
   link: {
     paddingBottom: theme.spacing(3),
   },
+  routerLink: {
+    textDecoration: "none",
+    color: "inherit",
+  },
 }));
 const LeftProfile = () => {
   const classes = useStyles();
@@ -67,7 +72,12 @@ const LeftProfile = () => {
           Giga Chad
         </Typography>
         <Typography gutterBottom className={classes.bioText}>
-          <Room /> Sydney, Australia
+          <img
+            style={{ width: 20, marginRight: 10 }}
+            alt={allCountries[213].name}
+            src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${allCountries[213].code.toLowerCase()}.svg`}
+          />
+          {`${allCountries[213].name}, ${allCountries[213].continent}`}
         </Typography>
       </div>
       <Divider className={classes.divider} />
@@ -76,7 +86,7 @@ const LeftProfile = () => {
           Following
         </Typography>
         <Typography gutterBottom variant="h6">
-          69
+          70
         </Typography>
       </div>
       <Divider className={classes.divider} />
@@ -85,18 +95,20 @@ const LeftProfile = () => {
           Followers
         </Typography>
         <Typography gutterBottom variant="h6">
-          420
+          440
         </Typography>
       </div>
       <Divider className={classes.divider} />
       <div className={classes.link}>
-        <Link
-          style={{ color: lightGreen[900] }}
-          href="#"
-          onClick={(e) => e.preventDefault}
-        >
-          View Profile
-        </Link>
+        <RouterLink to="/profile" className={classes.routerLink}>
+          <Link
+            style={{ color: lightGreen[900] }}
+            href="#"
+            onClick={(e) => e.preventDefault}
+          >
+            View Profile
+          </Link>
+        </RouterLink>
       </div>
     </Container>
   );

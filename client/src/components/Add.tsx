@@ -1,5 +1,6 @@
 import * as React from "react";
 import ReactFlagsSelect from "react-flags-select";
+import CountryMenu from "./country/countryNav";
 import {
   Container,
   Button,
@@ -201,17 +202,7 @@ const Add = () => {
               </div>
             </div>
             <div className={classes.item}>
-              <Typography>Location:</Typography>
-              <ReactFlagsSelect
-                selected={formData.country}
-                //onSelect={(code) => setSelected(code)}
-                onSelect={(code) => setFormData({ ...formData, country: code })}
-              />
-              {/*   <img
-                style={{ height: 100, width: 100 }}
-                alt="test"
-                src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${formData.country.toLowerCase()}.svg`}
-              /> */}
+              <CountryMenu />
             </div>
             <div>
               <FormLabel component="legend">Who can comment?</FormLabel>

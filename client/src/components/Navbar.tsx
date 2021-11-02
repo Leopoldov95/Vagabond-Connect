@@ -25,6 +25,8 @@ import {
   Home,
   Person,
   LibraryBooks,
+  Settings,
+  ExitToApp,
 } from "@material-ui/icons";
 
 interface Props {
@@ -108,9 +110,7 @@ const useStyles = makeStyles((theme: Theme) => ({
       cursor: "pointer",
     },
   },
-  badge: {
-    display: "flex",
-  },
+  badge: {},
   searchButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
@@ -147,10 +147,29 @@ function Navbar() {
       onClose={handleMenuClose}
     >
       <MenuItem onClick={handleMenuClose}>
-        <Link to="/profile">Profile</Link>
+        <Link
+          to="/profile"
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Person style={{ marginRight: 10 }} />
+          Profile
+        </Link>
       </MenuItem>
-      <MenuItem onClick={handleMenuClose}>Settings</MenuItem>
-      <MenuItem onClick={handleMenuClose}>Sign Out</MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        {" "}
+        <Settings style={{ marginRight: 10 }} />
+        Settings
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        {" "}
+        <ExitToApp style={{ marginRight: 10 }} />
+        Sign Out
+      </MenuItem>
     </Menu>
   );
 
@@ -198,25 +217,24 @@ function Navbar() {
               </Link>
             </div>
             <div className={classes.item}>
-              {/*    <Badge
+              <Badge
                 badgeContent={4}
                 color="secondary"
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
                 className={classes.badge}
-              > */}
-              <Mail />
+              >
+                <Mail />
+              </Badge>
               <Typography className={classes.text}>Messages</Typography>
-              {/*  </Badge> */}
             </div>
             <div className={classes.item}>
-              {/* <Badge
+              <Badge
                 badgeContent={2}
                 color="secondary"
                 className={classes.badge}
-              > */}
-              <Notifications />
+              >
+                <Notifications />
+              </Badge>
               <Typography className={classes.text}>Notifications</Typography>
-              {/*  </Badge> */}
             </div>
           </div>
           <div className={classes.avatar} onClick={handleProfileMenuOpen}>

@@ -7,6 +7,8 @@
 - follower count
 - posts
 - countrys visited
+- when user creation or editing, use the same country selector component and store the index
+- when clicking mail or notification on navbar, show overlay menu
 
 
 -- WHAT NEEDS TO BE REDUXED---
