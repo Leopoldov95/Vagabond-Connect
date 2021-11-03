@@ -1,5 +1,5 @@
 import React from "react";
-import all from "./allCountries";
+import countries from "./countries";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { InputLabel, MenuItem, FormControl, Select } from "@material-ui/core";
 
@@ -20,34 +20,34 @@ const CountryMenu = () => {
     name: "",
     code: "",
     continent: "",
-    index: 0,
   });
 
   const handleChange = (event: React.ChangeEvent<{ value: any }>) => {
     setCountry({
-      name: all[event.target.value].name,
-      code: all[event.target.value].code,
-      continent: all[event.target.value].continent,
-      index: event.target.value,
+      name: countries[event.target.value].name,
+      code: countries[event.target.value].code,
+      continent: countries[event.target.value].continent,
     });
   };
   return (
     <FormControl variant="outlined" className={classes.formControl} fullWidth>
       <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
       <Select
-        value={country.index}
+        value={country.code}
         onChange={handleChange}
         label="Country"
         autoWidth
       >
-        {all.map((val, index) => (
-          <MenuItem value={index}>
+        {Object.keys(countries).map((key) => (
+          <MenuItem value={countries[key].code}>
             <img
               style={{ width: 20, marginRight: 10 }}
-              alt={val.name}
-              src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${val.code.toLowerCase()}.svg`}
+              alt={countries[key].name}
+              src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
+                key
+              ].code.toLowerCase()}.svg`}
             />
-            {val.name}
+            {countries[key].name}
           </MenuItem>
         ))}
       </Select>

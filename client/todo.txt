@@ -17,3 +17,9 @@
 - creating new post
 - deleting post
 - editing post
+
+-- Handling Country List --
+- CHANGED COUNTRY LIST TO OBJECT AND USING KEYS AS IDENTIFIERS, REDO ALL AVOUNTRY INPUTS
+- favorite/visited country list is to be stored on users database
+- when editing, all changes made are local only, ONLY submit/change if user saves changes
+- if user cancels, simply ignore all changes OR revert to orignal data

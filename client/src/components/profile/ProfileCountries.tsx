@@ -7,11 +7,16 @@ import {
 } from "@material-ui/core";
 import { Edit } from "@material-ui/icons";
 import allCountries from "../country/allCountries";
+import allObjCountries from "../country/countries";
+const myCountry = "GB";
+//console.log(allObjCountries.keys({ myCountry })[0]);
+//console.log(Object.keys(allObjCountries));
+console.log(allObjCountries[myCountry]);
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     boxShadow:
       "0px 2px 1px -1px rgb(0, 0, 0, 20%), 0px 1px 1px 0px rgb(0 0 0 / 14%), 0px 1px 3px 0px rgb(0 0 0 / 12%)",
-    padding: theme.spacing(1),
+    padding: theme.spacing(2),
   },
   header: {
     display: "flex",
