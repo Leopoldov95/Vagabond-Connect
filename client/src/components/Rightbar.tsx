@@ -2,22 +2,16 @@ import {
   makeStyles,
   Container,
   Typography,
-  Avatar,
-  ImageList,
-  ImageListItem,
-  Link,
-  Divider,
   Card,
   CardActionArea,
   CardMedia,
 } from "@material-ui/core";
 
-import { AvatarGroup } from "@material-ui/lab";
-
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "sticky",
-    top: "0",
+
+    top: theme.spacing(10),
   },
   title: {
     fontSize: 16,

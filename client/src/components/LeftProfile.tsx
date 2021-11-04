@@ -9,7 +9,7 @@ import {
 } from "@material-ui/core";
 import { Link as RouterLink } from "react-router-dom";
 import { lightGreen } from "@material-ui/core/colors";
-import allCountries from "./country/allCountries";
+import countries from "./country/countries";
 import * as React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -74,10 +74,12 @@ const LeftProfile = () => {
         <Typography gutterBottom className={classes.bioText}>
           <img
             style={{ width: 20, marginRight: 10 }}
-            alt={allCountries[213].name}
-            src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${allCountries[213].code.toLowerCase()}.svg`}
+            alt={countries["GB"].name}
+            src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
+              "GB"
+            ].code.toLowerCase()}.svg`}
           />
-          {`${allCountries[213].name}, ${allCountries[213].continent}`}
+          {`${countries["GB"].name}, ${countries["GB"].continent}`}
         </Typography>
       </div>
       <Divider className={classes.divider} />

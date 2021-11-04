@@ -1,5 +1,4 @@
 import * as React from "react";
-import ReactFlagsSelect from "react-flags-select";
 import CountryMenu from "./country/countryNav";
 import {
   Container,

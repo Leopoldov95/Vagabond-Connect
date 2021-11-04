@@ -39,7 +39,7 @@ const CountryMenu = () => {
         autoWidth
       >
         {Object.keys(countries).map((key) => (
-          <MenuItem value={countries[key].code}>
+          <MenuItem value={countries[key].code} key={key}>
             <img
               style={{ width: 20, marginRight: 10 }}
               alt={countries[key].name}

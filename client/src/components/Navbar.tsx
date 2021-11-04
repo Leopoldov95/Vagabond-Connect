@@ -100,7 +100,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   icons: {
-    alignItems: "center",
+    alignItems: "end",
     display: (props: Props) => (props.open ? "none" : "flex"),
   },
   avatar: {
@@ -118,7 +118,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-function Navbar() {
+const Navbar = () => {
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -263,6 +263,6 @@ function Navbar() {
       {renderMenu}
     </>
   );
-}
+};
 
 export default Navbar;
