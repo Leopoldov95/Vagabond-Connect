@@ -1,4 +1,5 @@
 import * as React from "react";
+import countries from "./country/countries";
 import {
   makeStyles,
   Card,
@@ -53,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     color: "#888",
+    justifyContent: "center",
+  },
+  country: {
+    display: "flex",
     justifyContent: "center",
   },
 }));
@@ -139,8 +144,15 @@ const Post = () => {
         <Typography gutterBottom variant="h5">
           New Zealand Hobbiton
         </Typography>
-        <Typography gutterBottom className={classes.mapText}>
-          <Room /> New Zealand, Oceania
+        <Typography gutterBottom className={classes.country} variant="h6">
+          <img
+            style={{ width: 30, marginRight: 10 }}
+            alt={countries["NZ"].name}
+            src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
+              "NZ"
+            ].code.toLowerCase()}.svg`}
+          />
+          {`${countries["NZ"].name}, ${countries["NZ"].continent}`}
         </Typography>
         <Typography variant="body2">
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non
