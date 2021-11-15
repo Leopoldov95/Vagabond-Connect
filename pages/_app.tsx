@@ -5,7 +5,7 @@ import { AppProps } from "next/app";
 import { ThemeProvider } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import theme from "../src/theme";
-import Navbar from "../components/posts/Navbar";
+import Navbar from "../components/Navbar";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;

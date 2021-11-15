@@ -5,6 +5,7 @@ import LeftProfile from "../components/home/LeftProfile";
 import Feed from "../components/posts/Feed";
 import Rightbar from "../components/home/Rightbar";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
+import DUMMY_POSTS from "../testData/posts";
 const useStyles = makeStyles((theme: Theme) => ({
   right: {
     [theme.breakpoints.down("sm")]: {
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(10),
   },
 }));
-const Main = () => {
+const Main = (props: any) => {
   const classes = useStyles();
   return (
     <div className="Main">
@@ -25,7 +26,7 @@ const Main = () => {
           <LeftProfile />
         </Grid>
         <Grid item sm={7} xs={10}>
-          <Feed />
+          <Feed posts={props.posts} />
         </Grid>
         <Grid item sm={3} className={classes.right}>
           <Rightbar />
@@ -34,5 +35,16 @@ const Main = () => {
     </div>
   );
 };
+
+export async function getStaticProps() {
+  // fetch data from an API
+
+  // ALWAYS NEED TO RETURN AN {}
+  return {
+    props: {
+      posts: DUMMY_POSTS,
+    },
+  };
+}
 
 export default Main;

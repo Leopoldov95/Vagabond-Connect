@@ -24,6 +24,8 @@ import {
 } from "@material-ui/icons";
 
 import Comments from "./Comments";
+import SubComments from "./SubComments";
+
 const useStyles = makeStyles((theme) => ({
   media: {
     height: "250px",
@@ -62,13 +64,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Post = () => {
+const Post = (props: any) => {
   /* make sure to create a state to manage likes  */
+  const post = props.post;
   const classes = useStyles();
   const menuId = "post-settings";
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
+  const [showComments, setShowComments] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -124,7 +128,7 @@ const Post = () => {
               The Wok
             </Typography>
             <Typography style={{ color: "#555", fontSize: 14 }}>
-              {/*  {new Date().toLocaleString("en-US")} */} Oct 31st, 2021
+              {/*  {new Date().toLocaleString("en-US")} */} {post.created}
             </Typography>
           </div>
         </div>
@@ -135,34 +139,24 @@ const Post = () => {
         </div>
       </div>
       {/*   <CardActionArea> */}
-      <CardMedia
-        className={classes.media}
-        title="travel"
-        image="https://images.unsplash.com/photo-1462759353907-b2ea5ebd72e7?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2831&q=80"
-      />
+      <CardMedia className={classes.media} title="travel" image={post.image} />
       <CardContent>
         <Typography gutterBottom variant="h5">
-          New Zealand Hobbiton
+          {post.title}
         </Typography>
         <Typography gutterBottom className={classes.country} variant="h6">
           <img
             style={{ width: 30, marginRight: 10 }}
-            alt={countries["NZ"].name}
+            alt={countries[post.country].name}
             src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
-              "NZ"
+              post.country
             ].code.toLowerCase()}.svg`}
           />
-          {`${countries["NZ"].name}, ${countries["NZ"].continent}`}
+          {`${countries[post.country].name}, ${
+            countries[post.country].continent
+          }`}
         </Typography>
-        <Typography variant="body2">
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non
-          laboriosam nihil aspernatur odit quam eum nostrum laborum, nulla
-          deserunt necessitatibus architecto ratione impedit consequuntur vel ab
-          nesciunt minus esse vitae? Lorem ipsum dolor sit amet consectetur,
-          adipisicing elit. Non laboriosam nihil aspernatur odit quam eum
-          nostrum laborum, nulla deserunt necessitatibus architecto ratione
-          impedit consequuntur vel ab nesciunt minus esse vitae?
-        </Typography>
+        <Typography variant="body2">{post.description}</Typography>
       </CardContent>
       {/*  </CardActionArea> */}
       <Divider />
@@ -171,13 +165,19 @@ const Post = () => {
           <FavoriteBorder />
           <Typography className={classes.buttonText}>Like</Typography>
         </Button>
-        <Button size="small" color="primary">
+        <Button
+          size="small"
+          color="primary"
+          onClick={() => setShowComments(!showComments)}
+        >
           {/* will want to show how many comments */}
+
           <Comment />
           <Typography className={classes.buttonText}>Comments</Typography>
         </Button>
       </CardActions>
       <Divider />
+      {showComments && <SubComments comments={post.comments} />}
       <Comments />
       {renderMenu}
     </Card>

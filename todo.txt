@@ -1,0 +1,5 @@
+// add privacy seeting to allow only followers to see profile
+// users can change this in setting
+// users can accept or deny follw requests
+
+- when showing comments, only show like 3 lines before adding ... to show the entire comment

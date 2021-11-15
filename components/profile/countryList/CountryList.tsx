@@ -30,7 +30,7 @@ const CountryList = (props: any) => {
   // perhaps create a localized list here, then is saved, rewrite the top level state
   const [localCountries, setLocalCountries] = React.useState(props.countries);
   const [isEdit, setIsEdit] = React.useState(false);
-  console.log(localCountries);
+
   return (
     <>
       {localCountries.map((item: any) => (
