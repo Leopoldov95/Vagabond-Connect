@@ -25,7 +25,7 @@ import {
 
 import Comments from "./Comments";
 import SubComments from "./SubComments";
-
+import { findOne } from "../../testData/helper";
 const useStyles = makeStyles((theme) => ({
   media: {
     height: "250px",
@@ -67,6 +67,7 @@ const useStyles = makeStyles((theme) => ({
 const Post = (props: any) => {
   /* make sure to create a state to manage likes  */
   const post = props.post;
+  const creator = findOne(post.owner);
   const classes = useStyles();
   const menuId = "post-settings";
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -114,7 +115,7 @@ const Post = (props: any) => {
             <Avatar
               style={{ marginRight: 10 }}
               alt="post_owner_icon"
-              src="https://images-cdn.9gag.com/photo/aK7r78Q_700b.jpg"
+              src={creator?.profile}
             />
           </div>
           <div>
@@ -125,7 +126,7 @@ const Post = (props: any) => {
                 justifyContent: "left",
               }}
             >
-              The Wok
+              {creator?.firstName} {creator?.lastName}
             </Typography>
             <Typography style={{ color: "#555", fontSize: 14 }}>
               {/*  {new Date().toLocaleString("en-US")} */} {post.created}
@@ -177,7 +178,8 @@ const Post = (props: any) => {
         </Button>
       </CardActions>
       <Divider />
-      {showComments && <SubComments comments={post.comments} />}
+      {showComments &&
+        post.comments.map((comment: any) => <SubComments comment={comment} />)}
       <Comments />
       {renderMenu}
     </Card>

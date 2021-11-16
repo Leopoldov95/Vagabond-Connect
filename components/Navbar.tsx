@@ -160,9 +160,18 @@ const Navbar = () => {
         </a>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        {" "}
-        <Settings style={{ marginRight: 10 }} />
-        Settings
+        <a
+          href="/settings"
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Settings style={{ marginRight: 10 }} />
+          Settings
+        </a>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
         {" "}

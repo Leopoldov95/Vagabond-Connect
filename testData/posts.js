@@ -53,7 +53,12 @@ const posts = [
     image:
       "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2070&q=80",
     likes: ["user01", "user02", "user03"],
-    comments: [],
+    comments: [
+      {
+        owner: "user03",
+        message: "こんにちはハンバーガーが欲しいです",
+      },
+    ],
   },
 ];
 
