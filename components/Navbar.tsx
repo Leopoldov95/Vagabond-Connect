@@ -215,8 +215,10 @@ const Navbar = () => {
               </a>
             </div>
             <div className={classes.item}>
-              <Person className={classes.icon} />
-              <Typography className={classes.text}>Friends</Typography>
+              <a href="/friends" className={classes.link}>
+                <Person className={classes.icon} />
+                <Typography className={classes.text}>Friends</Typography>
+              </a>
             </div>
             <div className={classes.item}>
               <a href="/resources" className={classes.link}>

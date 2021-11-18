@@ -9,8 +9,12 @@ import {
   Select,
   InputLabel,
   MenuItem,
+  IconButton,
+  Button,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
+import { Edit, Warning } from "@material-ui/icons";
+import CountryNav from "../../components/country/countryNav";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(10),
@@ -22,12 +26,28 @@ const useStyles = makeStyles((theme: Theme) => ({
 
   settingItem: {
     display: "flex",
+    alignItems: "center",
     justifyContent: "space-between",
-    padding: theme.spacing(2),
+    padding: "6px 1rem",
   },
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
+  },
+  edit: {
+    display: "flex",
+    alignItems: "center",
+  },
+  actionContainer: {
+    display: "flex",
+    marginTop: theme.spacing(2),
+    justifyContent: "center",
+  },
+  btnDelete: {
+    backgroundColor: theme.palette.warning.main,
+    "&:hover": {
+      backgroundColor: theme.palette.warning.light,
+    },
   },
 }));
 const Settings = () => {
@@ -47,19 +67,31 @@ const Settings = () => {
         <ul>
           <li className={classes.settingItem}>
             <Typography>Name</Typography>
-            <Typography>Giga Chad</Typography>
+            <div className={classes.edit}>
+              <Typography>Giga Chad</Typography>
+              <IconButton>
+                <Edit />
+              </IconButton>
+            </div>
           </li>
-          <Divider style={{ backgroundColor: lightGreen[50] }} />
+          <Divider style={{ backgroundColor: lightGreen[100] }} />
           <li className={classes.settingItem}>
             <Typography>Email</Typography>
-            <Typography>testUser@Gmail.com</Typography>
+            <div className={classes.edit}>
+              <Typography>testUser@gmail.com</Typography>
+              <IconButton>
+                <Edit />
+              </IconButton>
+            </div>
           </li>
-          <Divider style={{ backgroundColor: lightGreen[50] }} />
+          <Divider style={{ backgroundColor: lightGreen[100] }} />
           <li className={classes.settingItem}>
             <Typography>Country</Typography>
-            <Typography>GB</Typography>
+            <div>
+              <CountryNav />
+            </div>
           </li>
-          <Divider style={{ backgroundColor: lightGreen[50] }} />
+          <Divider style={{ backgroundColor: lightGreen[100] }} />
           <li className={classes.settingItem}>
             <Typography>Who can see my profile?</Typography>
             <FormControl className={classes.formControl}>
@@ -76,6 +108,22 @@ const Settings = () => {
           </li>
           <Divider style={{ backgroundColor: lightGreen[50] }} />
         </ul>
+      </div>
+      <div className={classes.actionContainer}>
+        <Button style={{ margin: 10 }} variant="outlined" color="primary">
+          Save
+        </Button>
+        <Button style={{ margin: 10 }} variant="outlined" color="secondary">
+          Cancel
+        </Button>
+        <Button
+          style={{ margin: 10 }}
+          className={classes.btnDelete}
+          variant="contained"
+          startIcon={<Warning />}
+        >
+          Delete Account
+        </Button>
       </div>
     </Container>
   );
