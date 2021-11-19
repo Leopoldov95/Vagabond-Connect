@@ -6,13 +6,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   container: {},
 }));
 const Friends = () => {
-  const [selected, setSelected] = React.useState("all");
+  const [selected, setSelected] = React.useState("following");
   const classes = useStyles();
   return (
     <div className={classes.container}>
       <Grid container>
         <Grid item sm={3}>
-          <FriendsNav setSelected={setSelected} />
+          <FriendsNav selected={selected} setSelected={setSelected} />
         </Grid>
         <Grid item sm={9}>
           <FriendsDisplay selected={selected} />

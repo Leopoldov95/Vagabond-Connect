@@ -1,5 +1,9 @@
-// add privacy seeting to allow only followers to see profile
-// users can change this in setting
-// users can accept or deny follw requests
-
+- add privacy seeting to allow only followers to see profile
+- users can change this in setting
+- users can accept or deny follw requests
+- users can modify/delete own comments
 - when showing comments, only show like 3 lines before adding ... to show the entire comment
+
+// BIGGEST CHALLENGES
+- how to maintane logged in user across session and plly user data to multiple pages
+- uploading images to db

@@ -1,13 +1,16 @@
 import {
-  Container,
-  Paper,
+  Menu,
+  MenuItem,
   Typography,
   Avatar,
   Theme,
   makeStyles,
+  IconButton,
 } from "@material-ui/core";
+import * as React from "react";
 import { findOne } from "../../testData/helper";
 import { blueGrey } from "@material-ui/core/colors";
+import { MoreHoriz, Edit, Delete } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -23,15 +26,52 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column",
     alignItems: "flex-start",
   },
+
   avatar: {
     marginRight: 10,
   },
 }));
+
 const SubComments = (props: any) => {
   const classes = useStyles();
   const creator = findOne(props.comment.owner);
-  console.log(creator);
-  //console.log(props);
+  const menuId = "post-settings";
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+    React.useState<null | HTMLElement>(null);
+  const [showComments, setShowComments] = React.useState(false);
+  const isMenuOpen = Boolean(anchorEl);
+  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleMobileMenuClose = () => {
+    setMobileMoreAnchorEl(null);
+  };
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{ vertical: "top", horizontal: "right" }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <MenuItem onClick={handleMenuClose}>
+        <Edit style={{ marginRight: 8 }} />
+        Edit
+      </MenuItem>
+      <MenuItem style={{ color: "red" }} onClick={handleMenuClose}>
+        <Delete style={{ marginRight: 8 }} />
+        Delete
+      </MenuItem>
+    </Menu>
+  );
   return (
     <div className={classes.container}>
       <Avatar
@@ -43,8 +83,14 @@ const SubComments = (props: any) => {
         <Typography style={{ fontWeight: 500 }}>
           {creator?.firstName} {creator?.lastName}
         </Typography>
+
         <Typography>{props.comment.message}</Typography>
       </div>
+      <IconButton onClick={handleProfileMenuOpen}>
+        <MoreHoriz />
+      </IconButton>
+
+      {renderMenu}
     </div>
   );
 };
