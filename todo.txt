@@ -1,9 +1,28 @@
+* 11/21 - Mainly done with the frontend, need to start adding backend features
+- if no user is logged in, proceed to AUTH page and ask for credentials, users can proceed to continue as guest if they wish
+- First check whether or not a user is logged in, if not, then guest CANNOT do the following:
+    - like a Post
+    - create a comment 
+    - follow a user
+    - view profile (maybe redirect?)
+
+- later on, need to make navbar searchbar own component to look for users
 - add privacy seeting to allow only followers to see profile
 - users can change this in setting
-- users can accept or deny follw requests
+- users can accept or deny follw requests (based on privacy settings)
 - users can modify/delete own comments
 - when showing comments, only show like 3 lines before adding ... to show the entire comment
 
 // BIGGEST CHALLENGES
 - how to maintane logged in user across session and plly user data to multiple pages
 - uploading images to db
+
+
+//// AFTER I'M FINISHED /////
+- when creating the readme, explain why I used the following technologies:
+    - Next.js
+    - Typescript
+    - Material UI
+    - SQL database
+    - JWT tokens and bcrypt for authentication
+    

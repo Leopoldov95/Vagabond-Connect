@@ -30,6 +30,13 @@ const Profile = (props: any) => {
   );
 };
 
+export const getStaticPaths = async () => {
+  return {
+    paths: [], //indicates that no page needs be created at build time
+    fallback: "blocking", //indicates the type of fallback
+  };
+};
+
 export async function getStaticProps() {
   // fetch data from an API
 

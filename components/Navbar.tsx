@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import {
   alpha,
   AppBar,
@@ -161,7 +161,7 @@ const Navbar = () => {
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
         <a
-          href="/settings"
+          href="/settings/user01"
           style={{
             textDecoration: "none",
             color: "inherit",
@@ -184,7 +184,7 @@ const Navbar = () => {
   // can pass our state as props to use css boolean values
   const classes = useStyles({ open });
   return (
-    <>
+    <Fragment>
       <AppBar position="fixed" style={{ backgroundColor: lightGreen[700] }}>
         <Toolbar className={classes.toolbar}>
           {/* Variant is style, component is tag */}
@@ -271,7 +271,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
       {renderMenu}
-    </>
+    </Fragment>
   );
 };
 

@@ -26,6 +26,7 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "components/testData/posts.js"
+    "components/testData/posts.js",
+    "pages/api/users/addUser.js"
   ]
 }

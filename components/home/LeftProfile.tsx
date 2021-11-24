@@ -102,10 +102,10 @@ const LeftProfile = () => {
         </div>
         <Divider className={classes.divider} />
         <div className={classes.link}>
-          <a href="/profile" className={classes.routerLink}>
+          <a href="/profile/user01" className={classes.routerLink}>
             <Link
               style={{ color: lightGreen[900] }}
-              href={`/profile`}
+              href={`/profile/user01`}
               onClick={(e) => e.preventDefault}
             >
               View Profile

@@ -7,14 +7,14 @@ import {
   Divider,
   FormControl,
   Select,
-  InputLabel,
   MenuItem,
   IconButton,
   Button,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import { Edit, Warning } from "@material-ui/icons";
-import CountryNav from "../../components/country/countryNav";
+import CountryNav from "../country/countryNav";
+
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(10),
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-const Settings = () => {
+const SettingsLayout = () => {
   const classes = useStyles();
   const [privacy, setPrivacy] = React.useState("everyone");
 
@@ -129,4 +129,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default SettingsLayout;
