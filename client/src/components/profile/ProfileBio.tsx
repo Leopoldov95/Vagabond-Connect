@@ -1,6 +1,5 @@
-import { ClassNames } from "@emotion/react";
 import { Grid, Typography, makeStyles, Theme } from "@material-ui/core";
-import allCountries from "../country/allCountries";
+import countries from "../country/countries";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(4),
@@ -14,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 // to display profile owner country info, may want to use data from MongoDB
 const ProfileBio = () => {
-  const userPlaceholder = allCountries[211];
+  const testUser = "GB";
   const classes = useStyles();
   return (
     <Grid container className={classes.container}>
@@ -28,10 +27,12 @@ const ProfileBio = () => {
       >
         <img
           style={{ width: 20, marginRight: 10 }}
-          alt={userPlaceholder.name}
-          src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${userPlaceholder.code.toLowerCase()}.svg`}
+          alt={countries[testUser].code}
+          src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
+            "GB"
+          ].code.toLowerCase()}.svg`}
         />
-        {`${userPlaceholder.name}, ${userPlaceholder.continent}`}
+        {`${countries[testUser].name}, ${countries[testUser].continent}`}
       </Typography>
       <Typography variant="h4" style={{ margin: "1rem auto" }}>
         Giga Chad

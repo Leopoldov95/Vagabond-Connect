@@ -1,8 +1,8 @@
 import * as React from "react";
 import { makeStyles, IconButton, Button, Theme } from "@material-ui/core";
 import { Edit, Delete } from "@material-ui/icons";
-import countries from "../../country/countries";
-import CountryMenu from "../../country/countryNav";
+import countries from "../country/countries";
+import CountryMenu from "../country/countryNav";
 const useStyles = makeStyles((theme: Theme) => ({
   itemContainer: {
     display: "flex",
@@ -30,7 +30,7 @@ const CountryList = (props: any) => {
   // perhaps create a localized list here, then is saved, rewrite the top level state
   const [localCountries, setLocalCountries] = React.useState(props.countries);
   const [isEdit, setIsEdit] = React.useState(false);
-
+  console.log(localCountries);
   return (
     <>
       {localCountries.map((item: any) => (

@@ -1,9 +1,9 @@
 // This will be the main index file to display the main application
 // so have the sidebar and navbar componetns here and based on state, change whether to show home feed or account settings
 
-import LeftProfile from "../../components/LeftProfile";
-import Feed from "../../components/Feed";
-import Rightbar from "../../components/Rightbar";
+import LeftProfile from "../components/home/LeftProfile";
+import Feed from "../components/posts/Feed";
+import Rightbar from "../components/home/Rightbar";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 const useStyles = makeStyles((theme: Theme) => ({
   right: {

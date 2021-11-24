@@ -3,26 +3,27 @@ import mongoose, { ConnectOptions } from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 //import logging from "./config/logging";
-//import userRoutes from "./routes/users";
+import userRoutes from "./routes/users";
 //const NAMESPACE = "Server";
+//let CONNECTION_URL = process.env["CONNECTION_URL"];
 const app = express();
 dotenv.config();
 app.use(cors());
 
 app.use(express.urlencoded({ extended: true }));
-app.use(express.json({ limit: "10mb" }));
+app.use(express.json({ limit: "30mb" }));
 
 app.get("/", (req, res) => {
   res.send("Hello To Vaggabond Connect API");
 });
+app.use("/users", userRoutes);
 
 const PORT = process.env.PORT || 5000;
 
 mongoose
-  .connect(process.env.CONNECTION_URL, {
+  .connect(`${process.env.CONNECTION_URL}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useFindAndModify: false,
   } as ConnectOptions)
   .then(() => app.listen(PORT, () => console.log(`Listening on port ${PORT}`)))
   .catch((err) => console.log(err.message));

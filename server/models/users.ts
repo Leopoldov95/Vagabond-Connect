@@ -4,13 +4,17 @@ import mongoose from "mongoose";
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
+  country: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  avatar: { type: String },
-  friends: { type: [String] },
-  id: { type: String },
+  profilePic: { type: String },
+  backgroundPic: { type: String },
+  followers: { type: [String] },
+  following: { type: [String] },
   messages: { type: [] },
   notifications: { type: [] },
+  favoriteCountries: [String],
+  visitedCountries: [String],
 });
 
 export default mongoose.model("users", userSchema);

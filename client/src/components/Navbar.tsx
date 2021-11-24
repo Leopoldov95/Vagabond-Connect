@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Fragment, useState } from "react";
 import {
   alpha,
   AppBar,
@@ -28,7 +27,7 @@ import {
   Settings,
   ExitToApp,
 } from "@material-ui/icons";
-
+import { Link } from "react-router-dom";
 interface Props {
   open: boolean;
 }
@@ -161,9 +160,18 @@ const Navbar = () => {
         </Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        {" "}
-        <Settings style={{ marginRight: 10 }} />
-        Settings
+        <Link
+          to="/settings/user01"
+          style={{
+            textDecoration: "none",
+            color: "inherit",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Settings style={{ marginRight: 10 }} />
+          Settings
+        </Link>
       </MenuItem>
       <MenuItem onClick={handleMenuClose}>
         {" "}
@@ -176,7 +184,7 @@ const Navbar = () => {
   // can pass our state as props to use css boolean values
   const classes = useStyles({ open });
   return (
-    <>
+    <Fragment>
       <AppBar position="fixed" style={{ backgroundColor: lightGreen[700] }}>
         <Toolbar className={classes.toolbar}>
           {/* Variant is style, component is tag */}
@@ -207,8 +215,10 @@ const Navbar = () => {
               </Link>
             </div>
             <div className={classes.item}>
-              <Person className={classes.icon} />
-              <Typography className={classes.text}>Friends</Typography>
+              <Link to="/friends" className={classes.link}>
+                <Person className={classes.icon} />
+                <Typography className={classes.text}>Friends</Typography>
+              </Link>
             </div>
             <div className={classes.item}>
               <Link to="/resources" className={classes.link}>
@@ -261,7 +271,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
       {renderMenu}
-    </>
+    </Fragment>
   );
 };
 

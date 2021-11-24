@@ -14,13 +14,19 @@ const useStyles = makeStyles((theme: Theme) =>
   })
 );
 
-const CountryMenu = () => {
+const CountryNav = (props: any) => {
   const classes = useStyles();
   const [country, setCountry] = React.useState({
     name: "",
     code: "",
     continent: "",
   });
+
+  React.useEffect(() => {
+    if (props?.handleCallback) {
+      return props?.handleCallback(country);
+    }
+  }, [country]);
 
   const handleChange = (event: React.ChangeEvent<{ value: any }>) => {
     setCountry({
@@ -55,4 +61,4 @@ const CountryMenu = () => {
   );
 };
 
-export default CountryMenu;
+export default CountryNav;

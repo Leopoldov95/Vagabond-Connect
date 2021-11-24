@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const Comments = () => {
   const [comment, setComment] = React.useState("");
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
   };

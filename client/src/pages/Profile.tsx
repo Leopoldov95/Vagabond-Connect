@@ -1,7 +1,7 @@
-import ProfileHeader from "../../components/profile/ProfileHeader";
-import ProfileBio from "../../components/profile/ProfileBio";
-import ProfileCountries from "../../components/profile/ProfileCountries";
-import Feed from "../../components/Feed";
+import ProfileHeader from "../components/profile/ProfileHeader";
+import ProfileBio from "../components/profile/ProfileBio";
+import ProfileCountries from "../components/profile/ProfileCountries";
+import Feed from "../components/posts/Feed";
 import { Grid, makeStyles, Theme } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) => ({

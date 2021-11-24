@@ -1,5 +1,5 @@
 import * as React from "react";
-import CountryMenu from "./country/countryNav";
+import CountryNav from "../country/countryNav";
 import {
   Container,
   Button,
@@ -201,7 +201,7 @@ const Add = () => {
               </div>
             </div>
             <div className={classes.item}>
-              <CountryMenu />
+              <CountryNav />
             </div>
             <div>
               <FormLabel component="legend">Who can comment?</FormLabel>

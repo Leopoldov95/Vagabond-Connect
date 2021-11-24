@@ -12,7 +12,7 @@ import {
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import { sections, information } from "./resources/resource";
-import Navbar from "../../components/Navbar";
+
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     paddingTop: theme.spacing(12),
@@ -52,7 +52,6 @@ const Resources = () => {
   const classes = useStyles();
   return (
     <div>
-      <Navbar />
       <Container className={classes.container}>
         <Typography gutterBottom variant="h3" style={{ textAlign: "center" }}>
           Travel Resources
