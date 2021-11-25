@@ -2,7 +2,7 @@ import axios from "axios";
 
 // so by using this url, we can use the backend logic
 const API = axios.create({
-  baseURL: "https://localhost:3001",
+  baseURL: "http://localhost:5000",
 });
 // this function will run on every request, it's helping the middleware function
 /* API.interceptors.request.use((req) => {
@@ -16,8 +16,8 @@ const API = axios.create({
 
   return req;
 }); */
-export const addNewUser = (formData: any) =>
-  API.post("/users/signup", formData);
+
+export const signup = (formData: any) => API.post("/users/signup", formData);
 /* export const fetchCart = (email) => API.post("/cart", email);
 export const postCart = (email, item) =>
   API.post("/cart/items", { email, item });

@@ -17,9 +17,9 @@ const useStyles = makeStyles((theme: Theme) =>
 const CountryNav = (props: any) => {
   const classes = useStyles();
   const [country, setCountry] = React.useState({
-    name: "",
-    code: "",
-    continent: "",
+    name: "United States",
+    code: "US",
+    continent: "North America",
   });
 
   React.useEffect(() => {

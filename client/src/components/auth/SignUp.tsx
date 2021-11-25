@@ -8,22 +8,20 @@ import {
   Typography,
   Container,
 } from "@material-ui/core";
-
+import { useHistory } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { ImageOutlined } from "@material-ui/icons";
 import { makeStyles } from "@material-ui/core/styles";
 import { lightGreen } from "@material-ui/core/colors";
 import CountryNav from "../country/countryNav";
 // API calls
-import { addNewUser } from "../../api/index";
-// cloudinary api -> socialmediaimgapi
+import { signup } from "../../api/users";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: "white",
     padding: theme.spacing(2),
   },
-
   paper: {
     display: "flex",
     flexDirection: "column",
@@ -58,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
 const SignUp = (props: any) => {
   const classes = useStyles();
-
+  const history = useHistory();
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [formData, setFormData] = React.useState<any>({
     firstName: "",
@@ -88,21 +86,19 @@ const SignUp = (props: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleCapture = ({ target }: any) => {
-    //setFormData.selectedFile(target.files[0]);
-    /* const reader = new FileReader();
+    const reader = new FileReader();
     reader.readAsDataURL(target.files[0]);
     reader.onloadend = () => {
-      console.log("hey i wored");
-      setFormData({ ...formData, selectedFile: "testIMF" });
-    }; */
+      setFormData({ ...formData, selectedFile: reader.result });
+    };
     /* const file = target.files[0];
     const formData = new FormData();
     formData.append("file", file);
     console.log(formData); */
-    setFormData({
+    /*  setFormData({
       ...formData,
       selectedFile: target.files[0],
-    });
+    }); */
   };
 
   // login validarion
@@ -150,29 +146,6 @@ const SignUp = (props: any) => {
 
   // Handle IMG upload, only use IF/AFTER form validation has been completed
 
-  const handleImgUpload = async () => {
-    if (formData.selectedFile) {
-      try {
-        /*  const formData = new FormData();
-    formData.append("file", data);
-    formData.append("upload_preset", "socialmediaimgapi");
-    const response = await axios.post(
-     
-      formData
-    ); 
-    if (response) {
-      setFormData({
-        ... formData,
-        imgURL: response?.data?.url
-      });
-    } */
-        return "testIMG URL";
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
-
   const handleCallback = (data) => {
     setFormData({
       ...formData,
@@ -189,7 +162,9 @@ const SignUp = (props: any) => {
     // will then want to post data here
     // may want to destructur data
 
-    const result = await addNewUser(formData);
+    // handle img file HERE!!!
+    const result = await signup(formData, history);
+    console.log(result);
   };
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
@@ -311,7 +286,7 @@ const SignUp = (props: any) => {
                   </label>
                   {formData.selectedFile ? (
                     <Typography component="span" style={{ marginLeft: 10 }}>
-                      {formData.selectedFile?.name}
+                      Image Selected!
                     </Typography>
                   ) : (
                     ""
