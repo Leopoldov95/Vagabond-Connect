@@ -23,3 +23,8 @@
 - favorite/visited country list is to be stored on users database
 - when editing, all changes made are local only, ONLY submit/change if user saves changes
 - if user cancels, simply ignore all changes OR revert to orignal data
+
+- In the future, make sure to add pagination/maximum post data in order to have infinite scroll/ performance management
+- handle empty/no profile pic
+
+- may want to change jwt name as well as localstorage name ('profile') is too generic

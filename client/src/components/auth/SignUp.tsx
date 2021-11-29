@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { API_ERROR } from "../../constants/actionTypes";
 import {
   Avatar,
   Button,
@@ -15,8 +16,18 @@ import { makeStyles } from "@material-ui/core/styles";
 import { lightGreen } from "@material-ui/core/colors";
 import CountryNav from "../country/countryNav";
 // API calls
-import { signup } from "../../api/users";
-
+//import { signup } from "../../api/users";
+// Redux importa
+import { useDispatch, useSelector } from "react-redux";
+import { signup, signin } from "../../actions/users";
+const initialState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+  selectedFile: null,
+};
 const useStyles = makeStyles((theme) => ({
   container: {
     backgroundColor: "white",
@@ -41,6 +52,11 @@ const useStyles = makeStyles((theme) => ({
   input: {
     display: "none",
   },
+  link: {
+    "&:hover": {
+      cursor: "pointer",
+    },
+  },
   upload: {
     padding: theme.spacing(1),
   },
@@ -58,27 +74,22 @@ const SignUp = (props: any) => {
   const classes = useStyles();
   const history = useHistory();
   const [isSignUp, setIsSignUp] = React.useState(false);
-  const [formData, setFormData] = React.useState<any>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    selectedFile: null,
-  });
-
+  const [formData, setFormData] = React.useState<any>(initialState);
   const [errors, setErrors] = React.useState<any>({});
+  const API_ERRORS = useSelector((state: any) => state.apiErrors);
 
+  // remember that using dispatch means that we are accessing state that is usable across our entire appplication
+  const dispatch = useDispatch();
+  // if there is an auth error, make sure to clear it
+  React.useEffect(() => {
+    if (API_ERRORS) {
+      setTimeout(() => {
+        dispatch({ type: API_ERROR, payload: null });
+      }, 2000);
+    }
+  }, [API_ERRORS]);
   const toggleMode = () => {
-    setFormData({
-      firstName: "",
-      lastName: "",
-      country: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      selectedFile: null,
-    });
+    setFormData(initialState);
     setErrors({});
     setIsSignUp(!isSignUp);
   };
@@ -91,14 +102,6 @@ const SignUp = (props: any) => {
     reader.onloadend = () => {
       setFormData({ ...formData, selectedFile: reader.result });
     };
-    /* const file = target.files[0];
-    const formData = new FormData();
-    formData.append("file", file);
-    console.log(formData); */
-    /*  setFormData({
-      ...formData,
-      selectedFile: target.files[0],
-    }); */
   };
 
   // login validarion
@@ -114,6 +117,7 @@ const SignUp = (props: any) => {
     setErrors({
       ...allErrors,
     });
+    return allErrors;
   };
 
   // Simple client-side validation for creating account
@@ -142,6 +146,7 @@ const SignUp = (props: any) => {
     setErrors({
       ...allErrors,
     });
+    return allErrors;
   };
 
   // Handle IMG upload, only use IF/AFTER form validation has been completed
@@ -156,15 +161,15 @@ const SignUp = (props: any) => {
   // Main Form Submission
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    isSignUp ? onSubmitValidation() : onLoginValidation();
-
-    //const imgURL = await handleImgUpload();
-    // will then want to post data here
-    // may want to destructur data
-
-    // handle img file HERE!!!
-    const result = await signup(formData, history);
-    console.log(result);
+    const isErrors = isSignUp
+      ? await onSubmitValidation()
+      : await onLoginValidation();
+    if (Object.keys(isErrors).length < 1) {
+      isSignUp
+        ? dispatch(signup(formData, history))
+        : dispatch(signin(formData, history));
+    }
+    // maybe add extra feedback here?
   };
   return (
     <Container component="main" maxWidth="xs" className={classes.container}>
@@ -285,9 +290,14 @@ const SignUp = (props: any) => {
                     </Button>
                   </label>
                   {formData.selectedFile ? (
-                    <Typography component="span" style={{ marginLeft: 10 }}>
-                      Image Selected!
-                    </Typography>
+                    <Fragment>
+                      {/* <Typography component="span" style={{ marginLeft: 10 }}>
+                        Image Selected!
+                      </Typography> */}
+                      <Typography component="span" style={{ marginLeft: 10 }}>
+                        {new Date().toLocaleString()}
+                      </Typography>
+                    </Fragment>
                   ) : (
                     ""
                   )}
@@ -295,7 +305,13 @@ const SignUp = (props: any) => {
               </Fragment>
             )}
           </Grid>
-
+          {API_ERRORS && (
+            <Typography
+              style={{ textAlign: "center", color: "red", marginTop: "8px" }}
+            >
+              {API_ERRORS}
+            </Typography>
+          )}
           <Button
             type="submit"
             fullWidth
@@ -308,7 +324,11 @@ const SignUp = (props: any) => {
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link onClick={toggleMode} variant="body2">
+              <Link
+                onClick={toggleMode}
+                variant="body2"
+                className={classes.link}
+              >
                 New User? Create An Account
               </Link>
             </Grid>

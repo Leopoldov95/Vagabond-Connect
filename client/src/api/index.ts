@@ -5,19 +5,21 @@ const API = axios.create({
   baseURL: "http://localhost:5000",
 });
 // this function will run on every request, it's helping the middleware function
-/* API.interceptors.request.use((req) => {
-  if (localStorage.getItem("userProfile")) {
+API.interceptors.request.use((req: any) => {
+  if (localStorage.getItem("profile")) {
+    let JSONData: any = localStorage.getItem("profile");
     ////// due to how headers are handled, VAR NAMES AFTER req MUST BE IN LOWERCASE ///////
     // name of a property must match!!! Authorization !== authorization
-    req.headers.authorization = `Bearer ${
-      JSON.parse(localStorage.getItem("userProfile")).token
-    }`;
+    req.headers.authorization = `Bearer ${JSON.parse(JSONData).token}`;
   }
 
   return req;
-}); */
+});
 
 export const signup = (formData: any) => API.post("/users/signup", formData);
+export const signin = (formData: any) => API.post("/users/signin", formData);
+export const editProfileImg = (data: any) =>
+  API.patch(`/users/${data?.user?._id}/profileImg`, data);
 /* export const fetchCart = (email) => API.post("/cart", email);
 export const postCart = (email, item) =>
   API.post("/cart/items", { email, item });

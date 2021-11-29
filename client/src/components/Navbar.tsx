@@ -1,4 +1,5 @@
-import { Fragment, useState } from "react";
+// Since Navbar will be present on ALL pages, we will manage user auth here
+import { Fragment, useState, useEffect } from "react";
 import {
   alpha,
   AppBar,
@@ -26,8 +27,12 @@ import {
   LibraryBooks,
   Settings,
   ExitToApp,
+  Lock,
 } from "@material-ui/icons";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
+
+import { useDispatch } from "react-redux";
+import decode from "jwt-decode";
 interface Props {
   open: boolean;
 }
@@ -102,6 +107,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "end",
     display: (props: Props) => (props.open ? "none" : "flex"),
   },
+  routerLink: {
+    color: "inherit",
+    display: "flex",
+    alignItems: "center",
+  },
+
   avatar: {
     display: "flex",
     alignItems: "center",
@@ -118,71 +129,102 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 const Navbar = () => {
+  const location = useLocation();
+  const history = useHistory();
+  const dispatch = useDispatch();
+
+  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile"))); // profile is being access from local storage, shich was set in the reducer file auth.js
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    useState<null | HTMLElement>(null);
+  /*   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+    useState<null | HTMLElement>(null); */
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  //  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  useEffect(() => {
+    const token = user?.token;
+
+    // JWT ...
+    if (token) {
+      // decodes the token, checking if tken is expired. If so, user must sign back in
+      const decodedToken: any = decode(token);
+      if (decodedToken?.exp * 1000 < new Date().getTime()) logout();
+    }
+
+    setUser(JSON.parse(localStorage.getItem("profile")));
+  }, [location]);
+  const classes = useStyles({ open });
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleMobileMenuClose = () => {
+  /*  const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
-  };
+  }; */
   const handleMenuClose = () => {
     setAnchorEl(null);
-    handleMobileMenuClose();
+    //handleMobileMenuClose();
   };
-  const menuId = "primary-search-account-menu";
+  const handleMenuLogout = () => {
+    setAnchorEl(null);
+    logout();
+    //handleMobileMenuClose();
+  };
+  const logout = () => {
+    dispatch({ type: "LOGOUT" });
+    history.push("/");
+    setUser(null);
+  };
+
   const renderMenu = (
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
       keepMounted
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
-        <Link
-          to="/profile"
-          style={{
-            textDecoration: "none",
-            color: "inherit",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Person style={{ marginRight: 10 }} />
-          Profile
-        </Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        <Link
-          to="/settings/user01"
-          style={{
-            textDecoration: "none",
-            color: "inherit",
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Settings style={{ marginRight: 10 }} />
-          Settings
-        </Link>
-      </MenuItem>
-      <MenuItem onClick={handleMenuClose}>
-        {" "}
-        <ExitToApp style={{ marginRight: 10 }} />
-        Sign Out
-      </MenuItem>
+      {user && (
+        <Fragment>
+          <MenuItem onClick={handleMenuClose}>
+            <Link
+              to={`/profile/${user?.result?._id}`}
+              className={classes.routerLink}
+            >
+              <Person style={{ marginRight: 10 }} />
+              Profile
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose}>
+            <Link
+              to={`/settings/${user?.result?._id}`}
+              className={classes.routerLink}
+            >
+              <Settings style={{ marginRight: 10 }} />
+              Settings
+            </Link>
+          </MenuItem>
+        </Fragment>
+      )}
+
+      {user ? (
+        <MenuItem onClick={handleMenuLogout}>
+          <ExitToApp style={{ marginRight: 10 }} />
+          Sign Out
+        </MenuItem>
+      ) : (
+        <MenuItem onClick={handleMenuClose}>
+          <Link to="/auth" className={classes.routerLink}>
+            <Lock style={{ marginRight: 10 }} />
+            Sign In
+          </Link>
+        </MenuItem>
+      )}
     </Menu>
   );
 
   // can pass our state as props to use css boolean values
-  const classes = useStyles({ open });
+
   return (
     <Fragment>
       <AppBar position="fixed" style={{ backgroundColor: lightGreen[700] }}>
@@ -226,6 +268,7 @@ const Navbar = () => {
                 <Typography className={classes.text}>Resources</Typography>
               </Link>
             </div>
+
             <div className={classes.item}>
               <Badge
                 badgeContent={4}
@@ -257,9 +300,12 @@ const Navbar = () => {
             <Avatar
               alt="account_icon"
               aria-label="account of current user"
-              aria-controls={menuId}
               aria-haspopup="true"
-              src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
+              src={
+                user
+                  ? user?.result?.profile_cloudinary
+                  : "img/auth/default.jpeg"
+              }
             />
             <ExpandMore style={{ marginLeft: 10 }} />
             <Divider

@@ -1,10 +1,8 @@
-/*  import { combineReducers } from "redux";
-
- const RootReducer = combineReducers(reducers:{
-
+import { combineReducers } from "redux";
+import { userAuthReducer, apiErrorsReducer } from "./users";
+const RootReducer = combineReducers({
+  userAuthReducer,
+  apiErrors: apiErrorsReducer,
 });
 
-export default RootReducer; 
- */
-
-export {};
+export default RootReducer;

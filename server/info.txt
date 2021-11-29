@@ -18,3 +18,6 @@
       -- Like ID
    -- Post Comments
       -- Comment ID
+
+// issues
+- 11/26 - mongoDB not savinf cloudinary public_id

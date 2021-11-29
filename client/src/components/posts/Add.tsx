@@ -99,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Add = () => {
   const classes = useStyles();
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const [open, setOpen] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
   const [formData, setFormData] = React.useState<any>({
@@ -134,7 +135,7 @@ const Add = () => {
         <div className={classes.cardContent}>
           <Avatar
             alt="post_owner_icon"
-            src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
+            src={user ? user?.profilePic : "img/auth/default.jpeg"}
             style={{ marginRight: 10 }}
           />
           <Button

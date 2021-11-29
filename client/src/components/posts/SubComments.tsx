@@ -35,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const SubComments = (props: any) => {
   const classes = useStyles();
   const creator = findOne(props.comment.owner);
-  const menuId = "post-settings";
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
@@ -56,7 +56,7 @@ const SubComments = (props: any) => {
     <Menu
       anchorEl={anchorEl}
       anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      id={menuId}
+      id="Comments Menu"
       keepMounted
       transformOrigin={{ vertical: "top", horizontal: "right" }}
       open={isMenuOpen}
@@ -86,11 +86,17 @@ const SubComments = (props: any) => {
 
         <Typography>{props.comment.message}</Typography>
       </div>
-      <IconButton onClick={handleProfileMenuOpen}>
-        <MoreHoriz />
-      </IconButton>
 
-      {renderMenu}
+      {user && user._id === props.comment.ownerId ? (
+        <React.Fragment>
+          <IconButton onClick={handleProfileMenuOpen}>
+            <MoreHoriz />
+          </IconButton>
+          {renderMenu}
+        </React.Fragment>
+      ) : (
+        ""
+      )}
     </div>
   );
 };

@@ -13,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 // to display profile owner country info, may want to use data from MongoDB
 const ProfileBio = () => {
-  const testUser = "GB";
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const classes = useStyles();
   return (
     <Grid container className={classes.container}>
@@ -27,15 +27,15 @@ const ProfileBio = () => {
       >
         <img
           style={{ width: 20, marginRight: 10 }}
-          alt={countries[testUser].code}
-          src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
-            "GB"
-          ].code.toLowerCase()}.svg`}
+          alt={user?.country}
+          src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${user?.country.toLowerCase()}.svg`}
         />
-        {`${countries[testUser].name}, ${countries[testUser].continent}`}
+        {`${countries[user?.country].name}, ${
+          countries[user?.country].continent
+        }`}
       </Typography>
       <Typography variant="h4" style={{ margin: "1rem auto" }}>
-        Giga Chad
+        {user?.firstName} {user?.lastName}
       </Typography>
       <Typography variant="body1">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores

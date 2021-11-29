@@ -46,6 +46,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column",
     alignItems: "center",
   },
+  profileImg: {
+    width: 20,
+    marginRight: 10,
+  },
   divider: {
     marginBottom: theme.spacing(2),
   },
@@ -59,6 +63,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const LeftProfile = () => {
   const classes = useStyles();
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  console.log(user);
   return (
     <Container className={classes.container}>
       <Paper>
@@ -66,20 +72,26 @@ const LeftProfile = () => {
           <Avatar
             className={classes.lgIcon}
             alt="account_icon"
-            src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
+            src={user ? user?.profile_cloudinary : "img/auth/default.jpeg"}
           />
           <Typography gutterBottom variant="h6">
-            Giga Chad
+            {user ? `${user?.firstName} ${user?.lastName}` : "GUEST"}
           </Typography>
           <Typography gutterBottom className={classes.bioText}>
             <img
-              style={{ width: 20, marginRight: 10 }}
-              alt={countries["GB"].name}
-              src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
-                "GB"
-              ].code.toLowerCase()}.svg`}
+              className={user ? classes.profileImg : ""}
+              alt={user ? user?.country : ""}
+              src={
+                user
+                  ? `https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${(user?.country).toLowerCase()}.svg`
+                  : ""
+              }
             />
-            {`${countries["GB"].name}, ${countries["GB"].continent}`}
+            {user
+              ? `${countries[user?.country].name}, ${
+                  countries[user?.country].continent
+                }`
+              : "UNKOWN"}
           </Typography>
         </div>
         <Divider className={classes.divider} />
@@ -88,7 +100,7 @@ const LeftProfile = () => {
             Following
           </Typography>
           <Typography gutterBottom variant="h6">
-            70
+            {user ? user?.followers?.length : 0}
           </Typography>
         </div>
         <Divider className={classes.divider} />
@@ -97,20 +109,28 @@ const LeftProfile = () => {
             Followers
           </Typography>
           <Typography gutterBottom variant="h6">
-            440
+            {user ? user?.followers?.length : 0}
           </Typography>
         </div>
-        <Divider className={classes.divider} />
-        <div className={classes.link}>
-          <RouterLink to="/profile/user01" className={classes.routerLink}>
-            <Link
-              style={{ color: lightGreen[900] }}
-              onClick={(e) => e.preventDefault}
-            >
-              View Profile
-            </Link>
-          </RouterLink>
-        </div>
+
+        {user && (
+          <React.Fragment>
+            <Divider className={classes.divider} />
+            <div className={classes.link}>
+              <RouterLink
+                to={`/profile/${user?._id}`}
+                className={classes.routerLink}
+              >
+                <Link
+                  style={{ color: lightGreen[900] }}
+                  onClick={(e) => e.preventDefault}
+                >
+                  View Profile
+                </Link>
+              </RouterLink>
+            </div>
+          </React.Fragment>
+        )}
       </Paper>
     </Container>
   );

@@ -7,16 +7,17 @@ const userSchema = new mongoose.Schema({
   country: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  profilePic: { type: String },
-  cloudinary_profile_id: { tye: String },
-  backgroundPic: { type: String },
-  cloudinary_background_id: { tye: String },
+  profile_cloudinary: { type: String },
+  profile_cloudinary_id: { type: String },
+  background_cloudinary: { type: String },
+  background_cloudinary_id: { type: String },
+  bio: { type: String },
   followers: { type: [String] },
   following: { type: [String] },
   messages: { type: [] },
   notifications: { type: [] },
-  favoriteCountries: [String],
-  visitedCountries: [String],
+  favoriteCountries: { type: [String] },
+  visitedCountries: { type: [String] },
 });
 
 export default mongoose.model("users", userSchema);

@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   Container,
   Grid,
@@ -8,6 +9,8 @@ import {
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import { Edit, CameraAlt } from "@material-ui/icons";
+import ProfileImgHandler from "./ProfileImgHandler";
+const user = JSON.parse(localStorage.getItem("profile"))?.result;
 // Add an edit button for bio and avatar
 // for the background image, if we want to make it dynamic, have to to changes the css jsx
 const useStyles = makeStyles((theme: Theme) => ({
@@ -38,7 +41,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   backgroundImageContainer: {
     height: 450,
     overflow: "hidden",
-    background: "url(/img/profile/default.jpg) no-repeat center/cover",
+    background: `url(${
+      user ? user?.background_cloudinary : "/img/profile/default.jpg"
+    }) no-repeat center/cover`,
   },
   backgroundInputContainer: {
     display: "flex",
@@ -75,19 +80,43 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ProfileHeader = () => {
+  const [profileDb, setProfileDb] = React.useState<any>({
+    url: "",
+    profile: "",
+  });
+  const [openHandler, setOpenHandler] = React.useState(false);
+  // this will open the IMG tool, the data we pass will correspond to what the current image is as well as the profile so we know which image tp mpdify on the server
+  const openImgTool = (url, profile) => {
+    setProfileDb({
+      url: url,
+      profile: profile,
+    });
+    setOpenHandler(true);
+  };
   const classes = useStyles();
   return (
     <div>
       <Grid container className={classes.container}>
         <Container className={classes.headerContainer}>
           <div className={classes.backgroundImageContainer}>
-            {/* <img
-                src="/img/profile/default.jpg"
-                alt="background_profile"
-                className={classes.backgroundImage}
-              /> */}
             <div className={classes.backgroundInputContainer}>
-              <input
+              <Button
+                startIcon={<Edit />}
+                variant="contained"
+                component="span"
+                className={classes.backgroundButton}
+                onClick={() =>
+                  openImgTool(
+                    user?.background_cloudinary
+                      ? user?.background_cloudinary
+                      : "/img/profile/default.jpg",
+                    "background_cloudinary"
+                  )
+                }
+              >
+                Edit
+              </Button>
+              {/*  <input
                 accept="image/*"
                 className={classes.input}
                 id="contained-button-file"
@@ -103,7 +132,7 @@ const ProfileHeader = () => {
                 >
                   Edit
                 </Button>
-              </label>
+              </label> */}
             </div>
           </div>
           <div className={classes.avatarContainer}>
@@ -129,11 +158,16 @@ const ProfileHeader = () => {
             <Avatar
               alt="profile_pic"
               className={classes.avatar}
-              src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
+              src={user?.profile_cloudinary}
             />
           </div>
         </Container>
       </Grid>
+      <ProfileImgHandler
+        open={openHandler}
+        setOpen={setOpenHandler}
+        profile={profileDb}
+      />
     </div>
   );
 };

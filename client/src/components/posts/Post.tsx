@@ -63,9 +63,11 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "center",
   },
 }));
-
+// MAKE SURE TO HAVE POST CREATOR ID
+// POST.ownerId === user._id
 const Post = (props: any) => {
   /* make sure to create a state to manage likes  */
+  const user = JSON.parse(localStorage.getItem("profile"));
   const post = props.post;
   const creator = findOne(post.owner);
   const classes = useStyles();
@@ -133,11 +135,15 @@ const Post = (props: any) => {
             </Typography>
           </div>
         </div>
-        <div>
-          <IconButton aria-label="settings" onClick={handleProfileMenuOpen}>
-            <MoreVert />
-          </IconButton>
-        </div>
+        {user && user._id === post?.ownerID ? (
+          <div>
+            <IconButton aria-label="settings" onClick={handleProfileMenuOpen}>
+              <MoreVert />
+            </IconButton>
+          </div>
+        ) : (
+          ""
+        )}
       </div>
       {/*   <CardActionArea> */}
       <CardMedia className={classes.media} title="travel" image={post.image} />
@@ -162,7 +168,7 @@ const Post = (props: any) => {
       {/*  </CardActionArea> */}
       <Divider />
       <CardActions>
-        <Button size="small" color="primary">
+        <Button size="small" color="primary" disabled={!user}>
           <FavoriteBorder />
           <Typography className={classes.buttonText}>Like</Typography>
         </Button>
@@ -180,8 +186,9 @@ const Post = (props: any) => {
       <Divider />
       {showComments &&
         post.comments.map((comment: any) => <SubComments comment={comment} />)}
-      <Comments />
-      {renderMenu}
+      {user && <Comments />}
+
+      {user && user._id === post?.ownerID ? renderMenu : ""}
     </Card>
   );
 };

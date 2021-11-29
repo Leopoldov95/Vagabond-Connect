@@ -33,6 +33,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const FriendCard = (props: any) => {
   const classes = useStyles();
   const user = props.user;
+  const authUser = JSON.parse(localStorage.getItem("profile"));
 
   return (
     <Card className={classes.card}>
@@ -43,7 +44,12 @@ const FriendCard = (props: any) => {
         </Typography>
       </CardContent>
       <div className={classes.btnContainer}>
-        <Button style={{ marginBottom: 10 }} color="primary" variant="outlined">
+        <Button
+          style={{ marginBottom: 10 }}
+          color="primary"
+          variant="outlined"
+          disabled={!authUser}
+        >
           Follow
         </Button>
         <Button className={classes.btnProfile} variant="contained">
