@@ -5,10 +5,9 @@ import {
   Avatar,
   Typography,
   Divider,
-  Link,
   Paper,
 } from "@material-ui/core";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { lightGreen } from "@material-ui/core/colors";
 import countries from "../country/countries";
 import * as React from "react";
@@ -64,7 +63,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const LeftProfile = () => {
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
-  console.log(user);
+
   return (
     <Container className={classes.container}>
       <Paper>
@@ -117,17 +116,13 @@ const LeftProfile = () => {
           <React.Fragment>
             <Divider className={classes.divider} />
             <div className={classes.link}>
-              <RouterLink
+              <Link
                 to={`/profile/${user?._id}`}
                 className={classes.routerLink}
+                style={{ color: lightGreen[800] }}
               >
-                <Link
-                  style={{ color: lightGreen[900] }}
-                  onClick={(e) => e.preventDefault}
-                >
-                  View Profile
-                </Link>
-              </RouterLink>
+                View Profile
+              </Link>
             </div>
           </React.Fragment>
         )}

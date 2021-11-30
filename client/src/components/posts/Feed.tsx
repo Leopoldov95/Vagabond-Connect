@@ -14,7 +14,7 @@ const Feed = (props: any) => {
       )}
 
       {DUMMY_POSTS.map((post: any) => (
-        <Post post={post} />
+        <Post post={post} key={post?.title} />
       ))}
     </Container>
   );

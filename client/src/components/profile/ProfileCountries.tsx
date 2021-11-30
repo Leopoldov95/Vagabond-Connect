@@ -1,17 +1,15 @@
 import * as React from "react";
 import {
-  Container,
   Typography,
   makeStyles,
   Theme,
   Button,
   Tooltip,
-  IconButton,
   Paper,
 } from "@material-ui/core";
-import { Edit, Info, Delete, Close } from "@material-ui/icons";
-import countries from "../country/countries";
-import CountryList from "./countryList/CountryList";
+import { Edit, Info, Close } from "@material-ui/icons";
+//import countries from "../country/countries";
+import CountryList from "./CountryList";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     /* boxShadow:

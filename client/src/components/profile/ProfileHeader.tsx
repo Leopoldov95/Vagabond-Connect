@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import {
   Container,
   Grid,
@@ -10,7 +11,7 @@ import {
 import { lightGreen } from "@material-ui/core/colors";
 import { Edit, CameraAlt } from "@material-ui/icons";
 import ProfileImgHandler from "./ProfileImgHandler";
-const user = JSON.parse(localStorage.getItem("profile"))?.result;
+
 // Add an edit button for bio and avatar
 // for the background image, if we want to make it dynamic, have to to changes the css jsx
 const useStyles = makeStyles((theme: Theme) => ({
@@ -41,9 +42,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   backgroundImageContainer: {
     height: 450,
     overflow: "hidden",
-    background: `url(${
-      user ? user?.background_cloudinary : "/img/profile/default.jpg"
-    }) no-repeat center/cover`,
   },
   backgroundInputContainer: {
     display: "flex",
@@ -80,6 +78,18 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const ProfileHeader = () => {
+  const [user, setUser] = React.useState(
+    JSON.parse(localStorage.getItem("profile"))?.result
+  );
+  // This code serves to update the page in real time
+  const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
+    ?.result;
+  React.useEffect(() => {
+    if (API_USER) {
+      setUser(API_USER);
+    }
+  }, [API_USER]);
+
   const [profileDb, setProfileDb] = React.useState<any>({
     url: "",
     profile: "",
@@ -98,7 +108,14 @@ const ProfileHeader = () => {
     <div>
       <Grid container className={classes.container}>
         <Container className={classes.headerContainer}>
-          <div className={classes.backgroundImageContainer}>
+          <div
+            className={classes.backgroundImageContainer}
+            style={{
+              background: `url(${
+                user ? user?.background_cloudinary : "/img/profile/default.jpg"
+              }) no-repeat center/cover`,
+            }}
+          >
             <div className={classes.backgroundInputContainer}>
               <Button
                 startIcon={<Edit />}
@@ -116,44 +133,35 @@ const ProfileHeader = () => {
               >
                 Edit
               </Button>
-              {/*  <input
-                accept="image/*"
-                className={classes.input}
-                id="contained-button-file"
-                multiple
-                type="file"
-              />
-              <label htmlFor="contained-button-file">
-                <Button
-                  startIcon={<Edit />}
-                  variant="contained"
-                  component="span"
-                  className={classes.backgroundButton}
-                >
-                  Edit
-                </Button>
-              </label> */}
             </div>
           </div>
           <div className={classes.avatarContainer}>
-            <div>
-              <input
+            {/*        <div> */}
+            {/*  <input
                 accept="image/*"
                 className={classes.input}
                 id="icon-button-file"
                 type="file"
               />
-              <label htmlFor="icon-button-file">
-                <Button
-                  className={classes.avatarButton}
-                  aria-label="upload picture"
-                  component="span"
-                  variant="contained"
-                >
-                  <CameraAlt />
-                </Button>
-              </label>
-            </div>
+              <label htmlFor="icon-button-file"> */}
+            <Button
+              className={classes.avatarButton}
+              aria-label="upload picture"
+              component="span"
+              variant="contained"
+              onClick={() =>
+                openImgTool(
+                  user?.profile_cloudinary
+                    ? user?.profile_cloudinary
+                    : "/img/profile/default.jpg",
+                  "profile_cloudinary"
+                )
+              }
+            >
+              <CameraAlt />
+            </Button>
+            {/* </label> */}
+            {/*    </div> */}
 
             <Avatar
               alt="profile_pic"

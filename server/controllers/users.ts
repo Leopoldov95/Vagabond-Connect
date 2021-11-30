@@ -83,44 +83,33 @@ export const signup = async (req: Request, res: Response) => {
 };
 
 export const editProfileImg = async (req: any, res: Response) => {
-  /*   console.log(req.params);
-  console.log(req.body); */
-  // Make sure to send all user data here from client local storage!!
-  // utilize profile string
-  // from local sotrage user, get cloudImg and cloud_id,
-  // use cloud_id to delete from cloudinary
-  // upload new image to cloudinary
-  // then use findbyidandupdate
-  const { id: _id } = req.params;
-  const { profile, uploadedImg, user } = req.body;
-  //let testProfile = "profile_cloudinary";
-  /* console.log(profile);
-  console.log(user); */
-  if (!mongoose.Types.ObjectId.isValid(_id))
-    return res.status(404).json({ message: "No Valid User" });
+  try {
+    console.log("hello from edit api");
+    const { id: _id } = req.params;
+    const { profile, uploadedImg, user } = req.body;
 
-  //const user = await Users.findById(_id);
-  // check if user has a current background profile pic, if they do, must delete img from cloudinary, or perhaps store it here and delete later
-  // store existing id to variable in order to delete later, we only want to delete AFTER sucessfully updating existing image
-  const existingCloudinaryId = user[profile] ? user[`${profile}_id`] : null;
-  const cloudinaryImg = await uploadCloudinary(uploadedImg);
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).json({ message: "No Valid User" });
+    // check if user has a current background profile pic, if they do, must delete img from cloudinary, or perhaps store it here and delete later
+    // store existing id to variable in order to delete later, we only want to delete AFTER sucessfully updating existing image
+    const existingCloudinaryId = user[profile] ? user[`${profile}_id`] : null;
+    const cloudinaryImg = await uploadCloudinary(uploadedImg);
 
-  console.log(cloudinaryImg);
+    // create a temporary object to store new/existing properties in using thr profile
+    let propsToChange = {};
+    propsToChange[profile] = cloudinaryImg?.secure_url;
+    propsToChange[`${profile}_id`] = cloudinaryImg?.public_id;
+    const result = await Users.findByIdAndUpdate(
+      _id,
+      { $set: { ...propsToChange } },
+      { new: true }
+    );
 
-  let propsToChange = {};
-  propsToChange[profile] = cloudinaryImg?.secure_url;
-  propsToChange[`${profile}_id`] = cloudinaryImg?.public_id;
-  console.log(propsToChange);
-  const result = await Users.findByIdAndUpdate(
-    _id,
-    { $set: { ...propsToChange } },
-    { new: true }
-  );
+    // now that we made changes, delete previous image from db
+    await deleteCloudinaryImg(existingCloudinaryId);
 
-  // now that we made changes, delete previous image from db
-  await deleteCloudinaryImg(existingCloudinaryId);
-
-  // not necessary to return anything
-  // however if we want to update user info to the front end, we may want to change/update the localstate
-  res.json(result);
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
 };

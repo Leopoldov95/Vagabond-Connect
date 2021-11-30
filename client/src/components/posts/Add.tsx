@@ -135,7 +135,7 @@ const Add = () => {
         <div className={classes.cardContent}>
           <Avatar
             alt="post_owner_icon"
-            src={user ? user?.profilePic : "img/auth/default.jpeg"}
+            src={user ? user?.profile_cloudinary : "img/auth/default.jpeg"}
             style={{ marginRight: 10 }}
           />
           <Button

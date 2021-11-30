@@ -1,8 +1,15 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
+import { API_ERROR } from "../../constants/actionTypes";
 import Modal from "@material-ui/core/Modal";
-import { Divider, Paper, Typography, Button } from "@material-ui/core";
+import {
+  Divider,
+  Paper,
+  Typography,
+  Button,
+  CircularProgress,
+} from "@material-ui/core";
 import { ImageOutlined } from "@material-ui/icons";
 import { lightGreen } from "@material-ui/core/colors";
 import { editProfileImg } from "../../actions/users";
@@ -21,8 +28,26 @@ const useStyles = makeStyles((theme: Theme) =>
       alignItems: "center",
       justifyContent: "center",
     },
+    overlayLoader: {
+      position: "absolute",
+      height: "100%",
+      width: "100%",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+
+      "&::before": {
+        content: '""',
+        backgroundColor: "white",
+        opacity: 0.6,
+        height: "100%",
+        width: "100%",
+      },
+    },
     imgContainer: {
       width: "80%",
+      maxHeight: 200,
+      overflow: "hidden",
     },
     input: {
       display: "none",
@@ -43,20 +68,39 @@ const useStyles = makeStyles((theme: Theme) =>
     },
   })
 );
-export default function SimpleModal(props: any) {
+const ProfileImgHandler = (props: any) => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
-  console.log(user);
+  //console.log(authReducer?.authData);
   const [uploadedImg, setUploadedImg] = React.useState(null);
   const [clientError, setClientError] = React.useState(null);
+  const [loading, setLoading] = React.useState(false);
+  // this state will just track changes to the API user state
+  const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
+    ?.result;
+  const API_ERRORS = useSelector((state: any) => state.apiErrors);
+  React.useEffect(() => {
+    if (API_ERRORS) {
+      setLoading(false);
+      setTimeout(() => {
+        dispatch({ type: API_ERROR, payload: null });
+      }, 3000);
+    }
+  }, [API_ERRORS]);
   React.useEffect(() => {
     if (clientError) {
       setTimeout(() => {
         setClientError(null);
-      }, 2000);
+      }, 3000);
     }
   }, [clientError]);
+  // we will use this to close the img tool AFTER the changes have been made
+  React.useEffect(() => {
+    // just to be safe -- trigger it here - false
+    setLoading(false);
+    props.setOpen(false);
+  }, [API_USER]);
 
   const closeTool = () => {
     setUploadedImg(null);
@@ -73,15 +117,17 @@ export default function SimpleModal(props: any) {
     }
   };
 
-  const handleImgUpload = () => {
+  const handleImgUpload = async () => {
     if (!uploadedImg) {
       return setClientError("Please Select an Image!");
     }
+    // trigger api error here -- false
+    setLoading(true);
     const profile = props.profile.profile;
+
     // send the request to an action/api
     dispatch(editProfileImg({ uploadedImg, profile, user }));
-    // must send profile AND img base6 string AND user.email
-    // loading circle and close tool
+    //dispatch(editProfileImg({ testImg, profile, user }));
   };
   return (
     <Modal
@@ -103,7 +149,7 @@ export default function SimpleModal(props: any) {
         <div className={classes.imgContainer}>
           <img
             src={props?.profile?.url}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: "100%" }}
             alt={"current"}
           />
         </div>
@@ -111,7 +157,7 @@ export default function SimpleModal(props: any) {
         <div className={classes.imgContainer}>
           <img
             src={uploadedImg ? uploadedImg : "/img/profile/placeholder.png"}
-            style={{ width: "100%" }}
+            style={{ width: "100%", height: "100%" }}
             alt={"new"}
           />
         </div>
@@ -141,7 +187,13 @@ export default function SimpleModal(props: any) {
             {clientError}
           </Typography>
         )}
-
+        {API_ERRORS && (
+          <Typography
+            style={{ textAlign: "center", color: "red", marginTop: "8px" }}
+          >
+            {API_ERRORS}
+          </Typography>
+        )}
         <div className={classes.actionContainer}>
           <Button
             style={{ margin: 10 }}
@@ -160,7 +212,17 @@ export default function SimpleModal(props: any) {
             Cancel
           </Button>
         </div>
+        {loading && (
+          <div className={classes.overlayLoader}>
+            <CircularProgress
+              size={60}
+              style={{ position: "absolute", zIndex: 10 }}
+            />
+          </div>
+        )}
       </Paper>
     </Modal>
   );
-}
+};
+
+export default ProfileImgHandler;

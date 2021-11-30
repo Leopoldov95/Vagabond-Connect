@@ -185,7 +185,7 @@ const Navbar = () => {
       onClose={handleMenuClose}
     >
       {user && (
-        <Fragment>
+        <div>
           <MenuItem onClick={handleMenuClose}>
             <Link
               to={`/profile/${user?.result?._id}`}
@@ -204,7 +204,7 @@ const Navbar = () => {
               Settings
             </Link>
           </MenuItem>
-        </Fragment>
+        </div>
       )}
 
       {user ? (

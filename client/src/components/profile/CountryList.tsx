@@ -30,9 +30,8 @@ const CountryList = (props: any) => {
   // perhaps create a localized list here, then is saved, rewrite the top level state
   const [localCountries, setLocalCountries] = React.useState(props.countries);
   const [isEdit, setIsEdit] = React.useState(false);
-  console.log(localCountries);
   return (
-    <>
+    <React.Fragment>
       {localCountries.map((item: any) => (
         <div className={classes.itemContainer} key={item}>
           <div>
@@ -73,7 +72,7 @@ const CountryList = (props: any) => {
           </Button>
         </div>
       )}
-    </>
+    </React.Fragment>
   );
 };
 
