@@ -58,7 +58,7 @@ export const signup = async (req: Request, res: Response) => {
     let cloudinaryImg;
     const hashedPassword = await bcrypt.hash(password, 12);
     if (selectedFile) {
-      cloudinaryImg = await uploadCloudinary(selectedFile);
+      cloudinaryImg = await uploadCloudinary(selectedFile, "profiles");
     }
     console.log(cloudinaryImg);
     const result = await Users.create({
@@ -84,7 +84,6 @@ export const signup = async (req: Request, res: Response) => {
 
 export const editProfileImg = async (req: any, res: Response) => {
   try {
-    console.log("hello from edit api");
     const { id: _id } = req.params;
     const { profile, uploadedImg, user } = req.body;
 

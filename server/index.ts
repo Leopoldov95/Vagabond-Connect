@@ -4,6 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 //import logging from "./config/logging";
 import userRoutes from "./routes/users";
+import postsRoutes from "./routes/posts";
 //const NAMESPACE = "Server";
 //let CONNECTION_URL = process.env["CONNECTION_URL"];
 const app = express();
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
   res.send("Hello To Vaggabond Connect API");
 });
 app.use("/users", userRoutes);
+app.use("/posts", postsRoutes);
 
 const PORT = process.env.PORT || 5000;
 

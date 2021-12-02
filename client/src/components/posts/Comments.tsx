@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 const Comments = () => {
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const [comment, setComment] = React.useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -41,8 +42,8 @@ const Comments = () => {
   return (
     <div className={classes.writeComment}>
       <Avatar
-        alt="post_owner_icon"
-        src="https://melmagazine.com/wp-content/uploads/2021/01/66f-1.jpg"
+        alt="Comment_Avatar"
+        src={user.profile_cloudinary}
         style={{ marginRight: 10 }}
       />
       <InputBase

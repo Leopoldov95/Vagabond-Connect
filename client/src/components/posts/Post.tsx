@@ -68,8 +68,7 @@ const useStyles = makeStyles((theme) => ({
 const Post = (props: any) => {
   /* make sure to create a state to manage likes  */
   const user = JSON.parse(localStorage.getItem("profile"));
-  const post = props.post;
-  const creator = findOne(post.owner);
+  const post = props?.post;
   const classes = useStyles();
   const menuId = "post-settings";
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -87,6 +86,13 @@ const Post = (props: any) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
+    props.setOpen(true);
+  };
+  const handleEdit = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+    props.setEditPostId(post._id);
+    props.setOpen(true);
   };
   const renderMenu = (
     <Menu
@@ -98,7 +104,7 @@ const Post = (props: any) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={handleEdit}>
         <Edit className={classes.icon} />
         Edit
       </MenuItem>
@@ -116,8 +122,8 @@ const Post = (props: any) => {
           <div>
             <Avatar
               style={{ marginRight: 10 }}
-              alt="post_owner_icon"
-              src={creator?.profile}
+              alt="post_owner_avatar"
+              src={post?.ownerAvatar}
             />
           </div>
           <div>
@@ -128,10 +134,11 @@ const Post = (props: any) => {
                 justifyContent: "left",
               }}
             >
-              {creator?.firstName} {creator?.lastName}
+              {post.ownerName}
             </Typography>
             <Typography style={{ color: "#555", fontSize: 14 }}>
-              {/*  {new Date().toLocaleString("en-US")} */} {post.created}
+              {/*  {new Date().toLocaleString("en-US")} */}{" "}
+              {new Date(post.createdAt).toLocaleString()}
             </Typography>
           </div>
         </div>
@@ -146,7 +153,11 @@ const Post = (props: any) => {
         )}
       </div>
       {/*   <CardActionArea> */}
-      <CardMedia className={classes.media} title="travel" image={post.image} />
+      <CardMedia
+        className={classes.media}
+        title="travel"
+        image={post.cloudinary_url}
+      />
       <CardContent>
         <Typography gutterBottom variant="h5">
           {post.title}
@@ -155,9 +166,7 @@ const Post = (props: any) => {
           <img
             style={{ width: 30, marginRight: 10 }}
             alt={countries[post.country].name}
-            src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${countries[
-              post.country
-            ].code.toLowerCase()}.svg`}
+            src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${post.country.toLowerCase()}.svg`}
           />
           {`${countries[post.country].name}, ${
             countries[post.country].continent

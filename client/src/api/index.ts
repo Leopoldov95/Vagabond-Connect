@@ -16,13 +16,18 @@ API.interceptors.request.use((req: any) => {
   return req;
 });
 
+// auth/user routes
 export const signup = (formData: any) => API.post("/users/signup", formData);
 export const signin = (formData: any) => API.post("/users/signin", formData);
 export const editProfileImg = (data: any) =>
   API.patch(`/users/${data?.user?._id}/profileImg`, data);
-/* export const fetchCart = (email) => API.post("/cart", email);
-export const postCart = (email, item) =>
-  API.post("/cart/items", { email, item });
-export const signin = (formData) => API.post("/user/signin", formData); // we are using a POST request for the signin as we are sending data  to the database
-export const signup = (formData) => API.post("/user/signup", formData);
- */
+
+// posts routes
+export const fetchPosts = () => API.get("/posts");
+export const createPost = (newPost: any) => API.post("/posts", newPost);
+export const updatePost = (id: any, updatedPost: any) =>
+  API.patch(`/posts/${id}`, updatedPost);
+export const deletePost = (id: any) => API.delete(`/posts/${id}`);
+//export const likePost = (id: any) => API.patch(`/posts/${id}/likePost`);
+
+// comments routes

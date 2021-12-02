@@ -1,4 +1,4 @@
-- install "react-file-base64" to handle image data
+
 - if post belongs to user. add triple dot to add delete function or edit
 - see how to handle likes 
 - make sure that the post component is dynamic, will only show what is needed based if feed or Profile
@@ -28,3 +28,12 @@
 - handle empty/no profile pic
 
 - may want to change jwt name as well as localstorage name ('profile') is too generic
+- later on, may want to test profile image upload tool
+
+- For user edit, may not need to pass user props for id, get value from params instead (user.userId)
+
+- 12/1/21 - To do
+- make sure ALL pictures get sent to cloudinary folders /posts /profiles /backgrounds
+- make sure post can be editted
+- make sure to update all posts ownerAvatar when post owner changes profile picture
+- change architect of country Navbar, no state for component, only use props and set props

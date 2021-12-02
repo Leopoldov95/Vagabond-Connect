@@ -16,30 +16,34 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const CountryNav = (props: any) => {
   const classes = useStyles();
-  const [country, setCountry] = React.useState({
+  /*   const [country, setCountry] = React.useState({
     name: "United States",
     code: "US",
     continent: "North America",
-  });
+  }); */
 
-  React.useEffect(() => {
+  /*   React.useEffect(() => {
     if (props?.handleCallback) {
       return props?.handleCallback(country);
     }
-  }, [country]);
+  }, [country]); */
 
   const handleChange = (event: React.ChangeEvent<{ value: any }>) => {
-    setCountry({
+    props.setFormData({
+      ...props.formData,
+      country: countries[event.target.value].code,
+    });
+    /*  setCountry({
       name: countries[event.target.value].name,
       code: countries[event.target.value].code,
       continent: countries[event.target.value].continent,
-    });
+    }); */
   };
   return (
     <FormControl variant="outlined" className={classes.formControl} fullWidth>
       <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
       <Select
-        value={country.code}
+        value={props.formData.country}
         onChange={handleChange}
         label="Country"
         autoWidth
