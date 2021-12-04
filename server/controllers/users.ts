@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
+const { updatePostAvatar } = require("./helper");
 
 export const signin = async (req, res) => {
   // need two things from the fronted - email and password
@@ -92,7 +93,10 @@ export const editProfileImg = async (req: any, res: Response) => {
     // check if user has a current background profile pic, if they do, must delete img from cloudinary, or perhaps store it here and delete later
     // store existing id to variable in order to delete later, we only want to delete AFTER sucessfully updating existing image
     const existingCloudinaryId = user[profile] ? user[`${profile}_id`] : null;
-    const cloudinaryImg = await uploadCloudinary(uploadedImg);
+    const cloudinaryImg = await uploadCloudinary(
+      uploadedImg,
+      profile.split("_")[0]
+    );
 
     // create a temporary object to store new/existing properties in using thr profile
     let propsToChange = {};
@@ -103,6 +107,9 @@ export const editProfileImg = async (req: any, res: Response) => {
       { $set: { ...propsToChange } },
       { new: true }
     );
+    if (profile === "profile_cloudinary") {
+      await updatePostAvatar(req?.userId, cloudinaryImg?.secure_url);
+    }
 
     // now that we made changes, delete previous image from db
     await deleteCloudinaryImg(existingCloudinaryId);

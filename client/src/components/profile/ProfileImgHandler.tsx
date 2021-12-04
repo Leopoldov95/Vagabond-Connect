@@ -13,6 +13,7 @@ import {
 import { ImageOutlined } from "@material-ui/icons";
 import { lightGreen } from "@material-ui/core/colors";
 import { editProfileImg } from "../../actions/users";
+
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     container: {
@@ -77,6 +78,7 @@ const ProfileImgHandler = (props: any) => {
   const [clientError, setClientError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   // this state will just track changes to the API user state
+  const allPosts = useSelector((state: any) => state.postsReducer); // will need to pass this to update posts avatar
   const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
     ?.result;
   const API_ERRORS = useSelector((state: any) => state.apiErrors);
@@ -95,6 +97,9 @@ const ProfileImgHandler = (props: any) => {
       }, 3000);
     }
   }, [clientError]);
+
+  // Test
+
   // we will use this to close the img tool AFTER the changes have been made
   React.useEffect(() => {
     // just to be safe -- trigger it here - false
@@ -127,6 +132,11 @@ const ProfileImgHandler = (props: any) => {
 
     // send the request to an action/api
     dispatch(editProfileImg({ uploadedImg, profile, user }));
+    if (profile === "profile_cloudinary") {
+      // run update all post avatar here
+      // dispatch(editPostAvatar(userId, posts))
+      // dispatch(editPostAvatar(user._id, posts))
+    }
     //dispatch(editProfileImg({ testImg, profile, user }));
   };
   return (

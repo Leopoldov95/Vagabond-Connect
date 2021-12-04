@@ -4,6 +4,7 @@ import {
   FETCH_USER_POSTS,
   CREATE_POST,
   EDIT_POST,
+  EDIT_POST_AVATAR,
   DELETE_POST,
 } from "../constants/actionTypes";
 

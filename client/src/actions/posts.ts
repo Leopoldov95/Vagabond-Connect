@@ -1,6 +1,7 @@
 // posts actions
 import {
   EDIT_POST,
+  EDIT_POST_AVATAR,
   CREATE_POST,
   DELETE_POST,
   FETCH_ALL_POSTS,
@@ -30,11 +31,12 @@ export const createPost = (post: any) => async (dispatch: any) => {
   }
 };
 
-export const updatePost = (id: any, post: any) => async (dispatch: any) => {
+export const updatePost = (id: any, postData: any) => async (dispatch: any) => {
   try {
     // using { data } destructures the res
-    const { data } = await api.updatePost(id, post);
-    dispatch({ type: EDIT_POST, payload: data });
+    const { data } = await api.updatePost(id, postData);
+
+    //dispatch({ type: EDIT_POST, payload: data });
   } catch (error) {
     console.log(error);
   }

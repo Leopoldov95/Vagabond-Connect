@@ -19,7 +19,7 @@ import { ImageOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
 import { lightGreen, blueGrey } from "@material-ui/core/colors";
 // API actions
-import { createPost } from "../../actions/posts";
+import { createPost, updatePost } from "../../actions/posts";
 
 interface Props {
   children: any;
@@ -69,7 +69,7 @@ const useStyles = makeStyles((theme) => ({
   upload: {
     display: "flex",
     alignItems: "center",
-    marginTop: theme.spacing(2),
+    margin: "1rem 0",
   },
   imgButton: {
     backgroundColor: lightGreen[600],
@@ -94,7 +94,7 @@ const Add = (props: any) => {
       ? state.postsReducer.find((p) => p._id === props.editPostId)
       : null
   );
-
+  //console.log(post);
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   // const [open, setOpen] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
@@ -105,7 +105,7 @@ const Add = (props: any) => {
       setFormData({
         title: post.title,
         description: post.description,
-        selectedFile: null,
+        selectedFile: post.cloudinary_url,
         country: post.country,
         commentAccess: post.commentAccess,
       });
@@ -165,7 +165,28 @@ const Add = (props: any) => {
     const isErrors = await onSubmitValidation();
     if (Object.keys(isErrors).length < 1) {
       // create similar action as editing user, add loading bar and close tool on completion
-      dispatch(createPost(formData));
+      ///////////////////////////////////
+      // Better approach to adding user data to the post information,
+      // Get info from here! Then sent to server, will make mass profile avatar change easier as well
+      // when user updates profile picture, run a seperate action/reducer that updates all users posts avatar and get data from user local storage
+      if (props.editPostId) {
+        console.log(formData);
+        dispatch(
+          updatePost(props.editPostId, {
+            ...formData,
+            cloudinary_id: post.cloudinary_id,
+          })
+        );
+        return console.log("You want to make changes to an existing post");
+      }
+      dispatch(
+        createPost({
+          ...formData,
+          profile_cloudinary: user?.profile_cloudinary,
+          firstName: user?.firstName,
+          lastName: user?.lastName,
+        })
+      );
       console.log("You want to submit a form");
     }
   };
@@ -207,38 +228,38 @@ const Add = (props: any) => {
                 error={Boolean(errors?.description)}
                 helperText={errors?.description}
               ></TextField>
-              <div className={classes.upload}>
-                <input
-                  accept="image/*"
-                  className={classes.input}
-                  id="contained-button-file"
-                  multiple
-                  type="file"
-                  onChange={handleCapture}
-                />
-                <label htmlFor="contained-button-file">
-                  <Button
-                    variant="contained"
-                    startIcon={<ImageOutlined />}
-                    className={classes.imgButton}
-                    component="span"
-                  >
-                    Upload
-                  </Button>
-                </label>
-                {errors?.selectedFile && (
-                  <Typography style={{ margin: 10, color: "red" }}>
-                    {errors?.selectedFile}
-                  </Typography>
-                )}
-                {formData.selectedFile ? (
-                  <Typography component="span" style={{ marginLeft: 10 }}>
-                    {new Date().toLocaleString()}
-                  </Typography>
-                ) : (
-                  ""
-                )}
-              </div>
+            </div>
+            <div className={classes.upload}>
+              <input
+                accept="image/*"
+                className={classes.input}
+                id="contained-button-file"
+                multiple
+                type="file"
+                onChange={handleCapture}
+              />
+              <label htmlFor="contained-button-file">
+                <Button
+                  variant="contained"
+                  startIcon={<ImageOutlined />}
+                  className={classes.imgButton}
+                  component="span"
+                >
+                  Upload
+                </Button>
+              </label>
+              {errors?.selectedFile && (
+                <Typography style={{ margin: 10, color: "red" }}>
+                  {errors?.selectedFile}
+                </Typography>
+              )}
+              {formData.selectedFile ? (
+                <Typography component="span" style={{ marginLeft: 10 }}>
+                  Image Selected!
+                </Typography>
+              ) : (
+                ""
+              )}
             </div>
             <div className={classes.item}>
               <CountryNav

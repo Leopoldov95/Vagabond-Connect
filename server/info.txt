@@ -19,5 +19,4 @@
    -- Post Comments
       -- Comment ID
 
-// issues
-- 11/26 - mongoDB not savinf cloudinary public_id
+-- handle updating post images on the backend

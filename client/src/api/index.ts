@@ -27,6 +27,7 @@ export const fetchPosts = () => API.get("/posts");
 export const createPost = (newPost: any) => API.post("/posts", newPost);
 export const updatePost = (id: any, updatedPost: any) =>
   API.patch(`/posts/${id}`, updatedPost);
+
 export const deletePost = (id: any) => API.delete(`/posts/${id}`);
 //export const likePost = (id: any) => API.patch(`/posts/${id}/likePost`);
 
