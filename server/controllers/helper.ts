@@ -1,11 +1,17 @@
-import mongoose from "mongoose";
-
-import Users from "../models/users";
 import Posts from "../models/posts";
 
+// This functions updates all posts from the owner whenever they make changes to their profile
 export const updatePostAvatar = async (id: any, imgURL: any) => {
   try {
-    const allPosts: any = Posts.find();
-    const userPosts = allPosts.toObject().filter((post) => post.ownerId === id);
-  } catch (error) {}
+    await Posts.updateMany(
+      { ownerId: id },
+      {
+        $set: {
+          ownerAvatar: imgURL,
+        },
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
 };

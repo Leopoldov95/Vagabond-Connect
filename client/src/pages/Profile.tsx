@@ -1,11 +1,12 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileBio from "../components/profile/ProfileBio";
 import ProfileCountries from "../components/profile/ProfileCountries";
 import Feed from "../components/posts/Feed";
 import { Grid, makeStyles, Theme, Typography } from "@material-ui/core";
-
+import { getUserPosts } from "../actions/posts";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     maxWidth: 1280,
@@ -17,12 +18,16 @@ const useStyles = makeStyles((theme: Theme) => ({
 // Only allow someone to view this page if a user is looged in, else we want to redirect to auth page
 const Profile = () => {
   const history = useHistory();
+  const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   React.useEffect(() => {
     if (!user) {
       history.push("/auth");
     }
   }, []);
+  React.useEffect(() => {
+    dispatch(getUserPosts(user?._id));
+  }, [dispatch]);
   const classes = useStyles();
   return user ? (
     <div>

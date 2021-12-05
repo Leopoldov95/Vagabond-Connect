@@ -26,6 +26,7 @@ const initialState = {
   email: "",
   password: "",
   confirmPassword: "",
+  country: "US",
   selectedFile: null,
 };
 const useStyles = makeStyles((theme) => ({
@@ -151,12 +152,12 @@ const SignUp = (props: any) => {
 
   // Handle IMG upload, only use IF/AFTER form validation has been completed
 
-  const handleCallback = (data) => {
+  /*   const handleCallback = (data) => {
     setFormData({
       ...formData,
       country: data?.code,
     });
-  };
+  }; */
   // note that must also have server side validation is case email alrady exists or if user credentials are wrong
   // Main Form Submission
   const handleSubmit = async (e: any) => {
@@ -215,7 +216,7 @@ const SignUp = (props: any) => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <CountryNav handleCallback={handleCallback} />
+                  <CountryNav formData={formData} setFormData={setFormData} />
                 </Grid>
               </Fragment>
             )}

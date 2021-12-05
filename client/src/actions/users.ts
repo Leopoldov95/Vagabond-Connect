@@ -69,6 +69,21 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
     }
   }
 };
+
+export const editUserDetails = (formData: any) => async (dispatch: any) => {
+  try {
+    console.log("you want to make changes to the user account!!!");
+    //console.log(formData);
+    const { data } = await API.editUserDetails(formData);
+    dispatch({ type: EDIT_USER, data });
+  } catch (error: any) {
+    if (error?.response?.data?.message) {
+      dispatch({ type: API_ERROR, payload: error?.response?.data?.message });
+    } else {
+      dispatch({ type: API_ERROR, payload: "Something Went Wrong..." });
+    }
+  }
+};
 /* 
 export const signup = async (formData: any, history: any) => {
   try {

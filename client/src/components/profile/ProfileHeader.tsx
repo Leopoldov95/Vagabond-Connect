@@ -112,7 +112,9 @@ const ProfileHeader = () => {
             className={classes.backgroundImageContainer}
             style={{
               background: `url(${
-                user ? user?.background_cloudinary : "/img/profile/default.jpg"
+                user && user?.background_cloudinary
+                  ? user?.background_cloudinary
+                  : "/img/profile/default.jpg"
               }) no-repeat center/cover`,
             }}
           >

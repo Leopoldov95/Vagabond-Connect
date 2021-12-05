@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   country: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
+  privacy: { type: String, default: "everyone", required: true },
   profile_cloudinary: { type: String },
   profile_cloudinary_id: { type: String },
   background_cloudinary: { type: String },

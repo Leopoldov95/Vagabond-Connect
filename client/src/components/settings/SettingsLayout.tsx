@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
 import {
   Typography,
   Theme,
@@ -10,11 +11,13 @@ import {
   MenuItem,
   IconButton,
   Button,
+  TextField,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
-import { Edit, Warning } from "@material-ui/icons";
+import { Edit, Warning, Close } from "@material-ui/icons";
 import CountryNav from "../country/countryNav";
-
+import Delete from "./Delete";
+import { editUserDetails } from "../../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(10),
@@ -51,12 +54,90 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 const SettingsLayout = () => {
+  const dispatch = useDispatch();
   const classes = useStyles();
-  const [privacy, setPrivacy] = React.useState("everyone");
-
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setPrivacy(event.target.value as string);
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const [settingsData, setSettingsData] = React.useState({
+    firstName: user?.firstName,
+    lastName: user?.lastName,
+    email: user?.email,
+    country: user?.country,
+    privacy: "everyone",
+  });
+  const [toggleEdit, setToggleEdit] = React.useState({
+    name: false,
+    email: false,
+  });
+  const [errors, setErrors] = React.useState<any>({});
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (errors?.message) {
+      setTimeout(() => {
+        setErrors({});
+      }, 3000);
+    }
+  }, [errors?.message]);
+  /*   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    setSettingsData({
+      ...settingsData,
+      privacy: event.target.value as string,
+    });
   };
+ */
+  const handleChange = (e?: any) => {
+    if (errors) {
+      setErrors({});
+    }
+    setSettingsData({ ...settingsData, [e.target.name]: e.target.value });
+  };
+
+  const checkChanges = () => {
+    for (let data in settingsData) {
+      //console.log(user[data]);
+      if (settingsData[data] !== user[data]) {
+        return;
+      }
+    }
+    return { message: "No changes have been made!" };
+  };
+  // have client side validation
+  const onSubmitValidation = () => {
+    const changeValidation = checkChanges();
+    if (changeValidation) {
+      setErrors({ ...errors, ...changeValidation });
+      return false;
+    } else {
+      const regex = new RegExp(/.+@.+\..+/);
+      const allErrors: any = {};
+      if (settingsData.firstName.length < 1) {
+        allErrors.firstName = "Must Enter First Name";
+      }
+      if (settingsData.lastName.length < 1) {
+        allErrors.lastName = "Must Enter Last Name";
+      }
+      if (!regex.test(settingsData.email)) {
+        allErrors.email = "Must Enter Valid Email";
+      }
+      setErrors({ ...errors, ...allErrors });
+      if (Object.keys(allErrors).length >= 1) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  // have save button disabled unless changes have been made
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    const isValid = onSubmitValidation();
+    console.log(isValid);
+    if (isValid) {
+      dispatch(editUserDetails(settingsData));
+    }
+  };
+
+  // if user want to delete account, will open popup and require password as well as warning that all posts will be delted
+  // as a reference, store all followers as userIds and use length property
   return (
     <Container className={classes.container}>
       <Typography className={classes.header} variant="h3">
@@ -68,9 +149,62 @@ const SettingsLayout = () => {
           <li className={classes.settingItem}>
             <Typography>Name</Typography>
             <div className={classes.edit}>
-              <Typography>Giga Chad</Typography>
-              <IconButton>
-                <Edit />
+              {toggleEdit.name ? (
+                <React.Fragment>
+                  <TextField
+                    required
+                    fullWidth
+                    id="firstName"
+                    label="First Name"
+                    name="firstName"
+                    value={settingsData.firstName}
+                    onChange={handleChange}
+                    autoComplete="off"
+                    error={Boolean(errors?.firstName)}
+                    helperText={errors?.lastName}
+                    style={{ marginRight: 10 }}
+                  />
+                  <TextField
+                    required
+                    fullWidth
+                    id="lastName"
+                    label="Last Name"
+                    name="lastName"
+                    value={settingsData.lastName}
+                    onChange={handleChange}
+                    autoComplete="off"
+                    error={Boolean(errors?.lastName)}
+                    helperText={errors?.lastName}
+                  />
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  {errors?.firstName && (
+                    <Typography
+                      color="secondary"
+                      variant="body2"
+                      style={{ marginRight: 10 }}
+                    >
+                      {errors?.firstName}{" "}
+                    </Typography>
+                  )}
+                  <Typography>
+                    {settingsData.firstName} {settingsData.lastName}
+                  </Typography>
+                  {errors?.lastName && (
+                    <Typography color="secondary" variant="body2">
+                      {errors?.lastName}{" "}
+                    </Typography>
+                  )}
+                </React.Fragment>
+              )}
+
+              <IconButton
+                onClick={() =>
+                  setToggleEdit({ ...toggleEdit, name: !toggleEdit.name })
+                }
+              >
+                {toggleEdit.name ? <Close /> : <Edit />}
               </IconButton>
             </div>
           </li>
@@ -78,9 +212,33 @@ const SettingsLayout = () => {
           <li className={classes.settingItem}>
             <Typography>Email</Typography>
             <div className={classes.edit}>
-              <Typography>testUser@gmail.com</Typography>
-              <IconButton>
-                <Edit />
+              {toggleEdit.email ? (
+                <TextField
+                  required
+                  fullWidth
+                  id="email"
+                  label="Email Address"
+                  name="email"
+                  value={settingsData.email}
+                  onChange={handleChange}
+                  autoComplete="off"
+                  error={Boolean(errors?.email)}
+                  helperText={errors?.email}
+                />
+              ) : errors?.email ? (
+                <Typography color="secondary" variant="body2">
+                  {errors.email}
+                </Typography>
+              ) : (
+                <Typography>{settingsData.email}</Typography>
+              )}
+
+              <IconButton
+                onClick={() =>
+                  setToggleEdit({ ...toggleEdit, email: !toggleEdit.email })
+                }
+              >
+                {toggleEdit.email ? <Close /> : <Edit />}
               </IconButton>
             </div>
           </li>
@@ -88,7 +246,10 @@ const SettingsLayout = () => {
           <li className={classes.settingItem}>
             <Typography>Country</Typography>
             <div>
-              <CountryNav />
+              <CountryNav
+                formData={settingsData}
+                setFormData={setSettingsData}
+              />
             </div>
           </li>
           <Divider style={{ backgroundColor: lightGreen[100] }} />
@@ -96,9 +257,8 @@ const SettingsLayout = () => {
             <Typography>Who can see my profile?</Typography>
             <FormControl className={classes.formControl}>
               <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={privacy}
+                name="privacy"
+                value={settingsData.privacy}
                 onChange={handleChange}
               >
                 <MenuItem value={"everyone"}>Everyone</MenuItem>
@@ -109,8 +269,19 @@ const SettingsLayout = () => {
           <Divider style={{ backgroundColor: lightGreen[50] }} />
         </ul>
       </div>
+      {errors?.message && (
+        <Typography color="secondary" align="center">
+          {errors?.message}
+        </Typography>
+      )}
       <div className={classes.actionContainer}>
-        <Button style={{ margin: 10 }} variant="outlined" color="primary">
+        <Button
+          style={{ margin: 10 }}
+          variant="outlined"
+          color="primary"
+          disabled={toggleEdit.email || toggleEdit.name}
+          onClick={handleSubmit}
+        >
           Save
         </Button>
         <Button style={{ margin: 10 }} variant="outlined" color="secondary">
@@ -121,10 +292,12 @@ const SettingsLayout = () => {
           className={classes.btnDelete}
           variant="contained"
           startIcon={<Warning />}
+          onClick={() => setOpen(true)}
         >
           Delete Account
         </Button>
       </div>
+      <Delete open={open} setOpen={setOpen} />
     </Container>
   );
 };

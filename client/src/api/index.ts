@@ -19,6 +19,7 @@ API.interceptors.request.use((req: any) => {
 // auth/user routes
 export const signup = (formData: any) => API.post("/users/signup", formData);
 export const signin = (formData: any) => API.post("/users/signin", formData);
+export const editUserDetails = (formData: any) => API.post("/users", formData);
 export const editProfileImg = (data: any) =>
   API.patch(`/users/${data?.user?._id}/profileImg`, data);
 

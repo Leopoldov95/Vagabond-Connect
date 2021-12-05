@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 // POST.ownerId === user._id
 const Post = (props: any) => {
   /* make sure to create a state to manage likes  */
-  const user = JSON.parse(localStorage.getItem("profile"));
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const post = props?.post;
   const classes = useStyles();
   const menuId = "post-settings";
@@ -77,6 +77,7 @@ const Post = (props: any) => {
   const [showComments, setShowComments] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -86,7 +87,7 @@ const Post = (props: any) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    props.setOpen(true);
+    // props.setOpen(true);
   };
   const handleEdit = () => {
     setAnchorEl(null);
@@ -142,7 +143,7 @@ const Post = (props: any) => {
             </Typography>
           </div>
         </div>
-        {user && user._id === post?.ownerID ? (
+        {user && user._id === post?.ownerId ? (
           <div>
             <IconButton aria-label="settings" onClick={handleProfileMenuOpen}>
               <MoreVert />
@@ -197,7 +198,7 @@ const Post = (props: any) => {
         post.comments.map((comment: any) => <SubComments comment={comment} />)}
       {user && <Comments />}
 
-      {user && user._id === post?.ownerID ? renderMenu : ""}
+      {user && user._id === post?.ownerId ? renderMenu : ""}
     </Card>
   );
 };

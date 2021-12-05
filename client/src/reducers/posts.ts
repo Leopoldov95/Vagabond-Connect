@@ -4,7 +4,6 @@ import {
   FETCH_USER_POSTS,
   CREATE_POST,
   EDIT_POST,
-  EDIT_POST_AVATAR,
   DELETE_POST,
 } from "../constants/actionTypes";
 
@@ -22,7 +21,6 @@ const postsReducer = (posts: any = [], action: any) => {
     case FETCH_ALL_POSTS:
       return action.payload;
     case FETCH_USER_POSTS:
-      console.log("Reducer file: You want to get only User posts");
       return action.payload;
     case CREATE_POST:
       return [...posts, action.payload];

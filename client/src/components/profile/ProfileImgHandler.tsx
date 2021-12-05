@@ -132,11 +132,7 @@ const ProfileImgHandler = (props: any) => {
 
     // send the request to an action/api
     dispatch(editProfileImg({ uploadedImg, profile, user }));
-    if (profile === "profile_cloudinary") {
-      // run update all post avatar here
-      // dispatch(editPostAvatar(userId, posts))
-      // dispatch(editPostAvatar(user._id, posts))
-    }
+
     //dispatch(editProfileImg({ testImg, profile, user }));
   };
   return (

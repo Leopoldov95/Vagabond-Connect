@@ -1,10 +1,12 @@
 // This will be the main index file to display the main application
 // so have the sidebar and navbar componetns here and based on state, change whether to show home feed or account settings
-
+import * as React from "react";
+import { useDispatch } from "react-redux";
 import LeftProfile from "../components/home/LeftProfile";
 import Feed from "../components/posts/Feed";
 import Rightbar from "../components/home/Rightbar";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
+import { getAllPosts } from "../actions/posts";
 const useStyles = makeStyles((theme: Theme) => ({
   right: {
     [theme.breakpoints.down("sm")]: {
@@ -18,6 +20,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const Main = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  /*   React.useEffect(() => {
+    dispatch(getAllPosts());
+  }, [editPostId, dispatch]); */
+  React.useEffect(() => {
+    dispatch(getAllPosts());
+  }, [dispatch]);
   return (
     <div className="Main">
       <Grid container className={classes.container}>

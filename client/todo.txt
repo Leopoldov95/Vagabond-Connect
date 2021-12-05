@@ -33,7 +33,8 @@
 - For user edit, may not need to pass user props for id, get value from params instead (user.userId)
 
 - 12/1/21 - To do
-
+- create loading for post creation and edit
+- allow users to view other users profile
 - make sure ALL pictures get sent to cloudinary folders /posts /profiles /backgrounds
 - make sure post can be editted
 - make sure to update all posts ownerAvatar when post owner changes profile picture

@@ -87,7 +87,7 @@ export const editProfileImg = async (req: any, res: Response) => {
   try {
     const { id: _id } = req.params;
     const { profile, uploadedImg, user } = req.body;
-
+    console.log(req?.userId);
     if (!mongoose.Types.ObjectId.isValid(_id))
       return res.status(404).json({ message: "No Valid User" });
     // check if user has a current background profile pic, if they do, must delete img from cloudinary, or perhaps store it here and delete later
@@ -107,6 +107,7 @@ export const editProfileImg = async (req: any, res: Response) => {
       { $set: { ...propsToChange } },
       { new: true }
     );
+
     if (profile === "profile_cloudinary") {
       await updatePostAvatar(req?.userId, cloudinaryImg?.secure_url);
     }
@@ -114,6 +115,28 @@ export const editProfileImg = async (req: any, res: Response) => {
     // now that we made changes, delete previous image from db
     await deleteCloudinaryImg(existingCloudinaryId);
 
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
+
+export const editUserDetails = async (req: any, res: Response) => {
+  const data = req.body;
+  const { email } = data;
+  const _id = req?.userId;
+  try {
+    const existingUser = await Users.findOne({ email }); // look for an existing user by using the email
+
+    if (!existingUser)
+      return res.status(404).json({ message: "User does not exist." });
+    const result = await Users.findByIdAndUpdate(
+      _id,
+      { $set: { ...data } },
+      { new: true }
+    );
+
+    // need to update the state and store new info to client
     res.json(result);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong." });

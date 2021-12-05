@@ -1,7 +1,6 @@
 // posts actions
 import {
   EDIT_POST,
-  EDIT_POST_AVATAR,
   CREATE_POST,
   DELETE_POST,
   FETCH_ALL_POSTS,
@@ -20,12 +19,22 @@ export const getAllPosts = () => async (dispatch: any) => {
     console.log(error);
   }
 };
+export const getUserPosts = (id: any) => async (dispatch: any) => {
+  try {
+    const { data }: any = await api.fetchPosts();
+    const userPosts = data.filter((post: any) => post?.ownerId === id);
+    //console.log(userPosts);
+    dispatch({ type: FETCH_USER_POSTS, payload: userPosts });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 export const createPost = (post: any) => async (dispatch: any) => {
   try {
     const { data } = await api.createPost(post);
     console.log(data);
-    //dispatch({ type: CREATE_POST, payload: data });
+    dispatch({ type: CREATE_POST, payload: data });
   } catch (error) {
     console.log(error);
   }
