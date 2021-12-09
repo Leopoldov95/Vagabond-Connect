@@ -116,24 +116,24 @@ export const updatePost = async (req: any, res: Response) => {
 };
 
 // we will update the posts owner avatar AFTER the user updates their own profile picture
-export const updatePostAvatar = async (req: Request, res: Response) => {
+
+// delete post, since we are removing, no need to send data back to the client
+export const deletePost = async (req: Request, res: Response) => {
   try {
-    // the problem with drawing from the client post state is that as soon as the page is refreshed, it will reset the posts state
-    const posts = req.body;
-    console.log(req.body);
-    //const postOwner = Users.findById(req.body[0].ownerId);
-    //console.log(postOwner);
-    // from the client, we will need the posts stored in the state as well as the user info
-    // we will need to filter out the posts to only get posts that belong to the user
-    // MAKE CHANGES TO THE POSTS THAT ARE RETRIEVED FROM THE CLIENT, that way it is earier to transfer the changes to the db
-    // Then use updateMany to apply changes to all documents that require it
-    // return result to client
+    const { id } = req.params;
+    // checks if id is valid
+    if (!mongoose.Types.ObjectId.isValid(id))
+      return res.status(404).send("No post with that ID");
+
+    await Posts.findByIdAndRemove(id);
+
+    console.log("DELETE REACHED");
+
+    res.json({ message: "Post Deleted Successfully" });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: "Something went wrong" });
   }
 };
-// delete post
-
 // add like
 
 // comments

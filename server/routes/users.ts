@@ -5,12 +5,18 @@ import {
   signin,
   editProfileImg,
   editUserDetails,
+  fetchSingleUser,
+  fetchAllUsers,
+  followUser,
 } from "../controllers/users";
 import auth from "../middleware/auth";
 const router = express.Router();
 
 //router.post("/signin", signin);
 router.post("/", auth, editUserDetails);
+router.get("/:id/:action/:skip", fetchAllUsers);
+router.post("/follow/:id", auth, followUser);
+router.post("/single", fetchSingleUser);
 router.post("/signup", signup);
 router.post("/signin", signin);
 router.patch("/:id/profileImg", auth, editProfileImg);

@@ -13,18 +13,21 @@ import * as api from "../api";
 // instead of using return, have to use dispatch
 export const getAllPosts = () => async (dispatch: any) => {
   try {
-    const { data } = await api.fetchPosts();
+    const { data }: any = await api.fetchPosts();
     dispatch({ type: FETCH_ALL_POSTS, payload: data });
   } catch (error) {
     console.log(error);
   }
 };
+
+// may want to handle filter on the server
 export const getUserPosts = (id: any) => async (dispatch: any) => {
   try {
     const { data }: any = await api.fetchPosts();
     const userPosts = data.filter((post: any) => post?.ownerId === id);
-    //console.log(userPosts);
-    dispatch({ type: FETCH_USER_POSTS, payload: userPosts });
+    userPosts.length !== 0
+      ? dispatch({ type: FETCH_USER_POSTS, payload: userPosts })
+      : dispatch({ type: FETCH_USER_POSTS, payload: "empty" });
   } catch (error) {
     console.log(error);
   }
@@ -45,7 +48,7 @@ export const updatePost = (id: any, postData: any) => async (dispatch: any) => {
     // using { data } destructures the res
     const { data } = await api.updatePost(id, postData);
 
-    //dispatch({ type: EDIT_POST, payload: data });
+    dispatch({ type: EDIT_POST, payload: data });
   } catch (error) {
     console.log(error);
   }

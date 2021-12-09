@@ -1,12 +1,13 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileBio from "../components/profile/ProfileBio";
 import ProfileCountries from "../components/profile/ProfileCountries";
 import Feed from "../components/posts/Feed";
-import { Grid, makeStyles, Theme, Typography } from "@material-ui/core";
+import { Grid, makeStyles, Theme } from "@material-ui/core";
 import { getUserPosts } from "../actions/posts";
+import { getSingleUser } from "../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     maxWidth: 1280,
@@ -16,20 +17,31 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 // Only allow someone to view this page if a user is looged in, else we want to redirect to auth page
+// DO NOT NEED TO CREATE ADD COMPNENT FOR OTHER USERS, ONLY LOGGED IN USER
 const Profile = () => {
+  // need to overhual this page, need params from url, THEN find a user (may want to use a reducer...), maybe compare current user to url params so no api call needed, from ther users we need (background, profile, country, bio, _id(to fetch their posts), both country lists)
+  // will need to take privacy into consideration
   const history = useHistory();
   const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const { id }: any = useParams(); // retrieves user_id from url params
+  //const userProfile = useSelector((state: any) => state.singleUser);
+  //const user = JSON.parse(localStorage.getItem("profile"))?.result;
   React.useEffect(() => {
-    if (!user) {
-      history.push("/auth");
+    if (id.length !== 24) {
+      history.push("/");
     }
-  }, []);
-  React.useEffect(() => {
-    dispatch(getUserPosts(user?._id));
+    // get the user here
+    dispatch(getSingleUser(id));
+    dispatch(getUserPosts(id));
   }, [dispatch]);
+
+  /*   React.useEffect(() => {
+    dispatch(getUserPosts(id));
+  }, []); */
   const classes = useStyles();
-  return user ? (
+  //console.log("pofile page");
+
+  return (
     <div>
       <ProfileHeader />
       <ProfileBio />
@@ -42,12 +54,7 @@ const Profile = () => {
         </Grid>
       </Grid>
     </div>
-  ) : (
-    <div>
-      <Typography>
-        Please Create an Account to See the Profile Page...
-      </Typography>
-    </div>
   );
 };
+
 export default Profile;

@@ -5,6 +5,7 @@ import {
   AUTH,
   LOGOUT,
   API_ERROR,
+  FETCH_ALL_USER,
 } from "../constants/actionTypes";
 
 // Note that EDIT_User can be used in all instances in which a logged in user makes modifications to their profile
@@ -21,6 +22,7 @@ export const userAuthReducer = (state = { authData: null }, action: any) => {
         result: { ...action?.data },
         token: token,
       };
+
       // go here Upon a successful proifle edit
       // we want to keep the local token, and overwrite the current localstorage and authData
       localStorage.setItem("profile", JSON.stringify({ ...newData }));
@@ -33,6 +35,27 @@ export const userAuthReducer = (state = { authData: null }, action: any) => {
     default:
       return state;
       break;
+  }
+};
+
+// which user to display on profile page
+export const userInfoReducer = (user: any = [], action: any) => {
+  switch (action.type) {
+    case FETCH_USER:
+      return action?.payload;
+    default:
+      return user;
+  }
+};
+
+// gets all users to show in friends page and profile page
+// when fetching from profile page, may only want to retrieve following and followers
+export const allUsersReducer = (users: any = [], action: any) => {
+  switch (action.type) {
+    case FETCH_ALL_USER:
+      return action?.payload;
+    default:
+      return users;
   }
 };
 

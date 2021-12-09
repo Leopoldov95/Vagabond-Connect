@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useSelector } from "react-redux";
 import {
   Typography,
   makeStyles,
@@ -43,17 +44,13 @@ const useStyles = makeStyles((theme: Theme) => ({
 ///// IMPORTANT //////
 // use this component to handle master state changes
 const ProfileCountries = () => {
-  const [favorite, setFavorite] = React.useState([
-    "GB",
-    "US",
-    "TH",
-    "JP",
-    "NZ",
-  ]);
-  const [visited, setVisited] = React.useState([...favorite, "KP", "RU", "ES"]);
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const userProfile = useSelector((state: any) => state.singleUser);
+  const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
+  const [favorite, setFavorite] = React.useState([]);
+  const [visited, setVisited] = React.useState(["KP", "RU", "ES"]);
   const [isFavoriteEdit, setIsFavoriteEdit] = React.useState(false);
   const [isVisitedEdit, setIsVisitedEdit] = React.useState(false);
-
   const handleFavoritEdit = () => {
     setIsFavoriteEdit(!isFavoriteEdit);
   };
@@ -72,14 +69,17 @@ const ProfileCountries = () => {
               <Info style={{ marginLeft: 10, color: "999" }} fontSize="small" />
             </Tooltip>
           </div>
-
-          <Button
-            variant="contained"
-            className={classes.editButton}
-            onClick={handleFavoritEdit}
-          >
-            {isFavoriteEdit ? <Close /> : <Edit />}
-          </Button>
+          {user && user._id === displayUser?._id ? (
+            <Button
+              variant="contained"
+              className={classes.editButton}
+              onClick={handleFavoritEdit}
+            >
+              {isFavoriteEdit ? <Close /> : <Edit />}
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
         <div className={classes.listContainer}>
           <ul>
@@ -95,13 +95,17 @@ const ProfileCountries = () => {
       <div>
         <div className={classes.header}>
           <Typography variant="h5">Countries I've Visited</Typography>
-          <Button
-            variant="contained"
-            className={classes.editButton}
-            onClick={handleVisitedEdit}
-          >
-            <Edit />
-          </Button>
+          {user && user._id === displayUser?._id ? (
+            <Button
+              variant="contained"
+              className={classes.editButton}
+              onClick={handleVisitedEdit}
+            >
+              <Edit />
+            </Button>
+          ) : (
+            ""
+          )}
         </div>
         <div className={classes.listContainer}>
           <ul>

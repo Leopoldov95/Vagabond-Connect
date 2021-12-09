@@ -4,7 +4,7 @@ import {
   createPost,
   getAllPosts,
   updatePost,
-  updatePostAvatar,
+  deletePost,
 } from "../controllers/posts";
 import auth from "../middleware/auth";
 const router = express.Router();
@@ -13,6 +13,6 @@ const router = express.Router();
 router.get("/", getAllPosts);
 router.post("/", auth, createPost);
 router.patch("/:id", auth, updatePost);
-router.post("/avatar", auth, updatePostAvatar);
+router.delete("/:id", auth, deletePost);
 
 export default router;

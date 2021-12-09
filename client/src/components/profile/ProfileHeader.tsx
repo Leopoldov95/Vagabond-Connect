@@ -84,6 +84,8 @@ const ProfileHeader = () => {
   // This code serves to update the page in real time
   const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
     ?.result;
+  const userProfile = useSelector((state: any) => state.singleUser);
+  const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
   React.useEffect(() => {
     if (API_USER) {
       setUser(API_USER);
@@ -112,29 +114,33 @@ const ProfileHeader = () => {
             className={classes.backgroundImageContainer}
             style={{
               background: `url(${
-                user && user?.background_cloudinary
-                  ? user?.background_cloudinary
+                displayUser?.background_cloudinary
+                  ? displayUser?.background_cloudinary
                   : "/img/profile/default.jpg"
               }) no-repeat center/cover`,
             }}
           >
             <div className={classes.backgroundInputContainer}>
-              <Button
-                startIcon={<Edit />}
-                variant="contained"
-                component="span"
-                className={classes.backgroundButton}
-                onClick={() =>
-                  openImgTool(
-                    user?.background_cloudinary
-                      ? user?.background_cloudinary
-                      : "/img/profile/default.jpg",
-                    "background_cloudinary"
-                  )
-                }
-              >
-                Edit
-              </Button>
+              {user && user?._id === displayUser?._id ? (
+                <Button
+                  startIcon={<Edit />}
+                  variant="contained"
+                  component="span"
+                  className={classes.backgroundButton}
+                  onClick={() =>
+                    openImgTool(
+                      user?.background_cloudinary
+                        ? user?.background_cloudinary
+                        : "/img/profile/default.jpg",
+                      "background_cloudinary"
+                    )
+                  }
+                >
+                  Edit
+                </Button>
+              ) : (
+                ""
+              )}
             </div>
           </div>
           <div className={classes.avatarContainer}>
@@ -146,29 +152,34 @@ const ProfileHeader = () => {
                 type="file"
               />
               <label htmlFor="icon-button-file"> */}
-            <Button
-              className={classes.avatarButton}
-              aria-label="upload picture"
-              component="span"
-              variant="contained"
-              onClick={() =>
-                openImgTool(
-                  user?.profile_cloudinary
-                    ? user?.profile_cloudinary
-                    : "/img/profile/default.jpg",
-                  "profile_cloudinary"
-                )
-              }
-            >
-              <CameraAlt />
-            </Button>
+            {user && user?._id === displayUser?._id ? (
+              <Button
+                className={classes.avatarButton}
+                aria-label="upload picture"
+                component="span"
+                variant="contained"
+                onClick={() =>
+                  openImgTool(
+                    user?.profile_cloudinary
+                      ? user?.profile_cloudinary
+                      : "/img/profile/default.jpg",
+                    "profile_cloudinary"
+                  )
+                }
+              >
+                <CameraAlt />
+              </Button>
+            ) : (
+              ""
+            )}
+
             {/* </label> */}
             {/*    </div> */}
 
             <Avatar
               alt="profile_pic"
               className={classes.avatar}
-              src={user?.profile_cloudinary}
+              src={displayUser?.profile_cloudinary}
             />
           </div>
         </Container>

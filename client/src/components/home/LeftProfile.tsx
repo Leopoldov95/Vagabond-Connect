@@ -99,7 +99,7 @@ const LeftProfile = () => {
             Following
           </Typography>
           <Typography gutterBottom variant="h6">
-            {user ? user?.followers?.length : 0}
+            {user ? user?.following?.length : 0}
           </Typography>
         </div>
         <Divider className={classes.divider} />

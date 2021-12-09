@@ -1,6 +1,7 @@
 import {
   EDIT_USER,
   FETCH_USER,
+  FETCH_ALL_USER,
   DELETE_USER,
   AUTH,
   API_ERROR,
@@ -38,7 +39,6 @@ export const signup =
   };
 export const editProfileImg = (formData: any) => async (dispatch: any) => {
   try {
-    console.log("hello from action page");
     // remember to use an AUTH middleware in this process,
     // may want to return back user AUTH profile, also to reset JWT token
     // delete existing img by using cloud id
@@ -46,18 +46,6 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
 
     // may want to host default default bg image for ALL users and use it during creation process
     const { data } = await API.editProfileImg(formData);
-    /////////////////////////////////////////////
-    ////// TESTING ///////////////////////////////
-    // send data here, in this case, only send user data and img url
-    // make changes to user object, then send to reducer
-
-    /* const { user, profile, testImg } = formData;
-    user[profile] = testImg;
-    const data = user;
-    //console.log(data);
-    //dispatch({ type: EDIT_USER, data });
-    console.log("hello from action page");
-    setTimeout(() => { */
     dispatch({ type: EDIT_USER, data });
 
     // may need to change location to reflect change in real time
@@ -72,7 +60,6 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
 
 export const editUserDetails = (formData: any) => async (dispatch: any) => {
   try {
-    console.log("you want to make changes to the user account!!!");
     //console.log(formData);
     const { data } = await API.editUserDetails(formData);
     dispatch({ type: EDIT_USER, data });
@@ -84,21 +71,44 @@ export const editUserDetails = (formData: any) => async (dispatch: any) => {
     }
   }
 };
-/* 
-export const signup = async (formData: any, history: any) => {
+
+export const getSingleUser = (id: any) => async (dispatch: any) => {
   try {
-    const data = await API.signup(formData);
-    console.log(data);
-
-    //localStorage.setItem("userProfile", JSON.stringify(data));
-
-    //history.push("/");
+    const { data } = await API.fetchSingleUser({ id });
+    dispatch({ type: FETCH_USER, payload: data });
   } catch (error) {
-    console.error(error);
-    /*  if (error.response && error.response.data) {
-       // alert(error.response.data.message) // some reason error message
-       return  error.response.data.message;
-      } */
-/*   }
+    console.log(error);
+  }
 };
- */
+
+export const getAllUsers =
+  (id: any = 0, action: any = "find", skip: any = 0) =>
+  async (dispatch: any) => {
+    try {
+      // console.log(id, action, skip);
+      const { data } = await API.fetchAllUsers(id, action, skip);
+      //console.log(data);
+      dispatch({ type: FETCH_ALL_USER, payload: data });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+// follow a user
+// for now, no permission is required
+// if we want privacy, there must be a value on the sender/user that shows sent requests, and a value on the receiever that shows pending requests
+
+export const followUser = (id: any) => async (dispatch: any) => {
+  try {
+    // so we want to follow a user - need params
+    console.log(id);
+    const { data } = await API.followUser(id);
+    dispatch({ type: EDIT_USER, data });
+    // users following must be updated - for updating, we will push the _id onto the array
+    // receivers followers must be updated - for updating, we will push the _id onto the array
+    // will need auth middleware
+    // need to updated the current authenticated user reducer
+  } catch (error) {
+    console.log(error);
+  }
+};

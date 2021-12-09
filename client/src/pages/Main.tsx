@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import LeftProfile from "../components/home/LeftProfile";
 import Feed from "../components/posts/Feed";
 import Rightbar from "../components/home/Rightbar";
+import PostsToggle from "../components/home/PostsToggle";
 import { makeStyles, Grid, Theme } from "@material-ui/core";
 import { getAllPosts } from "../actions/posts";
 const useStyles = makeStyles((theme: Theme) => ({
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Main = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   /*   React.useEffect(() => {
     dispatch(getAllPosts());
   }, [editPostId, dispatch]); */
@@ -34,6 +36,7 @@ const Main = () => {
           <LeftProfile />
         </Grid>
         <Grid item sm={7} xs={10}>
+          {user && <PostsToggle />}
           <Feed />
         </Grid>
         <Grid item sm={3} className={classes.right}>

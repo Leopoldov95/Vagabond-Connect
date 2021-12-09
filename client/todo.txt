@@ -11,13 +11,6 @@
 - when clicking mail or notification on navbar, show overlay menu
 
 
--- WHAT NEEDS TO BE REDUXED---
-- is user signed in?
-- user data and info
-- creating new post
-- deleting post
-- editing post
-
 -- Handling Country List --
 - CHANGED COUNTRY LIST TO OBJECT AND USING KEYS AS IDENTIFIERS, REDO ALL AVOUNTRY INPUTS
 - favorite/visited country list is to be stored on users database
@@ -33,10 +26,16 @@
 - For user edit, may not need to pass user props for id, get value from params instead (user.userId)
 
 - 12/1/21 - To do
-- create loading for post creation and edit
-- allow users to view other users profile
-- make sure ALL pictures get sent to cloudinary folders /posts /profiles /backgrounds
-- make sure post can be editted
-- make sure to update all posts ownerAvatar when post owner changes profile picture
+- strange issue when guest is retrieving users
+- When updating a post, either by patch or put, must provide params, better practive
+- on profile page, add follwers, following, and follow
+- might want pop up when unfollowing a user
 - change architect of country Navbar, no state for component, only use props and set props
 - create snackbar for the following actions: user login, user sign up, post creation, post edit, post deletion
+- on profile leftbar AND profile page, may want to show followers and follwing, also show a follow button if a user is not yet following. ALSO if profile user has privacy set to private, hide unless user is a follower
+- On main home page, may want to have filter to show ALL posts or just following posts
+- For fetching users posts for their profile page, handle filter logic on the backend
+- fix profile link from navbar
+- fix render issue when showing guest users
+- will want to set a 10mb limit on upload pictures
+** Later on, create a univeral style sheet that contains classes that gt used across multiple pages and compnents (such as buttons)

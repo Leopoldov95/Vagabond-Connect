@@ -14,10 +14,11 @@ import {
   Radio,
   FormLabel,
   Snackbar,
+  CircularProgress,
 } from "@material-ui/core";
 import { ImageOutlined } from "@material-ui/icons";
 import MuiAlert from "@material-ui/lab/Alert";
-import { lightGreen, blueGrey } from "@material-ui/core/colors";
+import { lightGreen } from "@material-ui/core/colors";
 // API actions
 import { createPost, updatePost } from "../../actions/posts";
 
@@ -78,6 +79,24 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: lightGreen[500],
     },
   },
+  overlayLoader: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+    "&::before": {
+      content: '""',
+      backgroundColor: "white",
+      opacity: 0.6,
+      height: "100%",
+      width: "100%",
+    },
+  },
 }));
 const initialState = {
   title: "",
@@ -86,7 +105,7 @@ const initialState = {
   country: "US",
   commentAccess: "Everyone",
 };
-const Add = (props: any) => {
+const PostForm = (props: any) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const post = useSelector((state: any) =>
@@ -94,9 +113,11 @@ const Add = (props: any) => {
       ? state.postsReducer.find((p) => p._id === props.editPostId)
       : null
   );
+  const postsReducer = useSelector((state: any) => state.postsReducer);
   //console.log(post);
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   // const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
   const [formData, setFormData] = React.useState<any>(initialState);
   const [errors, setErrors] = React.useState<any>({});
@@ -110,7 +131,12 @@ const Add = (props: any) => {
         commentAccess: post.commentAccess,
       });
   }, [post, props.open]);
-
+  React.useEffect(() => {
+    setLoading(false);
+    props.setOpen(false);
+    setFormData(initialState);
+    props.setEditPostId(null);
+  }, [postsReducer]);
   const handleClose = (event?: any, reason?: any) => {
     if (reason === "clickaway") {
       return;
@@ -129,12 +155,16 @@ const Add = (props: any) => {
   };
   // handle img file
   const handleCapture = ({ target }: any) => {
-    //setFormData({ ...formData, selectedFile: target.files[0] });
-    const reader = new FileReader();
-    reader.readAsDataURL(target.files[0]);
-    reader.onloadend = () => {
-      setFormData({ ...formData, selectedFile: reader.result });
-    };
+    if (target.files.length > 0) {
+      //setFormData({ ...formData, selectedFile: target.files[0] });
+      const reader = new FileReader();
+      reader.readAsDataURL(target.files[0]);
+      reader.onloadend = () => {
+        setFormData({ ...formData, selectedFile: reader.result });
+      };
+    } else {
+      setFormData({ ...formData, selectedFile: null });
+    }
   };
   const onSubmitValidation = () => {
     const allErrors: any = {};
@@ -162,32 +192,39 @@ const Add = (props: any) => {
   const handleSubmit = async (e: any) => {
     // setOpenAlert(true) -- ned this at some point
     e.preventDefault();
-    const isErrors = await onSubmitValidation();
-    if (Object.keys(isErrors).length < 1) {
-      // create similar action as editing user, add loading bar and close tool on completion
-      ///////////////////////////////////
-      // Better approach to adding user data to the post information,
-      // Get info from here! Then sent to server, will make mass profile avatar change easier as well
-      // when user updates profile picture, run a seperate action/reducer that updates all users posts avatar and get data from user local storage
-      if (props.editPostId) {
-        console.log(formData);
+
+    try {
+      const isErrors = await onSubmitValidation();
+      if (Object.keys(isErrors).length < 1) {
+        setLoading(true);
+        // create similar action as editing user, add loading bar and close tool on completion
+        ///////////////////////////////////
+        // Better approach to adding user data to the post information,
+        // Get info from here! Then sent to server, will make mass profile avatar change easier as well
+        // when user updates profile picture, run a seperate action/reducer that updates all users posts avatar and get data from user local storage
+        if (props.editPostId) {
+          console.log(formData);
+          dispatch(
+            updatePost(props.editPostId, {
+              ...formData,
+              cloudinary_id: post.cloudinary_id,
+            })
+          );
+          return console.log("You want to make changes to an existing post");
+        }
         dispatch(
-          updatePost(props.editPostId, {
+          createPost({
             ...formData,
-            cloudinary_id: post.cloudinary_id,
+            profile_cloudinary: user?.profile_cloudinary,
+            firstName: user?.firstName,
+            lastName: user?.lastName,
           })
         );
-        return console.log("You want to make changes to an existing post");
+        console.log("You want to submit a form");
       }
-      dispatch(
-        createPost({
-          ...formData,
-          profile_cloudinary: user?.profile_cloudinary,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-        })
-      );
-      console.log("You want to submit a form");
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
     }
   };
 
@@ -311,6 +348,14 @@ const Add = (props: any) => {
               </Button>
             </div>
           </form>
+          {loading && (
+            <div className={classes.overlayLoader}>
+              <CircularProgress
+                size={60}
+                style={{ position: "absolute", zIndex: 10 }}
+              />
+            </div>
+          )}
         </Container>
       </Modal>
       <Snackbar
@@ -327,4 +372,4 @@ const Add = (props: any) => {
   );
 };
 
-export default Add;
+export default PostForm;

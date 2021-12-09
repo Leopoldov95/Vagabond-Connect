@@ -1,4 +1,6 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
+import { deletePost } from "../../actions/posts";
 import countries from "../country/countries";
 import {
   makeStyles,
@@ -66,6 +68,7 @@ const useStyles = makeStyles((theme) => ({
 // MAKE SURE TO HAVE POST CREATOR ID
 // POST.ownerId === user._id
 const Post = (props: any) => {
+  const dispatch = useDispatch();
   /* make sure to create a state to manage likes  */
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const post = props?.post;
@@ -89,6 +92,12 @@ const Post = (props: any) => {
     handleMobileMenuClose();
     // props.setOpen(true);
   };
+  const handleDelete = () => {
+    // console.log(post._id);
+    dispatch(deletePost(post._id));
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
   const handleEdit = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
@@ -109,7 +118,7 @@ const Post = (props: any) => {
         <Edit className={classes.icon} />
         Edit
       </MenuItem>
-      <MenuItem style={{ color: "red" }} onClick={handleMenuClose}>
+      <MenuItem style={{ color: "red" }} onClick={handleDelete}>
         <Delete className={classes.icon} />
         Delete
       </MenuItem>

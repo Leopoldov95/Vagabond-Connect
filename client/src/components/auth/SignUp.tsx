@@ -8,6 +8,7 @@ import {
   Grid,
   Typography,
   Container,
+  CircularProgress,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -31,6 +32,7 @@ const initialState = {
 };
 const useStyles = makeStyles((theme) => ({
   container: {
+    position: "relative",
     backgroundColor: "white",
     padding: theme.spacing(2),
   },
@@ -69,6 +71,24 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: lightGreen[500],
     },
   },
+  overlayLoader: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+    "&::before": {
+      content: '""',
+      backgroundColor: "white",
+      opacity: 0.6,
+      height: "100%",
+      width: "100%",
+    },
+  },
 }));
 
 const SignUp = (props: any) => {
@@ -76,6 +96,7 @@ const SignUp = (props: any) => {
   const history = useHistory();
   const [isSignUp, setIsSignUp] = React.useState(false);
   const [formData, setFormData] = React.useState<any>(initialState);
+  const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<any>({});
   const API_ERRORS = useSelector((state: any) => state.apiErrors);
 
@@ -84,6 +105,7 @@ const SignUp = (props: any) => {
   // if there is an auth error, make sure to clear it
   React.useEffect(() => {
     if (API_ERRORS) {
+      setLoading(false);
       setTimeout(() => {
         dispatch({ type: API_ERROR, payload: null });
       }, 2000);
@@ -98,11 +120,16 @@ const SignUp = (props: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
   const handleCapture = ({ target }: any) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(target.files[0]);
-    reader.onloadend = () => {
-      setFormData({ ...formData, selectedFile: reader.result });
-    };
+    //console.log(target);
+    if (target?.files.length > 0) {
+      const reader = new FileReader();
+      reader.readAsDataURL(target.files[0]);
+      reader.onloadend = () => {
+        setFormData({ ...formData, selectedFile: reader.result });
+      };
+    } else {
+      setFormData({ ...formData, selectedFile: null });
+    }
   };
 
   // login validarion
@@ -151,13 +178,6 @@ const SignUp = (props: any) => {
   };
 
   // Handle IMG upload, only use IF/AFTER form validation has been completed
-
-  /*   const handleCallback = (data) => {
-    setFormData({
-      ...formData,
-      country: data?.code,
-    });
-  }; */
   // note that must also have server side validation is case email alrady exists or if user credentials are wrong
   // Main Form Submission
   const handleSubmit = async (e: any) => {
@@ -166,6 +186,7 @@ const SignUp = (props: any) => {
       ? await onSubmitValidation()
       : await onLoginValidation();
     if (Object.keys(isErrors).length < 1) {
+      setLoading(true);
       isSignUp
         ? dispatch(signup(formData, history))
         : dispatch(signin(formData, history));
@@ -296,7 +317,7 @@ const SignUp = (props: any) => {
                         Image Selected!
                       </Typography> */}
                       <Typography component="span" style={{ marginLeft: 10 }}>
-                        {new Date().toLocaleString()}
+                        Image Selected!
                       </Typography>
                     </Fragment>
                   ) : (
@@ -330,12 +351,22 @@ const SignUp = (props: any) => {
                 variant="body2"
                 className={classes.link}
               >
-                New User? Create An Account
+                {isSignUp
+                  ? "Already Have An Account?"
+                  : "New User? Create An Account"}
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
+      {loading && (
+        <div className={classes.overlayLoader}>
+          <CircularProgress
+            size={60}
+            style={{ position: "absolute", zIndex: 10 }}
+          />
+        </div>
+      )}
     </Container>
   );
 };
