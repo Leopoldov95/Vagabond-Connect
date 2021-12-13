@@ -1,8 +1,8 @@
 import * as React from "react";
 import { makeStyles, IconButton, Button, Theme } from "@material-ui/core";
-import { Edit, Delete } from "@material-ui/icons";
-import countries from "../country/countries";
-import CountryMenu from "../country/countryNav";
+import { Edit, Delete, Add } from "@material-ui/icons";
+import countries from "../../country/countries";
+import CountryNav from "../../country/countryNav";
 const useStyles = makeStyles((theme: Theme) => ({
   itemContainer: {
     display: "flex",
@@ -14,6 +14,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     fontSize: 18,
+  },
+  countryAction: {
+    display: "flex",
   },
 }));
 
@@ -28,7 +31,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 const CountryList = (props: any) => {
   const classes = useStyles();
   // perhaps create a localized list here, then is saved, rewrite the top level state
-  const [localCountries, setLocalCountries] = React.useState(props.countries);
+  const [formData, setFormData] = React.useState({
+    country: "US",
+  });
+  const [localCountries, setLocalCountries] = React.useState(props.countries); // this is needed so we can make chnges to the local level
   const [isEdit, setIsEdit] = React.useState(false);
   return (
     <React.Fragment>
@@ -59,18 +65,27 @@ const CountryList = (props: any) => {
         </div>
       ))}
       {props.isEdit && (
-        <div>
-          <Button
-            variant="outlined"
-            color="primary"
-            style={{ marginRight: 20 }}
-          >
-            Save
-          </Button>
-          <Button variant="outlined" color="secondary">
-            Cancel
-          </Button>
-        </div>
+        <React.Fragment>
+          <div className={classes.countryAction}>
+            <CountryNav formData={formData} setFormData={setFormData} />
+            <Button variant="outlined" color="primary">
+              <Add />
+            </Button>
+          </div>
+
+          <div>
+            <Button
+              variant="outlined"
+              color="primary"
+              style={{ marginRight: 20 }}
+            >
+              Save
+            </Button>
+            <Button variant="outlined" color="secondary">
+              Cancel
+            </Button>
+          </div>
+        </React.Fragment>
       )}
     </React.Fragment>
   );

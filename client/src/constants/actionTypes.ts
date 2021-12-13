@@ -15,6 +15,7 @@ export const FETCH_ALL_USER = "FETCH_ALL_USER"; // get all users, ONLY get {prof
 export const CREATE_COMMENT = "CREATE_COMMENT"; // create a comment, user MUST be logged in
 export const DELETE_COMMENT = "DELETE_COMMENT"; // delete a comment, user MUST be logged in and can ONLY delete their own comment
 export const EDIT_COMMENT = "EDIT_COMMENT"; // edit a comment, user MUST be logged in and can ONLY edit their own comment
+export const FETCH_COMMENT_USER = "FETCH_COMMENT_USER"; // this will be used to fetch the user profile img for the comments
 // Auth
 export const LOGOUT = "LOGOUT"; // logout, user MUST be logged in
 export const AUTH = "AUTH"; // check authentication

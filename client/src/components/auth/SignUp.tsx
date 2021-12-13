@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import * as React from "react";
 import { API_ERROR } from "../../constants/actionTypes";
 import {
   Avatar,
@@ -91,7 +91,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignUp = (props: any) => {
+const SignUp = () => {
   const classes = useStyles();
   const history = useHistory();
   const [isSignUp, setIsSignUp] = React.useState(false);
@@ -205,7 +205,7 @@ const SignUp = (props: any) => {
         <form className={classes.form} noValidate>
           <Grid container spacing={2}>
             {isSignUp && (
-              <Fragment>
+              <React.Fragment>
                 <Grid item xs={12} sm={6}>
                   <TextField
                     autoComplete="fname"
@@ -239,7 +239,7 @@ const SignUp = (props: any) => {
                 <Grid item xs={12}>
                   <CountryNav formData={formData} setFormData={setFormData} />
                 </Grid>
-              </Fragment>
+              </React.Fragment>
             )}
             <Grid item xs={12}>
               <TextField
@@ -273,7 +273,7 @@ const SignUp = (props: any) => {
               />
             </Grid>
             {isSignUp && (
-              <Fragment>
+              <React.Fragment>
                 <Grid item xs={12}>
                   <TextField
                     variant="outlined"
@@ -312,19 +312,19 @@ const SignUp = (props: any) => {
                     </Button>
                   </label>
                   {formData.selectedFile ? (
-                    <Fragment>
+                    <React.Fragment>
                       {/* <Typography component="span" style={{ marginLeft: 10 }}>
                         Image Selected!
                       </Typography> */}
                       <Typography component="span" style={{ marginLeft: 10 }}>
                         Image Selected!
                       </Typography>
-                    </Fragment>
+                    </React.Fragment>
                   ) : (
                     ""
                   )}
                 </div>
-              </Fragment>
+              </React.Fragment>
             )}
           </Grid>
           {API_ERRORS && (

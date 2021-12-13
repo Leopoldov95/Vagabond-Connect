@@ -29,8 +29,8 @@ export const signin = async (req, res) => {
     // the 'test' string here is the secret key for the token
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id },
-      "test",
-      { expiresIn: "1h" }
+      "vagabondtoken",
+      { expiresIn: "3h" }
     );
     res.status(200).json({ result: existingUser, token });
   } catch (error) {
@@ -72,9 +72,13 @@ export const signup = async (req: Request, res: Response) => {
     });
 
     // generate a jwt toke so that the user will be logged in immediatley after registering
-    const token = jwt.sign({ email: result.email, id: result._id }, "test", {
-      expiresIn: "1h",
-    });
+    const token = jwt.sign(
+      { email: result.email, id: result._id },
+      "vagabondtoken",
+      {
+        expiresIn: "3h",
+      }
+    );
     res.status(200).json({ result: result, token });
     //res.status(200).json({ message: "User Created!" });
   } catch (error) {
@@ -292,9 +296,26 @@ export const followUser = async (req: any, res: Response) => {
 
     // we will update the users following array and return the result
     const result */
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
 };
+export const fetchUserCommentInfo = async (req: Request, res: Response) => {
+  try {
+    const { id: _id } = req.params;
+    // chacking of id is valid
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("No post with that ID");
+    const { profile_cloudinary, firstName, lastName } = await Users.findById(
+      _id
+    );
+    // keep in mind that not all users will have a profile picture
 
+    res.json({ profile_cloudinary, firstName, lastName });
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
 /* 
 export const likePost = async (req, res) => {
   const { id } = req.params;

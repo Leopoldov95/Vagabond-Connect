@@ -121,6 +121,7 @@ const PostForm = (props: any) => {
   const [openAlert, setOpenAlert] = React.useState(false);
   const [formData, setFormData] = React.useState<any>(initialState);
   const [errors, setErrors] = React.useState<any>({});
+  // this is to "set" this component to editing form
   React.useEffect(() => {
     if (post)
       setFormData({
@@ -131,6 +132,7 @@ const PostForm = (props: any) => {
         commentAccess: post.commentAccess,
       });
   }, [post, props.open]);
+  // This is automatically close the component when a post os created or editted
   React.useEffect(() => {
     setLoading(false);
     props.setOpen(false);

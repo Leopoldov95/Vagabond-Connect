@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import countries from "./countries";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import { InputLabel, MenuItem, FormControl, Select } from "@material-ui/core";
@@ -16,28 +16,11 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const CountryNav = (props: any) => {
   const classes = useStyles();
-  /*   const [country, setCountry] = React.useState({
-    name: "United States",
-    code: "US",
-    continent: "North America",
-  }); */
-
-  /*   React.useEffect(() => {
-    if (props?.handleCallback) {
-      return props?.handleCallback(country);
-    }
-  }, [country]); */
-
   const handleChange = (event: React.ChangeEvent<{ value: any }>) => {
     props.setFormData({
       ...props.formData,
       country: countries[event.target.value].code,
     });
-    /*  setCountry({
-      name: countries[event.target.value].name,
-      code: countries[event.target.value].code,
-      continent: countries[event.target.value].continent,
-    }); */
   };
   return (
     <FormControl variant="outlined" className={classes.formControl} fullWidth>

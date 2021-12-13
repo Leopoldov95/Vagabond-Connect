@@ -1,3 +1,6 @@
+//// COMMENTS MUST DISPLAY NAME!
+import * as React from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Menu,
   MenuItem,
@@ -7,10 +10,9 @@ import {
   makeStyles,
   IconButton,
 } from "@material-ui/core";
-import * as React from "react";
-import { findOne } from "../../testData/helper";
 import { blueGrey } from "@material-ui/core/colors";
 import { MoreHoriz, Edit, Delete } from "@material-ui/icons";
+import { deleteComment } from "../../../actions/posts";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -32,16 +34,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const SubComments = (props: any) => {
+const SubComments = ({ comment, postId, setEditComment, setCommentId }) => {
+  //console.log(comment);
+  // use props.commentOwnerId to fetch user profile
   const classes = useStyles();
-  const creator = findOne(props.comment.owner);
+  const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  //const [commentAvatar, setCommentAvatar] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const [showComments, setShowComments] = React.useState(false);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const userCommentInfo = useSelector((state: any) => state.commentUser);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -49,6 +55,19 @@ const SubComments = (props: any) => {
     setMobileMoreAnchorEl(null);
   };
   const handleMenuClose = () => {
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleDelete = () => {
+    dispatch(deleteComment(postId, comment._id));
+    setAnchorEl(null);
+    handleMobileMenuClose();
+  };
+
+  const handleEdit = () => {
+    setCommentId(comment._id);
+    setEditComment(comment.message);
     setAnchorEl(null);
     handleMobileMenuClose();
   };
@@ -62,11 +81,11 @@ const SubComments = (props: any) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleMenuClose}>
+      <MenuItem onClick={handleEdit}>
         <Edit style={{ marginRight: 8 }} />
         Edit
       </MenuItem>
-      <MenuItem style={{ color: "red" }} onClick={handleMenuClose}>
+      <MenuItem style={{ color: "red" }} onClick={handleDelete}>
         <Delete style={{ marginRight: 8 }} />
         Delete
       </MenuItem>
@@ -76,18 +95,19 @@ const SubComments = (props: any) => {
     <div className={classes.container}>
       <Avatar
         alt="comment_icon"
-        src={creator?.profile}
+        src={userCommentInfo.get(comment.commentOwnerId)?.profile_cloudinary}
         className={classes.avatar}
       />
       <div className={classes.comment}>
-        <Typography style={{ fontWeight: 500 }}>
-          {creator?.firstName} {creator?.lastName}
+        <Typography style={{ fontWeight: 700 }}>
+          {userCommentInfo.get(comment.commentOwnerId)?.firstName}{" "}
+          {userCommentInfo.get(comment.commentOwnerId)?.lastName}
         </Typography>
 
-        <Typography>{props.comment.message}</Typography>
+        <Typography align="left">{comment.message}</Typography>
       </div>
 
-      {user && user._id === props.comment.ownerId ? (
+      {user && user._id === comment.commentOwnerId ? (
         <React.Fragment>
           <IconButton onClick={handleProfileMenuOpen}>
             <MoreHoriz />

@@ -2,7 +2,6 @@ import * as React from "react";
 import { Container } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
-import { getAllPosts } from "../../actions/posts";
 import Posts from "./Posts";
 import PostForm from "./PostForm";
 import Add from "./Add";
@@ -21,7 +20,6 @@ const Feed = (props: any) => {
   }
 
   // this will update the React posts state to ensure that it is always populated with the posts from the db
-  console.log(user?._id === displayUser?._id);
   return (
     <Container>
       {user && user?._id === displayUser?._id ? (

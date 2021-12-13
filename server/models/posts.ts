@@ -14,7 +14,7 @@ const postSchema = new mongoose.Schema({
   comments: {
     type: [
       {
-        commentId: String,
+        createdAt: { type: Date, default: new Date() },
         commentOwnerId: String,
         message: String,
       },

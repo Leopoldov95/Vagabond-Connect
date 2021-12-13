@@ -17,7 +17,7 @@ const auth = async (req, res, next) => {
     let decodedData;
 
     if (token && isCustomAuth) {
-      decodedData = jwt.verify(token, "test"); // 'test' is the secret keyword from the other file, THEY MUST MATCH
+      decodedData = jwt.verify(token, "vagabondtoken"); // 'test' is the secret keyword from the other file, THEY MUST MATCH
 
       req.userId = decodedData?.id;
     } else {

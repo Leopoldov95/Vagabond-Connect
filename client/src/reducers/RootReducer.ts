@@ -4,6 +4,7 @@ import {
   apiErrorsReducer,
   userInfoReducer,
   allUsersReducer,
+  userCommentInfo,
 } from "./users";
 import postsReducer from "./posts";
 const RootReducer = combineReducers({
@@ -11,6 +12,7 @@ const RootReducer = combineReducers({
   postsReducer,
   singleUser: userInfoReducer,
   allUsers: allUsersReducer,
+  commentUser: userCommentInfo,
   apiErrors: apiErrorsReducer,
 });
 

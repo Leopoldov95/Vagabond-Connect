@@ -34,7 +34,7 @@ const Delete = (props: any) => {
   const classes = useStyles();
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState<any>({});
-  const handleChange = (e?: any) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
   };
   return (

@@ -74,6 +74,7 @@ const continents = [
     image: "oceania.jpg",
   },
 ];
+// at smaller screen size, set this to a dropdown filter menu
 const Rightbar = (props: any) => {
   const handleClick = (name: String) => {
     props.setFilter(name);
@@ -98,7 +99,11 @@ const Rightbar = (props: any) => {
       </div>
 
       {continents.map((item) => (
-        <Card className={classes.card} onClick={() => handleClick(item.title)}>
+        <Card
+          className={classes.card}
+          onClick={() => handleClick(item.title)}
+          key={item.title}
+        >
           <CardActionArea>
             <CardMedia
               className={classes.media}

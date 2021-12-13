@@ -1,12 +1,14 @@
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Grid,
   Typography,
   makeStyles,
   Theme,
   CircularProgress,
+  Button,
 } from "@material-ui/core";
+import { followUser } from "../../actions/users";
 import countries from "../country/countries";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -17,17 +19,32 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexDirection: "column",
   },
+  profileAction: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
 }));
-
+// will want to showcase follwing and followers in group avatar, can use post id reucer to manage users profile img
 // to display profile owner country info, may want to use data from MongoDB
 const ProfileBio = () => {
+  const dispatch = useDispatch();
+  const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
+  const [tempDisabled, setTempDisabled] = React.useState(false);
   /*   React.useEffect(() => {
     console.log(" I am broken but at least i rendered");
   }, [userProfile]); */
-  const classes = useStyles();
+  console.log(user);
+  console.log(displayUser);
+  const handleFollow = () => {
+    // console.log(user._id);
+    setTempDisabled(true);
+    dispatch(followUser(displayUser._id));
+  };
+
   return (
     <Grid container className={classes.container}>
       {displayUser ? (
@@ -49,9 +66,32 @@ const ProfileBio = () => {
               countries[displayUser?.country].continent
             }`}
           </Typography>
-          <Typography variant="h4" style={{ margin: "1rem auto" }}>
-            {displayUser?.firstName} {displayUser?.lastName}
-          </Typography>
+          <div className={classes.profileAction}>
+            <Typography variant="h4" style={{ margin: "1rem" }}>
+              {displayUser?.firstName} {displayUser?.lastName}
+            </Typography>
+            {user && user.following.includes(displayUser._id) ? (
+              <Button
+                style={{ margin: "1rem" }}
+                color="secondary"
+                variant="outlined"
+                onClick={handleFollow}
+                disabled={!user || user._id === displayUser._id || tempDisabled}
+              >
+                Unfollow
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                variant="outlined"
+                onClick={handleFollow}
+                disabled={!user || user._id === displayUser._id || tempDisabled}
+              >
+                Follow
+              </Button>
+            )}
+          </div>
+
           <Typography variant="body1">
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
             nobis dicta totam voluptatem ipsum hic error tempore? Incidunt

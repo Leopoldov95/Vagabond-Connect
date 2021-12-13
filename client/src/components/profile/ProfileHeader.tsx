@@ -1,3 +1,4 @@
+// This component is to display the profile user image and background image
 import * as React from "react";
 import { useSelector } from "react-redux";
 import {
@@ -85,14 +86,14 @@ const ProfileHeader = () => {
   const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
     ?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
-  const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
+  const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user; // used to determine whether to display current logged in user or other profile
   React.useEffect(() => {
     if (API_USER) {
       setUser(API_USER);
     }
   }, [API_USER]);
 
-  const [profileDb, setProfileDb] = React.useState<any>({
+  const [profileDb, setProfileDb] = React.useState<{}>({
     url: "",
     profile: "",
   });
@@ -144,14 +145,6 @@ const ProfileHeader = () => {
             </div>
           </div>
           <div className={classes.avatarContainer}>
-            {/*        <div> */}
-            {/*  <input
-                accept="image/*"
-                className={classes.input}
-                id="icon-button-file"
-                type="file"
-              />
-              <label htmlFor="icon-button-file"> */}
             {user && user?._id === displayUser?._id ? (
               <Button
                 className={classes.avatarButton}
@@ -172,9 +165,6 @@ const ProfileHeader = () => {
             ) : (
               ""
             )}
-
-            {/* </label> */}
-            {/*    </div> */}
 
             <Avatar
               alt="profile_pic"

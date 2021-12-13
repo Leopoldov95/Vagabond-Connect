@@ -33,7 +33,7 @@ const FriendsNav = (props: any) => {
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const dispatch = useDispatch();
-  const [selected, setSelected] = React.useState("find");
+
   // everytime the nac changes, make a fetch
   React.useEffect(() => {
     // No user is logged in
@@ -42,19 +42,19 @@ const FriendsNav = (props: any) => {
       dispatch(getAllUsers());
     } else {
       props.setLoading(true);
-      dispatch(getAllUsers(user?._id, selected));
+      dispatch(getAllUsers(user?._id, props.selected));
     }
-  }, [selected]);
+  }, [props.selected]);
   return (
     <Paper className={classes.container}>
       {navItems.map((item) => (
         <Button
           key={item.name}
           className={`${classes.navBtn} ${
-            selected === item.name && classes.active
+            props.selected === item.name && classes.active
           }`}
           startIcon={item.icon}
-          onClick={() => setSelected(item.name)}
+          onClick={() => props.setSelected(item.name)}
         >
           {item.name}
         </Button>

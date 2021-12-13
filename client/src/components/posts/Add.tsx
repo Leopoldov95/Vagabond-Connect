@@ -1,6 +1,4 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
-import PostForm from "./PostForm";
 import {
   Button,
   makeStyles,
@@ -34,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Add = (props: any) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
 
   return (

@@ -6,13 +6,42 @@ const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
 
 // Alot will be happening here
 
-// fetch all posts
+// fetch all posts OR posts from people I follow
 export const getAllPosts = async (req: Request, res: Response) => {
   try {
+    const { id: _id } = req.params;
+    let fetchedPosts;
     // retieve all posts we have in the data base
-    const allPosts = await Posts.find();
+    if (_id === "0") {
+      fetchedPosts = await Posts.find().sort({ createdAt: -1 }).limit(10);
+    } else {
+      // this is to retieve posts from people I'm following
+      if (!mongoose.Types.ObjectId.isValid(_id))
+        return res.status(404).send("No User with that ID");
+      const user = await Users.findById(_id);
+      fetchedPosts = await Posts.find({
+        ownerId: { $in: user?.following },
+      })
+        .sort({ createdAt: -1 })
+        .limit(10);
+    }
     //console.log(allPosts);
-    res.status(200).json(allPosts);
+    res.status(200).json(fetchedPosts);
+  } catch (error) {
+    res.status(404).json({ message: error.message });
+  }
+};
+
+// fetch users posts only
+export const getUsersPosts = async (req: Request, res: Response) => {
+  try {
+    const { id: _id } = req.params;
+    // retieve all posts we have in the data base
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("No User with that ID");
+    const fetchedPosts = await Posts.find({ ownerId: _id }).limit(10);
+    //console.log(allPosts);
+    res.status(200).json(fetchedPosts);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
@@ -48,7 +77,6 @@ export const createPost = async (req: any, res: Response) => {
     ownerAvatar: profile_cloudinary,
     createdAt: new Date().toISOString(),
   });
-  console.log(newPost);
   try {
     await newPost.save(); //save() is asynchronous\
     res.status(201).json(newPost);
@@ -136,4 +164,101 @@ export const deletePost = async (req: Request, res: Response) => {
 };
 // add like
 
-// comments
+export const likePost = async (req: any, res: Response) => {
+  const { id } = req.params;
+  // we get access to req.userId from the middleware we are passing (auth)
+  if (!req.userId) return res.json({ message: "Unauthenticated" });
+
+  // chacking of id is valid
+  if (!mongoose.Types.ObjectId.isValid(id))
+    return res.status(404).send("No post with that ID");
+
+  const post = await Posts.findById(id);
+  // handling like logic for user
+  const index = post.likes.findIndex((id) => id === String(req.userId));
+  if (index === -1) {
+    // like the post
+    post.likes.push(req.userId);
+  } else {
+    // dislike a post
+    post.likes = post.likes.filter((id) => id !== String(req.userId));
+  }
+  const updatedPost = await Posts.findByIdAndUpdate(id, post, {
+    new: true,
+  });
+
+  res.json(updatedPost);
+};
+
+// comments actions
+
+export const createComment = async (req: any, res: Response) => {
+  try {
+    const { id: _id } = req.params;
+    const { formData } = req.body;
+    if (!req.userId) return res.json({ message: "Unauthenticated" });
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("Not A Valid Post Id!");
+    // find the post
+    const post = await Posts.findById(_id);
+    post.comments.push({
+      commentOwnerId: req.userId,
+      message: formData,
+    });
+    console.log(post);
+    const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true });
+
+    // make changes to the post
+
+    // create comment + edit
+
+    // send back to user
+    res.json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+// Delete a comment from the post
+export const deleteComment = async (req: Request, res: Response) => {
+  try {
+    const { postId, commentId } = req.params;
+    if (!mongoose.Types.ObjectId.isValid(postId))
+      return res.status(404).send("Not A Valid Post Id!");
+    if (!mongoose.Types.ObjectId.isValid(commentId))
+      return res.status(404).send("Not A Valid Comment Id!");
+    const post = await Posts.findById(postId);
+
+    post.comments = post.comments.filter(
+      (comment) => String(comment._id) !== String(commentId)
+    );
+    const updatedPost = await Posts.findByIdAndUpdate(postId, post, {
+      new: true,
+    });
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+export const editComment = async (req: Request, res: Response) => {
+  try {
+    const { postId, commentId } = req.params;
+    const { comment } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(postId))
+      return res.status(404).send("Not A Valid Post Id!");
+    if (!mongoose.Types.ObjectId.isValid(commentId))
+      return res.status(404).send("Not A Valid Comment Id!");
+    const post = await Posts.findById(postId);
+    const idx = post.comments.findIndex(
+      (comment) => String(comment._id) === String(commentId)
+    );
+    post.comments[idx].message = comment;
+    const updatedPost = await Posts.findByIdAndUpdate(postId, post, {
+      new: true,
+    });
+    res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};

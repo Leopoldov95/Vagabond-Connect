@@ -1,15 +1,15 @@
 import * as React from "react";
+import { useDispatch } from "react-redux";
 import {
   Container,
   makeStyles,
   withStyles,
   Typography,
   Switch,
-  FormGroup,
   FormControlLabel,
   Theme,
-  Select,
 } from "@material-ui/core";
+import { getAllPosts } from "../../actions/posts";
 import { lightGreen } from "@material-ui/core/colors";
 const GreenSwitch = withStyles({
   switchBase: {
@@ -31,14 +31,23 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    margin: "1rem 0",
+    marginBottom: theme.spacing(1),
   },
 }));
 const PostsToggle = () => {
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [toggle, setToggle] = React.useState(true);
+  const firstUpdate = React.useRef(true);
   React.useEffect(() => {
-    console.log("You toggles a change and we will now ftech fopr posts");
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+      return;
+    }
+    if (user) {
+      toggle ? dispatch(getAllPosts()) : dispatch(getAllPosts(user._id));
+    }
   }, [toggle]);
   const handleChange = (event) => {
     setToggle(event.target.checked);

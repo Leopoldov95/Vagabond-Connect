@@ -26,16 +26,19 @@
 - For user edit, may not need to pass user props for id, get value from params instead (user.userId)
 
 - 12/1/21 - To do
+- will want to figure out a method to retrieve "load more" on posts and users
+- set page to go to top on load/url change
+- comments = add menu if owner, ALSO need to update img when comment
+- later on, will want to handle offlin errors
 - strange issue when guest is retrieving users
 - When updating a post, either by patch or put, must provide params, better practive
 - on profile page, add follwers, following, and follow
+- will want to show some of the followers and following on the profile page
 - might want pop up when unfollowing a user
-- change architect of country Navbar, no state for component, only use props and set props
 - create snackbar for the following actions: user login, user sign up, post creation, post edit, post deletion
 - on profile leftbar AND profile page, may want to show followers and follwing, also show a follow button if a user is not yet following. ALSO if profile user has privacy set to private, hide unless user is a follower
-- On main home page, may want to have filter to show ALL posts or just following posts
 - For fetching users posts for their profile page, handle filter logic on the backend
-- fix profile link from navbar
 - fix render issue when showing guest users
 - will want to set a 10mb limit on upload pictures
+- sort posts on moongodb
 ** Later on, create a univeral style sheet that contains classes that gt used across multiple pages and compnents (such as buttons)

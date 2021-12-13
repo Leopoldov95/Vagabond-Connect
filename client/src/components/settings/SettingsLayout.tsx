@@ -15,9 +15,9 @@ import {
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import { Edit, Warning, Close } from "@material-ui/icons";
+import { editUserDetails } from "../../actions/users";
 import CountryNav from "../country/countryNav";
 import Delete from "./Delete";
-import { editUserDetails } from "../../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(10),
@@ -77,14 +77,7 @@ const SettingsLayout = () => {
       }, 3000);
     }
   }, [errors?.message]);
-  /*   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setSettingsData({
-      ...settingsData,
-      privacy: event.target.value as string,
-    });
-  };
- */
-  const handleChange = (e?: any) => {
+  const handleChange = (e: React.ChangeEvent<any>) => {
     if (errors) {
       setErrors({});
     }

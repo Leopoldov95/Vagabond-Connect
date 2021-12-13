@@ -1,11 +1,11 @@
 import * as React from "react";
+import { useParams } from "react-router";
 import {
   Card,
   CardMedia,
   Typography,
   Theme,
   CardContent,
-  CardActionArea,
   Button,
   makeStyles,
 } from "@material-ui/core";
@@ -18,8 +18,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     width: 200,
     margin: theme.spacing(2),
   },
+  profileCard: {
+    width: 170,
+    margin: theme.spacing(2),
+  },
   media: {
     height: 180,
+  },
+  profileMedia: {
+    height: 150,
   },
   btnProfile: {
     backgroundColor: lightGreen[400],
@@ -28,7 +35,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   btnContainer: {
-    padding: theme.spacing(2),
+    padding: "0 1rem 1rem 1rem",
     display: "flex",
     flexDirection: "column",
   },
@@ -36,6 +43,8 @@ const useStyles = makeStyles((theme: Theme) => ({
 const FriendCard = (props: any) => {
   const dispatch = useDispatch();
   const classes = useStyles();
+  const params = useParams();
+  const { id }: any = params; // Need this to determin if viewing friends on Friends Page OR from Profile
   const user = props.user;
   const userReducer = useSelector((state: any) => state.userAuthReducer);
   const [tempDisabled, setTempDisabled] = React.useState(false);
@@ -53,13 +62,16 @@ const FriendCard = (props: any) => {
     dispatch(followUser(user._id));
   };
   return (
-    <Card className={classes.card}>
+    <Card className={id ? classes.profileCard : classes.card}>
       <CardMedia
-        className={classes.media}
+        className={id ? classes.profileMedia : classes.media}
         image={user?.profile_cloudinary}
       ></CardMedia>
       <CardContent>
-        <Typography style={{ textAlign: "center" }} variant="h6">
+        <Typography
+          style={{ textAlign: "center" }}
+          variant={id ? "body2" : "h6"}
+        >
           {user?.firstName} {user?.lastName}
         </Typography>
       </CardContent>

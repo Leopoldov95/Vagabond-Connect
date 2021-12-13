@@ -5,10 +5,10 @@ import {
   DELETE_USER,
   AUTH,
   API_ERROR,
+  FETCH_COMMENT_USER,
 } from "../constants/actionTypes";
 
 import * as API from "../api";
-import { promisify } from "util";
 
 export const signin =
   (formData: any, history: any) => async (dispatch: any) => {
@@ -108,6 +108,23 @@ export const followUser = (id: any) => async (dispatch: any) => {
     // receivers followers must be updated - for updating, we will push the _id onto the array
     // will need auth middleware
     // need to updated the current authenticated user reducer
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const fetchUserCommentInfo = (id: any) => async (dispatch: any) => {
+  try {
+    //console.log(id); // needs to be comment owner
+    const { data } = await API.fetchUserCommentInfo(id);
+
+    const user = {
+      user: id,
+      data: data,
+    };
+    //console.log(user);
+    //console.log(data);
+    dispatch({ type: FETCH_COMMENT_USER, payload: user });
   } catch (error) {
     console.log(error);
   }

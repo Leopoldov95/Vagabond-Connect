@@ -6,6 +6,7 @@ import {
   LOGOUT,
   API_ERROR,
   FETCH_ALL_USER,
+  FETCH_COMMENT_USER,
 } from "../constants/actionTypes";
 
 // Note that EDIT_User can be used in all instances in which a logged in user makes modifications to their profile
@@ -67,5 +68,16 @@ export const apiErrorsReducer = (apiErrors = null, action: any) => {
     default:
       return apiErrors;
       break;
+  }
+};
+
+// this reducer has a main purpose of fetching the commentors profil img
+export const userCommentInfo = (userImg: any = new Map(), action: any) => {
+  switch (action.type) {
+    case FETCH_COMMENT_USER:
+      return userImg.set(`${action?.payload?.user}`, action?.payload?.data);
+    // return [...userImg, action?.payload];
+    default:
+      return userImg;
   }
 };

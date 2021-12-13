@@ -24,18 +24,26 @@ export const fetchSingleUser = (id: any) => API.post("/users/single", id);
 export const fetchAllUsers = (id: any, action: any, skip: any) =>
   API.get(`/users/${id}/${action}/${skip}`);
 export const editProfileImg = (data: any) =>
-  API.patch(`/users/${data?.user?._id}/profileImg`, data);
-export const followUser = (id: any) => API.post(`users/follow/${id}`);
+  API.patch(`/users/${data?.user?._id}/profileImg`, data); // might want to redo this route
+export const followUser = (id: any) => API.post(`users/follow/${id}`); // might not need post but patch
+export const fetchUserCommentInfo = (id: any) => API.get(`users/comment/${id}`);
+
 // posts routes
-export const fetchPosts = () => API.get("/posts");
+export const fetchPosts = (id: any) => API.get(`/posts/${id}`);
+export const fetchUserPosts = (id: any) => API.get(`/posts/user/${id}`);
 export const createPost = (newPost: any) => API.post("/posts", newPost);
 //export const deletePost = (id: any) => API.delete("posts", id)
 export const updatePost = (id: any, updatedPost: any) =>
   API.patch(`/posts/${id}`, updatedPost);
 export const deletePost = (id: any) => API.delete(`/posts/${id}`);
-//export const likePost = (id: any) => API.patch(`/posts/${id}/likePost`);
+export const likePost = (id: any) => API.patch(`/posts/likePost/${id}`);
 
 // comments routes
-
+export const createComment = (id: any, formData: any) =>
+  API.patch(`/posts/comment/create/${id}`, formData);
+export const editComment = (formData: any, postId: any, commentId: any) =>
+  API.patch(`/posts/comment/edit/${postId}/${commentId}`, formData);
+export const deleteComment = (postId: any, commentId: any) =>
+  API.patch(`/posts/comment/delete/${postId}/${commentId}`);
 /////// NOTE
 // When updating a post, either by patch or put, must provide params, better practive

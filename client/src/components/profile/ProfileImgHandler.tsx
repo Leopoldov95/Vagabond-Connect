@@ -1,15 +1,18 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { makeStyles, Theme, createStyles } from "@material-ui/core/styles";
-import { API_ERROR } from "../../constants/actionTypes";
-import Modal from "@material-ui/core/Modal";
 import {
+  makeStyles,
+  Theme,
+  createStyles,
+  Modal,
   Divider,
   Paper,
   Typography,
   Button,
   CircularProgress,
 } from "@material-ui/core";
+
+import { API_ERROR } from "../../constants/actionTypes";
 import { ImageOutlined } from "@material-ui/icons";
 import { lightGreen } from "@material-ui/core/colors";
 import { editProfileImg } from "../../actions/users";
@@ -78,7 +81,6 @@ const ProfileImgHandler = (props: any) => {
   const [clientError, setClientError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);
   // this state will just track changes to the API user state
-  const allPosts = useSelector((state: any) => state.postsReducer); // will need to pass this to update posts avatar
   const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
     ?.result;
   const API_ERRORS = useSelector((state: any) => state.apiErrors);

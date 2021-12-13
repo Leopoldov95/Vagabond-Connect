@@ -1,5 +1,7 @@
 // Since Navbar will be present on ALL pages, we will manage user auth here
-import { Fragment, useState, useEffect } from "react";
+import * as React from "react";
+import { useDispatch } from "react-redux";
+import decode from "jwt-decode";
 import {
   alpha,
   AppBar,
@@ -30,9 +32,6 @@ import {
   Lock,
 } from "@material-ui/icons";
 import { Link, useLocation, useHistory } from "react-router-dom";
-
-import { useDispatch } from "react-redux";
-import decode from "jwt-decode";
 interface Props {
   open: boolean;
 }
@@ -63,9 +62,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       cursor: "pointer",
     },
-  },
-  icon: {
-    /*  marginRight: theme.spacing(1), */
   },
   link: {
     textAlign: "center",
@@ -120,7 +116,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       cursor: "pointer",
     },
   },
-  badge: {},
   searchButton: {
     marginRight: theme.spacing(2),
     [theme.breakpoints.up("sm")]: {
@@ -132,16 +127,17 @@ const Navbar = () => {
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
-
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem("profile"))); // profile is being access from local storage, shich was set in the reducer file auth.js
-  const [open, setOpen] = useState(false);
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [user, setUser] = React.useState(
+    JSON.parse(localStorage.getItem("profile"))
+  ); // profile is being access from local storage, shich was set in the reducer file auth.js
+  const [open, setOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   /*   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null); */
   const isMenuOpen = Boolean(anchorEl);
   //  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  useEffect(() => {
+  React.useEffect(() => {
     const token = user?.token;
 
     // JWT ...
@@ -157,9 +153,7 @@ const Navbar = () => {
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  /*  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  }; */
+
   const handleMenuClose = () => {
     setAnchorEl(null);
     //handleMobileMenuClose();
@@ -226,7 +220,7 @@ const Navbar = () => {
   // can pass our state as props to use css boolean values
 
   return (
-    <Fragment>
+    <React.Fragment>
       <AppBar position="fixed" style={{ backgroundColor: lightGreen[700] }}>
         <Toolbar className={classes.toolbar}>
           {/* Variant is style, component is tag */}
@@ -252,39 +246,31 @@ const Navbar = () => {
             />
             <div className={classes.item}>
               <Link to="/" className={classes.link}>
-                <Home className={classes.icon} />
+                <Home />
                 <Typography className={classes.text}>Homepage</Typography>
               </Link>
             </div>
             <div className={classes.item}>
               <Link to="/friends" className={classes.link}>
-                <Person className={classes.icon} />
+                <Person />
                 <Typography className={classes.text}>Friends</Typography>
               </Link>
             </div>
             <div className={classes.item}>
               <Link to="/resources" className={classes.link}>
-                <LibraryBooks className={classes.icon} />
+                <LibraryBooks />
                 <Typography className={classes.text}>Resources</Typography>
               </Link>
             </div>
 
             <div className={classes.item}>
-              <Badge
-                badgeContent={4}
-                color="secondary"
-                className={classes.badge}
-              >
+              <Badge badgeContent={4} color="secondary">
                 <Mail />
               </Badge>
               <Typography className={classes.text}>Messages</Typography>
             </div>
             <div className={classes.item}>
-              <Badge
-                badgeContent={2}
-                color="secondary"
-                className={classes.badge}
-              >
+              <Badge badgeContent={2} color="secondary">
                 <Notifications />
               </Badge>
               <Typography className={classes.text}>Notifications</Typography>
@@ -317,7 +303,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
       {renderMenu}
-    </Fragment>
+    </React.Fragment>
   );
 };
 

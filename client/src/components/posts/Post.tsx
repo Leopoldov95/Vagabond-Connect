@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deletePost } from "../../actions/posts";
 import countries from "../country/countries";
 import {
@@ -19,15 +19,17 @@ import {
 import {
   FavoriteBorder,
   Comment,
-  Room,
+  Favorite,
   MoreVert,
   Edit,
   Delete,
 } from "@material-ui/icons";
 
-import Comments from "./Comments";
-import SubComments from "./SubComments";
-import { findOne } from "../../testData/helper";
+import Comments from "./comments/Comments";
+import SubComments from "./comments/SubComments";
+import { likePost } from "../../actions/posts";
+import { fetchUserCommentInfo } from "../../actions/users";
+import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   media: {
     height: "250px",
@@ -72,15 +74,39 @@ const Post = (props: any) => {
   /* make sure to create a state to manage likes  */
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const post = props?.post;
+  const userCommentInfo = useSelector((state: any) => state.commentUser);
+  const posts = useSelector((state: any) => state.postsReducer); // need this to update changes when posts change
   const classes = useStyles();
   const menuId = "post-settings";
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     React.useState<null | HTMLElement>(null);
   const [showComments, setShowComments] = React.useState(false);
+  const [editComment, setEditComment] = React.useState(null);
+  const [commentId, setCommentId] = React.useState(null);
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-
+  // not sure it this is the best approach, diapstaching on parent level component so child doesn't have render/fetching issues
+  // this method will render ALL comments profile pictures even when not in view...
+  React.useEffect(() => {
+    if (post.comments.length > 0) {
+      console.log("this post has comments");
+      for (let comment of post.comments) {
+        if (userCommentInfo.size > 0) {
+          if (userCommentInfo.has(`${comment.commentOwnerId}`)) {
+            console.log("Your id and img is alread here!");
+          } else {
+            console.log("You id is not here and we need to fetch it");
+            // we will dispatch here
+            dispatch(fetchUserCommentInfo(comment.commentOwnerId));
+          }
+        } else {
+          console.log("the list is empty and we need to fetch imagaes!!!!!!");
+          dispatch(fetchUserCommentInfo(comment.commentOwnerId));
+        }
+      }
+    }
+  }, [dispatch, posts]);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -114,14 +140,22 @@ const Post = (props: any) => {
       open={isMenuOpen}
       onClose={handleMenuClose}
     >
-      <MenuItem onClick={handleEdit}>
-        <Edit className={classes.icon} />
-        Edit
-      </MenuItem>
-      <MenuItem style={{ color: "red" }} onClick={handleDelete}>
-        <Delete className={classes.icon} />
-        Delete
-      </MenuItem>
+      {user && user._id === post?.ownerId ? (
+        <div>
+          <MenuItem onClick={handleEdit}>
+            <Edit className={classes.icon} />
+            Edit
+          </MenuItem>
+          <MenuItem style={{ color: "red" }} onClick={handleDelete}>
+            <Delete className={classes.icon} />
+            Delete
+          </MenuItem>
+        </div>
+      ) : (
+        <MenuItem>
+          <Link to={`profile/${post.ownerId}`}>View Profile</Link>
+        </MenuItem>
+      )}
     </Menu>
   );
 
@@ -152,15 +186,12 @@ const Post = (props: any) => {
             </Typography>
           </div>
         </div>
-        {user && user._id === post?.ownerId ? (
-          <div>
-            <IconButton aria-label="settings" onClick={handleProfileMenuOpen}>
-              <MoreVert />
-            </IconButton>
-          </div>
-        ) : (
-          ""
-        )}
+
+        <div>
+          <IconButton aria-label="settings" onClick={handleProfileMenuOpen}>
+            <MoreVert />
+          </IconButton>
+        </div>
       </div>
       {/*   <CardActionArea> */}
       <CardMedia
@@ -187,9 +218,20 @@ const Post = (props: any) => {
       {/*  </CardActionArea> */}
       <Divider />
       <CardActions>
-        <Button size="small" color="primary" disabled={!user}>
-          <FavoriteBorder />
-          <Typography className={classes.buttonText}>Like</Typography>
+        <Button
+          size="small"
+          color="primary"
+          disabled={!user}
+          onClick={() => dispatch(likePost(post._id))}
+        >
+          {post.likes.includes(user?._id) ? <Favorite /> : <FavoriteBorder />}
+          {post.likes.length > 0 ? (
+            <Typography className={classes.buttonText}>
+              {post.likes.length}
+            </Typography>
+          ) : (
+            <Typography className={classes.buttonText}>Like</Typography>
+          )}
         </Button>
         <Button
           size="small"
@@ -204,10 +246,26 @@ const Post = (props: any) => {
       </CardActions>
       <Divider />
       {showComments &&
-        post.comments.map((comment: any) => <SubComments comment={comment} />)}
-      {user && <Comments />}
+        post.comments.map((comment: any) => (
+          <SubComments
+            key={comment?._id}
+            comment={comment}
+            postId={post._id}
+            setEditComment={setEditComment}
+            setCommentId={setCommentId}
+          />
+        ))}
+      {user && (
+        <Comments
+          editComment={editComment}
+          setEditComment={setEditComment}
+          postId={post._id}
+          commentId={commentId}
+          setCommentId={setCommentId}
+        />
+      )}
 
-      {user && user._id === post?.ownerId ? renderMenu : ""}
+      {renderMenu}
     </Card>
   );
 };
