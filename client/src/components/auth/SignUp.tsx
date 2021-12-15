@@ -119,6 +119,9 @@ const SignUp = () => {
   const handleChange = (e?: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const handleCallback = (country: String) => {
+    setFormData({ ...formData, country: country });
+  };
   const handleCapture = ({ target }: any) => {
     //console.log(target);
     if (target?.files.length > 0) {
@@ -237,7 +240,10 @@ const SignUp = () => {
                   />
                 </Grid>
                 <Grid item xs={12}>
-                  <CountryNav formData={formData} setFormData={setFormData} />
+                  <CountryNav
+                    callback={handleCallback}
+                    existingCountry={formData.country}
+                  />
                 </Grid>
               </React.Fragment>
             )}

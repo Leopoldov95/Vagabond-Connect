@@ -155,6 +155,9 @@ const PostForm = (props: any) => {
   const handleChange = (e?: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+  const handleCallback = (country: String) => {
+    setFormData({ ...formData, country: country });
+  };
   // handle img file
   const handleCapture = ({ target }: any) => {
     if (target.files.length > 0) {
@@ -302,8 +305,8 @@ const PostForm = (props: any) => {
             </div>
             <div className={classes.item}>
               <CountryNav
-                /* handleCallback={handleCallback}  */ formData={formData}
-                setFormData={setFormData}
+                callback={handleCallback}
+                existingCountry={formData.country}
               />
             </div>
             <div>

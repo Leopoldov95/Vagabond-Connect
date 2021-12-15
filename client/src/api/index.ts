@@ -16,9 +16,11 @@ API.interceptors.request.use((req: any) => {
   return req;
 });
 
-// auth/user routes
+// USERS Routes
+// authentication
 export const signup = (formData: any) => API.post("/users/signup", formData);
 export const signin = (formData: any) => API.post("/users/signin", formData);
+// user
 export const editUserDetails = (formData: any) => API.post("/users", formData);
 export const fetchSingleUser = (id: any) => API.post("/users/single", id);
 export const fetchAllUsers = (id: any, action: any, skip: any) =>
@@ -27,8 +29,9 @@ export const editProfileImg = (data: any) =>
   API.patch(`/users/${data?.user?._id}/profileImg`, data); // might want to redo this route
 export const followUser = (id: any) => API.post(`users/follow/${id}`); // might not need post but patch
 export const fetchUserCommentInfo = (id: any) => API.get(`users/comment/${id}`);
-
-// posts routes
+export const editUserCountryList = (name: String, formData: any) =>
+  API.patch(`users/list/${name}`, formData);
+// POSTS routes
 export const fetchPosts = (id: any) => API.get(`/posts/${id}`);
 export const fetchUserPosts = (id: any) => API.get(`/posts/user/${id}`);
 export const createPost = (newPost: any) => API.post("/posts", newPost);
@@ -38,7 +41,7 @@ export const updatePost = (id: any, updatedPost: any) =>
 export const deletePost = (id: any) => API.delete(`/posts/${id}`);
 export const likePost = (id: any) => API.patch(`/posts/likePost/${id}`);
 
-// comments routes
+// COMMENTS routes
 export const createComment = (id: any, formData: any) =>
   API.patch(`/posts/comment/create/${id}`, formData);
 export const editComment = (formData: any, postId: any, commentId: any) =>

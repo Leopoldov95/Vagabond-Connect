@@ -25,20 +25,20 @@
 
 - For user edit, may not need to pass user props for id, get value from params instead (user.userId)
 
-- 12/1/21 - To do
+- 12/13/21 - To do
+- need to redo CountryNav ... again, store state in country nav component and "pass up" value on state change, then on state change use a callback function on parnt component to handle updated state/country
 - will want to figure out a method to retrieve "load more" on posts and users
 - set page to go to top on load/url change
-- comments = add menu if owner, ALSO need to update img when comment
-- later on, will want to handle offlin errors
-- strange issue when guest is retrieving users
-- When updating a post, either by patch or put, must provide params, better practive
-- on profile page, add follwers, following, and follow
-- will want to show some of the followers and following on the profile page
+- comments = need to render new comment img correctly
+- later on, will want to handle offline errors
+- When updating a post, either by patch or put, must provide params, better practive // REVIEW API ROUTES (1 issue)
 - might want pop up when unfollowing a user
 - create snackbar for the following actions: user login, user sign up, post creation, post edit, post deletion
-- on profile leftbar AND profile page, may want to show followers and follwing, also show a follow button if a user is not yet following. ALSO if profile user has privacy set to private, hide unless user is a follower
-- For fetching users posts for their profile page, handle filter logic on the backend
-- fix render issue when showing guest users
+- if profile user has privacy set to private, hide unless user is a follower
+- For fetching users posts for their profile page, handle filter logic on the backend (such as sorting them)
+- fix render issue when showing guest users (such as showing a load circle on profile pic and background image)
 - will want to set a 10mb limit on upload pictures
-- sort posts on moongodb
+- handle main page post filter by continent
+- implement a way to message other users (only those who you follow) 
+- implement notifications 
 ** Later on, create a univeral style sheet that contains classes that gt used across multiple pages and compnents (such as buttons)

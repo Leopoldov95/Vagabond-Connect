@@ -316,6 +316,28 @@ export const fetchUserCommentInfo = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Something went wrong." });
   }
 };
+
+export const editUserCountryList = async (req: any, res: Response) => {
+  try {
+    const _id = req.userId;
+    const { name } = req.params;
+    const newList = req.body;
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("No post with that ID");
+    const user = await Users.findById(_id);
+    if (!user) return res.status(404).send("No user with that ID");
+    let propsToChange = {};
+    propsToChange[`${name}Countries`] = newList;
+    const result = await Users.findByIdAndUpdate(
+      _id,
+      { $set: { ...propsToChange } },
+      { new: true }
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
 /* 
 export const likePost = async (req, res) => {
   const { id } = req.params;

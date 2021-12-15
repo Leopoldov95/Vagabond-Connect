@@ -93,6 +93,10 @@ const SettingsLayout = () => {
     }
     return { message: "No changes have been made!" };
   };
+
+  const handleCallback = (country: String) => {
+    setSettingsData({ ...settingsData, country: country });
+  };
   // have client side validation
   const onSubmitValidation = () => {
     const changeValidation = checkChanges();
@@ -240,8 +244,8 @@ const SettingsLayout = () => {
             <Typography>Country</Typography>
             <div>
               <CountryNav
-                formData={settingsData}
-                setFormData={setSettingsData}
+                callback={handleCallback}
+                existingCountry={settingsData.country}
               />
             </div>
           </li>

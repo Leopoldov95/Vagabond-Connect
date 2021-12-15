@@ -129,3 +129,13 @@ export const fetchUserCommentInfo = (id: any) => async (dispatch: any) => {
     console.log(error);
   }
 };
+
+export const updateUserCountryList =
+  (name: String, formData: any) => async (dispatch: any) => {
+    try {
+      const { data } = await API.editUserCountryList(name, formData);
+      dispatch({ type: EDIT_USER, data });
+    } catch (error) {
+      console.log(error);
+    }
+  };

@@ -40,8 +40,8 @@ const ProfileCountries = () => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
-  const [favorite, setFavorite] = React.useState([]); // intially, this will be populated from user data
-  const [visited, setVisited] = React.useState(["KP", "RU", "ES"]); // intially, this will be populated from user data
+  const [favorite, setFavorite] = React.useState(user.favoriteCountries); // intially, this will be populated from user data
+  const [visited, setVisited] = React.useState(user.visitedCountries); // intially, this will be populated from user data
   const [isFavoriteEdit, setIsFavoriteEdit] = React.useState(false);
   const [isVisitedEdit, setIsVisitedEdit] = React.useState(false);
   const handleFavoritEdit = () => {
@@ -51,7 +51,6 @@ const ProfileCountries = () => {
     setIsVisitedEdit(!isVisitedEdit);
   };
   const classes = useStyles();
-
   return (
     <Paper className={classes.container}>
       <div className={classes.secContainer}>
@@ -77,6 +76,7 @@ const ProfileCountries = () => {
         <div className={classes.listContainer}>
           <ul>
             <CountryList
+              name="favorite"
               countries={favorite}
               setCountries={setFavorite}
               isEdit={isFavoriteEdit}
@@ -94,7 +94,7 @@ const ProfileCountries = () => {
               className={classes.editButton}
               onClick={handleVisitedEdit}
             >
-              <Edit />
+              {isVisitedEdit ? <Close /> : <Edit />}
             </Button>
           ) : (
             ""
@@ -103,6 +103,7 @@ const ProfileCountries = () => {
         <div className={classes.listContainer}>
           <ul>
             <CountryList
+              name="visited"
               countries={visited}
               setCountries={setVisited}
               isEdit={isVisitedEdit}

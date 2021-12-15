@@ -16,21 +16,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const CountryNav = (props: any) => {
   const classes = useStyles();
+  const [country, setCountry] = React.useState(
+    props.existingCountry ? props.existingCountry : "US"
+  );
   const handleChange = (event: React.ChangeEvent<{ value: any }>) => {
-    props.setFormData({
-      ...props.formData,
-      country: countries[event.target.value].code,
-    });
+    setCountry(countries[event.target.value].code);
+    props.callback(countries[event.target.value].code); // this will "pass" the country value to the parent component and can be handled there
   };
   return (
     <FormControl variant="outlined" className={classes.formControl} fullWidth>
       <InputLabel id="demo-simple-select-outlined-label">Country</InputLabel>
-      <Select
-        value={props.formData.country}
-        onChange={handleChange}
-        label="Country"
-        autoWidth
-      >
+      <Select value={country} onChange={handleChange} label="Country" autoWidth>
         {Object.keys(countries).map((key) => (
           <MenuItem value={countries[key].code} key={key}>
             <img
