@@ -48,6 +48,9 @@ const SubComments = ({ comment, postId, setEditComment, setCommentId }) => {
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const userCommentInfo = useSelector((state: any) => state.commentUser);
+  React.useEffect(() => {
+    console.log("a change was triggered");
+  }, [userCommentInfo]);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };

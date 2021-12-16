@@ -79,6 +79,7 @@ const Comments = ({
   const handleSubmit = (e?: any) => {
     e.preventDefault();
     dispatch(createComment(postId, comment));
+    setComment("");
   };
 
   return (

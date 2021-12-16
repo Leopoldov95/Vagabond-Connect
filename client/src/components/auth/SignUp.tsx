@@ -118,13 +118,27 @@ const SignUp = () => {
   };
   const handleChange = (e?: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors?.[e.target.name]) {
+      let state = { ...errors };
+      delete state?.[e.target.name];
+      setErrors(state);
+    }
   };
   const handleCallback = (country: String) => {
     setFormData({ ...formData, country: country });
   };
   const handleCapture = ({ target }: any) => {
     //console.log(target);
+    if (errors?.upload) {
+      let state = { ...errors };
+      delete state?.upload;
+      setErrors(state);
+    }
     if (target?.files.length > 0) {
+      if (target.files[0].size > 10000000) {
+        setErrors({ ...errors, upload: "File Cannot Exceed 10 MB!" });
+        return setFormData({ ...formData, selectedFile: null });
+      }
       const reader = new FileReader();
       reader.readAsDataURL(target.files[0]);
       reader.onloadend = () => {
@@ -329,6 +343,15 @@ const SignUp = () => {
                   ) : (
                     ""
                   )}
+                  {errors?.upload && (
+                    <Typography
+                      component="span"
+                      style={{ marginLeft: 10 }}
+                      color="secondary"
+                    >
+                      {errors?.upload}
+                    </Typography>
+                  )}
                 </div>
               </React.Fragment>
             )}
@@ -347,6 +370,7 @@ const SignUp = () => {
             color="primary"
             className={classes.submit}
             onClick={handleSubmit}
+            disabled={Object.keys(errors).length > 0}
           >
             {!isSignUp ? "Sign In" : "Sign Up"}
           </Button>

@@ -10,6 +10,9 @@ import {
 } from "@material-ui/core";
 import { followUser } from "../../actions/users";
 import countries from "../country/countries";
+import { useHistory } from "react-router";
+import { getSingleUser } from "../../actions/users";
+import { getUserPosts } from "../../actions/posts";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(4),
@@ -30,17 +33,31 @@ const useStyles = makeStyles((theme: Theme) => ({
 const ProfileBio = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const history = useHistory();
+  const userReducer = useSelector((state: any) => state.userAuthReducer);
   const userProfile = useSelector((state: any) => state.singleUser);
-  const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
+  const [authUser, setAuthUser] = React.useState(
+    JSON.parse(localStorage.getItem("profile"))?.result
+  );
   const [tempDisabled, setTempDisabled] = React.useState(false);
+  const displayUser =
+    Object.keys(userProfile).length > 0 ? userProfile : authUser;
+  // This is to handle the api call for the follow btn
+  React.useEffect(() => {
+    setAuthUser(JSON.parse(localStorage.getItem("profile"))?.result);
+    setTempDisabled(false);
+    /*     dispatch(getSingleUser(displayUser._id));
+    dispatch(getUserPosts(displayUser._id)); */
+  }, [userReducer]);
   /*   React.useEffect(() => {
-    console.log(" I am broken but at least i rendered");
-  }, [userProfile]); */
-  console.log(user);
-  console.log(displayUser);
+    /*  if (id.length !== 24) {
+      history.push("/");
+    } */
+  // get the user here
+  /*  dispatch(getSingleUser(displayUser._id));
+    dispatch(getUserPosts(displayUser._id));
+  }, [userReducer]); */
   const handleFollow = () => {
-    // console.log(user._id);
     setTempDisabled(true);
     dispatch(followUser(displayUser._id));
   };
@@ -70,13 +87,15 @@ const ProfileBio = () => {
             <Typography variant="h4" style={{ margin: "1rem" }}>
               {displayUser?.firstName} {displayUser?.lastName}
             </Typography>
-            {user && user.following.includes(displayUser._id) ? (
+            {authUser && authUser.following.includes(displayUser._id) ? (
               <Button
                 style={{ margin: "1rem" }}
                 color="secondary"
                 variant="outlined"
                 onClick={handleFollow}
-                disabled={!user || user._id === displayUser._id || tempDisabled}
+                disabled={
+                  !authUser || authUser._id === displayUser._id || tempDisabled
+                }
               >
                 Unfollow
               </Button>
@@ -85,7 +104,9 @@ const ProfileBio = () => {
                 color="primary"
                 variant="outlined"
                 onClick={handleFollow}
-                disabled={!user || user._id === displayUser._id || tempDisabled}
+                disabled={
+                  !authUser || authUser._id === displayUser._id || tempDisabled
+                }
               >
                 Follow
               </Button>

@@ -40,8 +40,8 @@ const ProfileCountries = () => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
-  const [favorite, setFavorite] = React.useState(user.favoriteCountries); // intially, this will be populated from user data
-  const [visited, setVisited] = React.useState(user.visitedCountries); // intially, this will be populated from user data
+  const [favorite, setFavorite] = React.useState(displayUser.favoriteCountries); // intially, this will be populated from user data
+  const [visited, setVisited] = React.useState(displayUser.visitedCountries); // intially, this will be populated from user data
   const [isFavoriteEdit, setIsFavoriteEdit] = React.useState(false);
   const [isVisitedEdit, setIsVisitedEdit] = React.useState(false);
   const handleFavoritEdit = () => {

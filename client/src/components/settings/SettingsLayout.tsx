@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   Typography,
   Theme,
@@ -12,6 +13,7 @@ import {
   IconButton,
   Button,
   TextField,
+  CircularProgress,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import { Edit, Warning, Close } from "@material-ui/icons";
@@ -52,24 +54,47 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: theme.palette.warning.light,
     },
   },
+  overlayLoader: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+    "&::before": {
+      content: '""',
+      backgroundColor: "white",
+      opacity: 0.6,
+      height: "100%",
+      width: "100%",
+    },
+  },
 }));
 const SettingsLayout = () => {
   const dispatch = useDispatch();
+  const history = useHistory();
   const classes = useStyles();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
-  const [settingsData, setSettingsData] = React.useState({
+  const USER_API = useSelector((state: any) => state.userAuthReducer);
+  const [initData, setInitData] = React.useState({
     firstName: user?.firstName,
     lastName: user?.lastName,
     email: user?.email,
     country: user?.country,
-    privacy: "everyone",
+    privacy: user?.privacy,
   });
+  const [settingsData, setSettingsData] = React.useState({ ...initData });
   const [toggleEdit, setToggleEdit] = React.useState({
     name: false,
     email: false,
   });
+  const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<any>({});
   const [open, setOpen] = React.useState(false);
+
   React.useEffect(() => {
     if (errors?.message) {
       setTimeout(() => {
@@ -77,6 +102,15 @@ const SettingsLayout = () => {
       }, 3000);
     }
   }, [errors?.message]);
+  // This is to update initData upon pressing the save button
+  React.useEffect(() => {
+    if (loading) {
+      setLoading(false);
+      const { firstName, lastName, email, country, privacy } =
+        USER_API?.authData?.result;
+      setInitData({ firstName, lastName, email, country, privacy });
+    }
+  }, [USER_API]);
   const handleChange = (e: React.ChangeEvent<any>) => {
     if (errors) {
       setErrors({});
@@ -84,9 +118,9 @@ const SettingsLayout = () => {
     setSettingsData({ ...settingsData, [e.target.name]: e.target.value });
   };
 
+  // may be redundant... consider deleting as I have btn disbaled check
   const checkChanges = () => {
     for (let data in settingsData) {
-      //console.log(user[data]);
       if (settingsData[data] !== user[data]) {
         return;
       }
@@ -123,12 +157,17 @@ const SettingsLayout = () => {
     return true;
   };
 
+  const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setSettingsData(initData);
+  };
+
   // have save button disabled unless changes have been made
-  const handleSubmit = (e: any) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const isValid = onSubmitValidation();
-    console.log(isValid);
     if (isValid) {
+      setLoading(true);
       dispatch(editUserDetails(settingsData));
     }
   };
@@ -276,12 +315,21 @@ const SettingsLayout = () => {
           style={{ margin: 10 }}
           variant="outlined"
           color="primary"
-          disabled={toggleEdit.email || toggleEdit.name}
+          disabled={
+            toggleEdit.email ||
+            toggleEdit.name ||
+            JSON.stringify(initData) === JSON.stringify(settingsData)
+          }
           onClick={handleSubmit}
         >
           Save
         </Button>
-        <Button style={{ margin: 10 }} variant="outlined" color="secondary">
+        <Button
+          style={{ margin: 10 }}
+          variant="outlined"
+          color="secondary"
+          onClick={handleCancel}
+        >
           Cancel
         </Button>
         <Button
@@ -295,6 +343,14 @@ const SettingsLayout = () => {
         </Button>
       </div>
       <Delete open={open} setOpen={setOpen} />
+      {loading && (
+        <div className={classes.overlayLoader}>
+          <CircularProgress
+            size={60}
+            style={{ position: "absolute", zIndex: 10 }}
+          />
+        </div>
+      )}
     </Container>
   );
 };

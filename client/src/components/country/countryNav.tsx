@@ -19,6 +19,10 @@ const CountryNav = (props: any) => {
   const [country, setCountry] = React.useState(
     props.existingCountry ? props.existingCountry : "US"
   );
+  // Might cause issues in other components
+  React.useEffect(() => {
+    setCountry(props.existingCountry);
+  }, [props.existingCountry]);
   const handleChange = (event: React.ChangeEvent<{ value: any }>) => {
     setCountry(countries[event.target.value].code);
     props.callback(countries[event.target.value].code); // this will "pass" the country value to the parent component and can be handled there

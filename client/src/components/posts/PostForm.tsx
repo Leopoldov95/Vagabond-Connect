@@ -154,13 +154,27 @@ const PostForm = (props: any) => {
   };
   const handleChange = (e?: any) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (errors?.[e.target.name]) {
+      let state = { ...errors };
+      delete state?.[e.target.name];
+      setErrors(state);
+    }
   };
   const handleCallback = (country: String) => {
     setFormData({ ...formData, country: country });
   };
   // handle img file
   const handleCapture = ({ target }: any) => {
+    if (errors?.upload) {
+      let state = { ...errors };
+      delete state?.upload;
+      setErrors(state);
+    }
     if (target.files.length > 0) {
+      if (target.files[0].size > 10000000) {
+        setErrors({ ...errors, upload: "File Cannot Exceed 10 MB!" });
+        return setFormData({ ...formData, selectedFile: null });
+      }
       //setFormData({ ...formData, selectedFile: target.files[0] });
       const reader = new FileReader();
       reader.readAsDataURL(target.files[0]);
@@ -302,6 +316,15 @@ const PostForm = (props: any) => {
               ) : (
                 ""
               )}
+              {errors?.upload && (
+                <Typography
+                  component="span"
+                  style={{ marginLeft: 10 }}
+                  color="secondary"
+                >
+                  {errors?.upload}
+                </Typography>
+              )}
             </div>
             <div className={classes.item}>
               <CountryNav
@@ -341,6 +364,7 @@ const PostForm = (props: any) => {
                 color="primary"
                 style={{ marginRight: 20 }}
                 onClick={handleSubmit}
+                disabled={Object.keys(errors).length > 0}
               >
                 Create
               </Button>

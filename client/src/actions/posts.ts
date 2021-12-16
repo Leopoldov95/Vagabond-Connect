@@ -27,7 +27,6 @@ export const getAllPosts =
 export const getUserPosts = (id: any) => async (dispatch: any) => {
   try {
     const { data }: any = await api.fetchUserPosts(id);
-    console.log(data);
     const userPosts = data.filter((post: any) => post?.ownerId === id);
     userPosts.length !== 0
       ? dispatch({ type: FETCH_USER_POSTS, payload: userPosts })
@@ -40,7 +39,6 @@ export const getUserPosts = (id: any) => async (dispatch: any) => {
 export const createPost = (post: any) => async (dispatch: any) => {
   try {
     const { data } = await api.createPost(post);
-    console.log(data);
     dispatch({ type: CREATE_POST, payload: data });
   } catch (error) {
     console.log(error);
@@ -83,8 +81,6 @@ export const likePost = (id: any) => async (dispatch: any) => {
 export const createComment =
   (postId: any, formData: any) => async (dispatch: any) => {
     try {
-      console.log(postId);
-      console.log(formData);
       const { data } = await api.createComment(postId, { formData });
       dispatch({ type: EDIT_POST, payload: data });
     } catch (error) {
@@ -96,9 +92,6 @@ export const createComment =
 export const editComment =
   (comment: String, postId: any, commentId: any) => async (dispatch: any) => {
     try {
-      console.log(comment);
-      console.log(postId);
-      console.log(commentId);
       const { data } = await api.editComment({ comment }, postId, commentId);
       dispatch({ type: EDIT_POST, payload: data });
     } catch (error) {
@@ -110,8 +103,6 @@ export const editComment =
 export const deleteComment =
   (postId: any, commentId: any) => async (dispatch: any) => {
     try {
-      console.log(postId);
-      console.log(commentId);
       const { data } = await api.deleteComment(postId, commentId);
       dispatch({ type: EDIT_POST, payload: data });
     } catch (error) {
