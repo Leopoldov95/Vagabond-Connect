@@ -7,7 +7,7 @@ import { getSingleUser } from "../actions/users";
 import ProfileHeader from "../components/profile/ProfileHeader";
 import ProfileBio from "../components/profile/ProfileBio";
 import ProfileView from "../components/profile/ProfileView";
-
+import SnackbarTool from "../components/snackbar/SnackbarTool";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     maxWidth: 1280,
@@ -40,6 +40,7 @@ const Profile = () => {
       <Grid container className={classes.container}>
         <ProfileView />
       </Grid>
+      <SnackbarTool />
     </React.Fragment>
   );
 };

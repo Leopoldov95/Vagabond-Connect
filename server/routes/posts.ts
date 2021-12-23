@@ -15,9 +15,10 @@ import auth from "../middleware/auth";
 const router = express.Router();
 
 //router.post("/signin", signin);
-router.get("/:id", getAllPosts); // used for home page
+//router.get("/:id/:filter?/:skip?", getAllPosts); // used for home page
+router.get("/:params?", getAllPosts); // retrieves all posts with optional filters
 router.get("/user/:id", getUsersPosts); // used for profile page
-router.post("/", auth, createPost);
+router.post("/create", auth, createPost);
 router.patch("/:id", auth, updatePost);
 router.delete("/:id", auth, deletePost);
 router.patch("/likepost/:id", auth, likePost);

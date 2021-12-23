@@ -37,13 +37,19 @@ const FriendsNav = (props: any) => {
   // everytime the nac changes, make a fetch
   React.useEffect(() => {
     // No user is logged in
-    if (!user) {
+    const filterForm = {};
+    if (user) {
+      filterForm["userId"] = user._id;
+    }
+    filterForm["selected"] = props.selected;
+    dispatch(getAllUsers(filterForm));
+    /*  if (!user) {
       props.setLoading(true);
       dispatch(getAllUsers());
     } else {
       props.setLoading(true);
       dispatch(getAllUsers(user?._id, props.selected));
-    }
+    } */
   }, [props.selected]);
   return (
     <Paper className={classes.container}>

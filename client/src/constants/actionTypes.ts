@@ -21,3 +21,7 @@ export const LOGOUT = "LOGOUT"; // logout, user MUST be logged in
 export const AUTH = "AUTH"; // check authentication
 // Errors
 export const API_ERROR = "API_ERROR"; // check authentication
+// Snackbar Success Messages
+export const SNACKBAR_SUCCESS = "SNACKBAR_SUCCESS";
+export const SNACKBAR_WARNING = "SNACKBAR_WARNING";
+export const SNACKBAR_CLEAR = "SNACKBAR_CLEAR";

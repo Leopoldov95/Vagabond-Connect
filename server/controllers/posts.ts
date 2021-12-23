@@ -2,18 +2,68 @@ import mongoose from "mongoose";
 import Posts from "../models/posts";
 import Users from "../models/users";
 import { Request, Response } from "express";
+
 const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
 
 // Alot will be happening here
 
 // fetch all posts OR posts from people I follow
-export const getAllPosts = async (req: Request, res: Response) => {
+/* export const getAllPosts = async (req: Request, res: Response) => {
   try {
-    const { id: _id } = req.params;
+    // id is my id
+    const { id: _id, filter, skip } = req.params;
     let fetchedPosts;
+
     // retieve all posts we have in the data base
-    if (_id === "0") {
-      fetchedPosts = await Posts.find().sort({ createdAt: -1 }).limit(10);
+    // will have to be filter appropriately based on following filter and continent filter
+    // both filters are active
+    if (_id !== "0" && filter !== "0") {
+      let user;
+      // filter ny both following id and continent
+      if (_id !== "0") {
+        if (!mongoose.Types.ObjectId.isValid(_id))
+          return res.status(404).send("No User with that ID");
+        user = await Users.findById(_id);
+      }
+      console.log(_id);
+      console.log(_id !== "0");
+      fetchedPosts = await Posts.find({
+        ownerId: { $in: user?.following },
+        continent: filter,
+      })
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .skip(Number(skip));
+      // only
+    } else if (_id !== "0") {
+      if (!mongoose.Types.ObjectId.isValid(_id))
+        return res.status(404).send("No User with that ID");
+      const user = await Users.findById(_id);
+
+      fetchedPosts = await Posts.find({
+        ownerId: { $in: user?.following },
+      })
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .skip(Number(skip));
+    } else if (filter !== "0") {
+      fetchedPosts = await Posts.find({
+        continent: filter,
+      })
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .skip(Number(skip));
+    } else {
+      fetchedPosts = await Posts.find()
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .skip(Number(skip));
+    }
+    /*   if (_id !== "0") {
+      fetchedPosts = await Posts.find()
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .skip(Number(skip));
     } else {
       // this is to retieve posts from people I'm following
       if (!mongoose.Types.ObjectId.isValid(_id))
@@ -24,13 +74,13 @@ export const getAllPosts = async (req: Request, res: Response) => {
       })
         .sort({ createdAt: -1 })
         .limit(10);
-    }
-    //console.log(allPosts);
-    res.status(200).json(fetchedPosts);
+    } */
+//console.log(allPosts);
+/*    res.status(200).json(fetchedPosts);
   } catch (error) {
     res.status(404).json({ message: error.message });
   }
-};
+}; */
 
 // fetch users posts only
 export const getUsersPosts = async (req: Request, res: Response) => {
@@ -52,7 +102,14 @@ export const getUsersPosts = async (req: Request, res: Response) => {
 // creta post
 export const createPost = async (req: any, res: Response) => {
   // with POST requests, we have access to req.body
-  const { title, description, country, selectedFile, commentAccess } = req.body;
+  const {
+    title,
+    description,
+    country,
+    selectedFile,
+    commentAccess,
+    continent,
+  } = req.body;
   ////////////////////
   // POSSIBLE FUTURE ISSUE //////////
   // So for now I will store user avatar image as part of the posts,
@@ -69,6 +126,7 @@ export const createPost = async (req: any, res: Response) => {
     title,
     description,
     country,
+    continent,
     commentAccess,
     cloudinary_url: secure_url,
     cloudinary_id: public_id,
@@ -96,6 +154,7 @@ export const updatePost = async (req: any, res: Response) => {
     description,
     selectedFile,
     country,
+    continent,
     commentAccess,
     cloudinary_id,
   } = req.body;
@@ -128,6 +187,7 @@ export const updatePost = async (req: any, res: Response) => {
       title,
       description,
       country,
+      continent,
       commentAccess,
       cloudinary_url: newImg ? newImg.secure_url : selectedFile,
       cloudinary_id: newImg ? newImg.public_id : cloudinary_id,
@@ -258,6 +318,35 @@ export const editComment = async (req: Request, res: Response) => {
       new: true,
     });
     res.status(200).json(updatedPost);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+// testing ///
+// might be able to use this route for both home page feed AND profile feed
+export const getAllPosts = async (req: Request, res: Response) => {
+  const { params } = req.params; // this will be the name of the modified URL
+  const urlParams = new URLSearchParams(params);
+  const filters = Object.fromEntries(urlParams);
+  try {
+    const { userId, continentFilter, skip } = req.body;
+    let user;
+    if (filters.userId) {
+      if (!mongoose.Types.ObjectId.isValid(filters.userId))
+        return res.status(404).send("Not A Valid User Id!");
+      user = await Users.findById(filters.userId);
+    }
+    // need to somehow make this dynamic
+    const posts = await Posts.find({
+      //ownerId:  { $in: user?.following },
+      ownerId: filters.userId ? { $in: user?.following } : /.*/,
+      continent: filters.continentFilter ? filters.continentFilter : /.*/,
+    })
+      .sort({ createdAt: -1 })
+      .limit(10)
+      .skip(filters.skip ? Number(filters.skip) : 0);
+    res.status(200).json(posts);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }

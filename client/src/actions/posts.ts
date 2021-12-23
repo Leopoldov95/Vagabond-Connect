@@ -5,22 +5,30 @@ import {
   DELETE_POST,
   FETCH_ALL_POSTS,
   FETCH_USER_POSTS,
+  SNACKBAR_SUCCESS,
 } from "../constants/actionTypes";
 import * as api from "../api";
 
 // Action creators
 // redux thunk, redux async
 // instead of using return, have to use dispatch
-export const getAllPosts =
-  (id: any = 0) =>
-  async (dispatch: any) => {
-    try {
-      const { data }: any = await api.fetchPosts(id);
-      dispatch({ type: FETCH_ALL_POSTS, payload: data });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+export const getAllPosts = (filterForm: any) => async (dispatch: any) => {
+  try {
+    //const { data }: any = await api.fetchPosts(id);
+    // dynamically create url params here
+    const qs = Object.keys(filterForm)
+      .map((key) => `${key}=${filterForm[key]}`)
+      .join("&");
+    console.log(qs);
+    const { data }: any = await api.fetchAllPosts(qs);
+
+    data.length !== 0
+      ? dispatch({ type: FETCH_ALL_POSTS, payload: data })
+      : dispatch({ type: FETCH_ALL_POSTS, payload: "empty" });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // may want to handle filter on the server
 // 12-10-21, this issue here is that I need to handle the find and filter issue on the balcend
@@ -40,6 +48,7 @@ export const createPost = (post: any) => async (dispatch: any) => {
   try {
     const { data } = await api.createPost(post);
     dispatch({ type: CREATE_POST, payload: data });
+    dispatch({ type: SNACKBAR_SUCCESS, payload: "Post Created!" });
   } catch (error) {
     console.log(error);
   }
@@ -49,7 +58,7 @@ export const updatePost = (id: any, postData: any) => async (dispatch: any) => {
   try {
     // using { data } destructures the res
     const { data } = await api.updatePost(id, postData);
-
+    dispatch({ type: SNACKBAR_SUCCESS, payload: "Post Updated!" });
     dispatch({ type: EDIT_POST, payload: data });
   } catch (error) {
     console.log(error);
@@ -61,6 +70,7 @@ export const deletePost = (id: any) => async (dispatch: any) => {
     await api.deletePost(id);
 
     dispatch({ type: DELETE_POST, payload: id });
+    dispatch({ type: SNACKBAR_SUCCESS, payload: "Post Deleted!" });
   } catch (error) {
     console.log(error);
   }

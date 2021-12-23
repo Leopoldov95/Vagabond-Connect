@@ -20,7 +20,6 @@ import { lightGreen } from "@material-ui/core/colors";
 import {
   Mail,
   Search,
-  Notifications,
   Cancel,
   Public,
   ExpandMore,
@@ -144,7 +143,9 @@ const Navbar = () => {
     if (token) {
       // decodes the token, checking if tken is expired. If so, user must sign back in
       const decodedToken: any = decode(token);
-      if (decodedToken?.exp * 1000 < new Date().getTime()) logout();
+      if (decodedToken?.exp * 1000 < new Date().getTime()) {
+        logout();
+      }
     }
 
     setUser(JSON.parse(localStorage.getItem("profile")));
@@ -166,6 +167,7 @@ const Navbar = () => {
   const logout = () => {
     dispatch({ type: "LOGOUT" });
     history.push("/");
+    dispatch({ type: "SNACKBAR_SUCCESS", payload: "You Have Logged Out." });
     setUser(null);
   };
 
@@ -264,16 +266,12 @@ const Navbar = () => {
             </div>
 
             <div className={classes.item}>
-              <Badge badgeContent={4} color="secondary">
-                <Mail />
-              </Badge>
-              <Typography className={classes.text}>Messages</Typography>
-            </div>
-            <div className={classes.item}>
-              <Badge badgeContent={2} color="secondary">
-                <Notifications />
-              </Badge>
-              <Typography className={classes.text}>Notifications</Typography>
+              <Link to="/messages" className={classes.link}>
+                <Badge badgeContent={4} color="secondary">
+                  <Mail />
+                </Badge>
+                <Typography className={classes.text}>Messages</Typography>
+              </Link>
             </div>
           </div>
           <div className={classes.avatar} onClick={handleProfileMenuOpen}>

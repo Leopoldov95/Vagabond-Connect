@@ -149,7 +149,10 @@ export const editUserDetails = async (req: any, res: Response) => {
 //mondodb has a .sot() method
 export const fetchAllUsers = async (req: any, res: Response) => {
   try {
-    const { id, action, skip } = req.params;
+    /*  const { id, action, skip } = req.params; */
+    const { params } = req.params; // this will be the name of the modified URL
+    const urlParams = new URLSearchParams(params);
+    const filters = Object.fromEntries(urlParams);
     const ignore = {
       country: 0,
       email: 0,
@@ -163,11 +166,17 @@ export const fetchAllUsers = async (req: any, res: Response) => {
       favoriteCountries: 0,
       visitedCountries: 0,
     };
-    let fetchedUsers;
 
+    let user;
+    let fetchedUsers;
     // no user is logged in, send all users
     // may want to post a number to represent what to skip (example number of users.length from client)
-    if (id.length === 1) {
+    if (filters.userId) {
+      if (!mongoose.Types.ObjectId.isValid(filters.userId))
+        return res.status(404).send("Not A Valid User Id!");
+      user = await Users.findById(filters.userId);
+    }
+    if (!filters.userId) {
       fetchedUsers = await Users.find(
         {},
         {
@@ -175,33 +184,22 @@ export const fetchAllUsers = async (req: any, res: Response) => {
         }
       ).limit(30);
     } else {
-      // there is a user logged in, so we will need to filter
-      if (!mongoose.Types.ObjectId.isValid(id))
-        return res.status(404).send("No User with that ID");
-      const user = await Users.findById(id);
-      // might want error handling if no user exists with that id. be mindful of the error handling here...
-
-      // we want to retrieve from list of following OR followers
-      if (user[action]) {
-        fetchedUsers = await Users.find(
-          { _id: { $in: user[action] } },
-          {
-            ...ignore,
-          }
-        ).limit(30);
-      } else {
-        // we will send all users that you are not following
-        fetchedUsers = await Users.find(
-          { _id: { $nin: user["following"] } },
-          {
-            ...ignore,
-          }
-        ).limit(30);
-      }
+      // we have an authenticad user
+      fetchedUsers = await Users.find(
+        {
+          _id:
+            filters.selected !== "find"
+              ? { $in: user[filters.selected] }
+              : { $nin: user["following"] },
+        },
+        {
+          ...ignore,
+        }
+      ).limit(30);
     }
-
     res.status(200).json(fetchedUsers);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Something went wrong." });
   }
 };

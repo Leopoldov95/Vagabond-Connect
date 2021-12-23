@@ -75,7 +75,7 @@ const Post = (props: any) => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const post = props?.post;
   const userCommentInfo = useSelector((state: any) => state.commentUser);
-  const posts = useSelector((state: any) => state.postsReducer); // need this to update changes when posts change
+  const postReducer = useSelector((state: any) => state.postsReducer); // need this to update changes when posts change
   const classes = useStyles();
   const menuId = "post-settings";
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -90,23 +90,24 @@ const Post = (props: any) => {
   // this method will render ALL comments profile pictures even when not in view...
   React.useEffect(() => {
     if (post.comments.length > 0) {
-      console.log("this post has comments");
+      // to avoid complicated rendering issue, we will already get the logged in users information, so when they create a comment, it won't have rendering issues
+      if (user) {
+        dispatch(fetchUserCommentInfo(user._id));
+      }
+
       for (let comment of post.comments) {
         if (userCommentInfo.size > 0) {
           if (userCommentInfo.has(`${comment.commentOwnerId}`)) {
-            console.log("Your id and img is alread here!");
           } else {
-            console.log("You id is not here and we need to fetch it");
             // we will dispatch here
             dispatch(fetchUserCommentInfo(comment.commentOwnerId));
           }
         } else {
-          console.log("the list is empty and we need to fetch imagaes!!!!!!");
           dispatch(fetchUserCommentInfo(comment.commentOwnerId));
         }
       }
     }
-  }, [dispatch, posts]);
+  }, [dispatch, postReducer]);
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };

@@ -134,6 +134,11 @@ const SignUp = () => {
       delete state?.upload;
       setErrors(state);
     }
+    if (errors?.selectedFile) {
+      let state = { ...errors };
+      delete state?.selectedFile;
+      setErrors(state);
+    }
     if (target?.files.length > 0) {
       if (target.files[0].size > 10000000) {
         setErrors({ ...errors, upload: "File Cannot Exceed 10 MB!" });

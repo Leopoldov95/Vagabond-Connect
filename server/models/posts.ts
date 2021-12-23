@@ -10,6 +10,7 @@ const postSchema = new mongoose.Schema({
   description: { type: String, required: true },
   commentAccess: { type: String, required: true },
   country: { type: String, required: true },
+  continent: { type: String, required: true },
   likes: { type: [String], default: [] },
   comments: {
     type: [

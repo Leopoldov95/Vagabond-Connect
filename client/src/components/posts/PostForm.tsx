@@ -2,6 +2,7 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CountryNav from "../country/countryNav";
+import countries from "../country/countries";
 import {
   Container,
   Button,
@@ -103,6 +104,7 @@ const initialState = {
   description: "",
   selectedFile: null,
   country: "US",
+  continent: countries["US"].continent,
   commentAccess: "Everyone",
 };
 const PostForm = (props: any) => {
@@ -129,6 +131,7 @@ const PostForm = (props: any) => {
         description: post.description,
         selectedFile: post.cloudinary_url,
         country: post.country,
+        continent: countries[post.countries].continent,
         commentAccess: post.commentAccess,
       });
   }, [post, props.open]);
@@ -160,14 +163,23 @@ const PostForm = (props: any) => {
       setErrors(state);
     }
   };
-  const handleCallback = (country: String) => {
-    setFormData({ ...formData, country: country });
+  const handleCallback = (country: any) => {
+    setFormData({
+      ...formData,
+      country: country,
+      continent: countries[country].continent,
+    });
   };
   // handle img file
   const handleCapture = ({ target }: any) => {
     if (errors?.upload) {
       let state = { ...errors };
       delete state?.upload;
+      setErrors(state);
+    }
+    if (errors?.selectedFile) {
+      let state = { ...errors };
+      delete state?.selectedFile;
       setErrors(state);
     }
     if (target.files.length > 0) {

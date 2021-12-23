@@ -6,6 +6,7 @@ import {
   AUTH,
   API_ERROR,
   FETCH_COMMENT_USER,
+  SNACKBAR_SUCCESS,
 } from "../constants/actionTypes";
 
 import * as API from "../api";
@@ -16,6 +17,8 @@ export const signin =
       // log in the user
       const { data } = await API.signin(formData);
       dispatch({ type: AUTH, data });
+      // we will want to use this reducer for the snackbar component
+      dispatch({ type: SNACKBAR_SUCCESS, payload: "Successfully signed in!" });
       // console.log(data);
       history.push("/");
     } catch (error: any) {
@@ -30,7 +33,7 @@ export const signup =
       const { data } = await API.signup(formData);
 
       dispatch({ type: AUTH, data });
-
+      dispatch({ type: SNACKBAR_SUCCESS, payload: "Account Created!" });
       history.push("/");
     } catch (error: any) {
       //console.log(error);
@@ -47,6 +50,7 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
     // may want to host default default bg image for ALL users and use it during creation process
     const { data } = await API.editProfileImg(formData);
     dispatch({ type: EDIT_USER, data });
+    dispatch({ type: SNACKBAR_SUCCESS, payload: "Profile Image(s) Updated!" });
 
     // may need to change location to reflect change in real time
   } catch (error: any) {
@@ -81,18 +85,21 @@ export const getSingleUser = (id: any) => async (dispatch: any) => {
   }
 };
 
-export const getAllUsers =
-  (id: any = 0, action: any = "find", skip: any = 0) =>
-  async (dispatch: any) => {
-    try {
-      // console.log(id, action, skip);
-      const { data } = await API.fetchAllUsers(id, action, skip);
-      //console.log(data);
-      dispatch({ type: FETCH_ALL_USER, payload: data });
-    } catch (error) {
-      console.log(error);
-    }
-  };
+// we will want to use URL params here as well
+export const getAllUsers = (filterForm: any) => async (dispatch: any) => {
+  try {
+    const qs = Object.keys(filterForm)
+      .map((key) => `${key}=${filterForm[key]}`)
+      .join("&");
+    console.log(qs);
+    // console.log(id, action, skip);
+    const { data } = await API.fetchAllUsers(qs);
+    //console.log(data);
+    dispatch({ type: FETCH_ALL_USER, payload: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 // follow a user
 // for now, no permission is required

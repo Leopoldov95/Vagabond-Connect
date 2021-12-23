@@ -77,12 +77,16 @@ const ProfileView = () => {
   }, [USER_API]);
   //console.log(userProfile);
   React.useEffect(() => {
+    let filterForm = {};
+    filterForm["userId"] = id;
     switch (value) {
       case 1:
-        dispatch(getAllUsers(id, "following"));
+        filterForm["selected"] = "following";
+        dispatch(getAllUsers(filterForm));
         break;
       case 2:
-        dispatch(getAllUsers(id, "followers"));
+        filterForm["selected"] = "followers";
+        dispatch(getAllUsers(filterForm));
         break;
       default:
         return;

@@ -2,7 +2,7 @@ import axios from "axios";
 
 // so by using this url, we can use the backend logic
 const API = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "http://localhost:5001",
 });
 // this function will run on every request, it's helping the middleware function
 API.interceptors.request.use((req: any) => {
@@ -23,18 +23,20 @@ export const signin = (formData: any) => API.post("/users/signin", formData);
 // user
 export const editUserDetails = (formData: any) => API.post("/users", formData);
 export const fetchSingleUser = (id: any) => API.post("/users/single", id);
-export const fetchAllUsers = (id: any, action: any, skip: any) =>
-  API.get(`/users/${id}/${action}/${skip}`);
+export const fetchAllUsers = (params: any) => API.get(`/users/${params}`);
 export const editProfileImg = (data: any) =>
   API.patch(`/users/${data?.user?._id}/profileImg`, data); // might want to redo this route
 export const followUser = (id: any) => API.post(`users/follow/${id}`); // might not need post but patch
 export const fetchUserCommentInfo = (id: any) => API.get(`users/comment/${id}`);
 export const editUserCountryList = (name: String, formData: any) =>
   API.patch(`users/list/${name}`, formData);
+///////////////////
 // POSTS routes
-export const fetchPosts = (id: any) => API.get(`/posts/${id}`);
+/* export const fetchPosts = (id: any = 0, filter: any = 0, skip: any = 0) =>
+  API.get(`/posts/${id}/${filter}/${skip}`); */
+export const fetchAllPosts = (params: any) => API.get(`/posts/${params}`); // This route will be used to handle fetching all posts and applying filters
 export const fetchUserPosts = (id: any) => API.get(`/posts/user/${id}`);
-export const createPost = (newPost: any) => API.post("/posts", newPost);
+export const createPost = (newPost: any) => API.post("/posts/create", newPost);
 //export const deletePost = (id: any) => API.delete("posts", id)
 export const updatePost = (id: any, updatedPost: any) =>
   API.patch(`/posts/${id}`, updatedPost);

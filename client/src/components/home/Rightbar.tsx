@@ -1,3 +1,6 @@
+// This component will FETCH posts based on the continent
+// deleting/removing the filter will fetch back to default
+// for performance, should store continent info in db
 import {
   makeStyles,
   Container,
@@ -75,12 +78,12 @@ const continents = [
   },
 ];
 // at smaller screen size, set this to a dropdown filter menu
-const Rightbar = (props: any) => {
+const Rightbar = ({ filter, setFilter }) => {
   const handleClick = (name: String) => {
-    props.setFilter(name);
+    setFilter(name);
   };
   const handleDelete = () => {
-    props.setFilter(null);
+    setFilter("");
   };
   const classes = useStyles();
   return (
@@ -89,9 +92,9 @@ const Rightbar = (props: any) => {
         <Typography className={classes.title} gutterBottom>
           Explore
         </Typography>
-        {props.filter && (
+        {filter && (
           <Chip
-            label={props.filter}
+            label={filter}
             onDelete={handleDelete}
             className={classes.chip}
           />
