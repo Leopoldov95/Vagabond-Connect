@@ -22,14 +22,17 @@ export const signup = (formData: any) => API.post("/users/signup", formData);
 export const signin = (formData: any) => API.post("/users/signin", formData);
 // user
 export const editUserDetails = (formData: any) => API.post("/users", formData);
-export const fetchSingleUser = (id: any) => API.post("/users/single", id);
+export const fetchSingleUser = (id: any) => API.post("/users/single", id); // why a POST request?
 export const fetchAllUsers = (params: any) => API.get(`/users/${params}`);
+export const searchUsers = (name: any) => API.get(`/users/search/${name}`);
 export const editProfileImg = (data: any) =>
   API.patch(`/users/${data?.user?._id}/profileImg`, data); // might want to redo this route
 export const followUser = (id: any) => API.post(`users/follow/${id}`); // might not need post but patch
 export const fetchUserCommentInfo = (id: any) => API.get(`users/comment/${id}`);
 export const editUserCountryList = (name: String, formData: any) =>
   API.patch(`users/list/${name}`, formData);
+export const deleteUser = (id: any, password: any) =>
+  API.post(`users/delete/${id}`, password);
 ///////////////////
 // POSTS routes
 /* export const fetchPosts = (id: any = 0, filter: any = 0, skip: any = 0) =>

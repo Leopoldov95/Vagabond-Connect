@@ -62,7 +62,7 @@ const ProfileView = () => {
   const dispatch = useDispatch();
   const { id }: any = useParams();
   const [user, setUser] = React.useState(
-    JSON.parse(localStorage.getItem("profile")).result
+    JSON.parse(localStorage.getItem("profile"))?.result
   );
   const USER_API = useSelector((state: any) => state.userAuthReducer);
   const userProfile = useSelector((state: any) => state.singleUser);
@@ -71,11 +71,18 @@ const ProfileView = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+  /*   console.log(user);
+  console.log(USER_API);
+  console.log(userProfile); */
+  // dont recall why I added this here...
   React.useEffect(() => {
     //console.log(USER_API);
-    setUser(USER_API?.authData?.result);
+    if (USER_API) {
+      setUser(USER_API?.authData?.result);
+    }
   }, [USER_API]);
   //console.log(userProfile);
+  // This is to handle viewing users profile firend list
   React.useEffect(() => {
     let filterForm = {};
     filterForm["userId"] = id;

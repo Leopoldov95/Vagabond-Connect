@@ -52,6 +52,11 @@ const CountryList = (props: any) => {
   const [isSame, setIsSame] = React.useState(true); // will remain true until user changes value of local countries array
   const [localCountries, setLocalCountries] = React.useState(props.countries); // this is needed so we can make chnges to the local level
   // here we will handle the changed country
+  console.log(localCountries);
+  // will need this to handle profile url changes
+  React.useEffect(() => {
+    setLocalCountries(props.countries);
+  }, [props.countries]);
   React.useEffect(() => {
     if (JSON.stringify(localCountries) !== JSON.stringify(props.countries)) {
       setIsSame(false);
@@ -104,7 +109,7 @@ const CountryList = (props: any) => {
   return (
     <React.Fragment>
       <div className={classes.listContainer}>
-        {localCountries.length > 0 ? (
+        {localCountries && localCountries.length > 0 ? (
           localCountries.map((item: any, idx: number) => (
             <SingleCountry
               key={idx}

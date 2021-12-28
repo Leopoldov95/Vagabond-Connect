@@ -1,6 +1,7 @@
 // Posts reducers
 import {
   FETCH_ALL_POSTS,
+  FETCH_MORE_POSTS,
   FETCH_USER_POSTS,
   CREATE_POST,
   EDIT_POST,
@@ -21,10 +22,13 @@ const postsReducer = (posts: any = [], action: any) => {
 
     case FETCH_ALL_POSTS:
       return action.payload;
+    case FETCH_MORE_POSTS:
+      console.log("made it to reducer ");
+      return [...posts, ...action.payload];
     case FETCH_USER_POSTS:
       return action.payload;
     case CREATE_POST:
-      return [...posts, action.payload];
+      return [action.payload, ...posts];
     default:
       return posts;
       break;

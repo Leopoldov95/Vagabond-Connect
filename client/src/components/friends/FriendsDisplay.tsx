@@ -84,7 +84,7 @@ const FriendsDisplay = (props: any) => {
             No One Here
           </Typography>
         )
-      ) : user ? (
+      ) : user || id ? (
         renderUsers.length > 0 ? (
           renderUsers.map((user) => (
             <Grid item>

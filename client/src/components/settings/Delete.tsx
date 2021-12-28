@@ -1,4 +1,7 @@
+// will want to handle error on client side, maybe make password border red when invalid password?
 import * as React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory } from "react-router-dom";
 import {
   Modal,
   Typography,
@@ -7,8 +10,10 @@ import {
   Button,
   Container,
   TextField,
+  CircularProgress,
 } from "@material-ui/core";
 import { Warning } from "@material-ui/icons";
+import { deleteUser } from "../../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     width: 500,
@@ -31,11 +36,27 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Delete = (props: any) => {
+  const dispatch = useDispatch();
+  const history = useHistory();
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const snackbarMessage = useSelector((state: any) => state.snackbar);
   const classes = useStyles();
   const [password, setPassword] = React.useState("");
   const [errors, setErrors] = React.useState<any>({});
+  const [loading, setLoading] = React.useState(false);
+  React.useEffect(() => {
+    if (snackbarMessage?.type === "error") {
+      setLoading(false);
+    }
+  }, [snackbarMessage]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
+  };
+
+  const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    dispatch(deleteUser(user._id, password, history));
   };
   return (
     <Modal open={props?.open}>
@@ -81,10 +102,20 @@ const Delete = (props: any) => {
             className={classes.btnDelete}
             variant="contained"
             startIcon={<Warning />}
+            onClick={handleDelete}
+            disabled={password.length < 1}
           >
             Delete Account
           </Button>
         </div>
+        {loading && (
+          <div className={"overlayLoader"}>
+            <CircularProgress
+              size={60}
+              style={{ position: "absolute", zIndex: 10 }}
+            />
+          </div>
+        )}
       </Container>
     </Modal>
   );

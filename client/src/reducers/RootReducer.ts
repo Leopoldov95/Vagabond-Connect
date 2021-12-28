@@ -7,10 +7,13 @@ import {
   userCommentInfo,
 } from "./users";
 import { snackbarMessage } from "./snackbar";
+import { isMorePostsReducer, isMoreUsersReducer } from "./isMore";
 import postsReducer from "./posts";
 const RootReducer = combineReducers({
   userAuthReducer,
   postsReducer,
+  isMorePostsReducer,
+  isMoreUsersReducer,
   snackbar: snackbarMessage,
   singleUser: userInfoReducer,
   allUsers: allUsersReducer,

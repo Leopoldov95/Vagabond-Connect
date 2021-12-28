@@ -7,12 +7,13 @@ import {
   Theme,
   CircularProgress,
   Button,
+  TextField,
 } from "@material-ui/core";
+import { Edit, Close } from "@material-ui/icons";
 import { followUser } from "../../actions/users";
 import countries from "../country/countries";
 import { useHistory } from "react-router";
-import { getSingleUser } from "../../actions/users";
-import { getUserPosts } from "../../actions/posts";
+import { lightGreen } from "@material-ui/core/colors";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(4),
@@ -27,6 +28,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: "center",
     alignItems: "center",
   },
+  btnEdit: {
+    color: lightGreen[700],
+    border: `1px solid ${lightGreen[700]}`,
+    marginLeft: theme.spacing(1),
+    "&:hover": {
+      color: lightGreen[500],
+      border: `1px solid ${lightGreen[500]}`,
+      backgroundColor: lightGreen[50],
+    },
+  },
 }));
 // will want to showcase follwing and followers in group avatar, can use post id reucer to manage users profile img
 // to display profile owner country info, may want to use data from MongoDB
@@ -39,9 +50,18 @@ const ProfileBio = () => {
   const [authUser, setAuthUser] = React.useState(
     JSON.parse(localStorage.getItem("profile"))?.result
   );
-  const [tempDisabled, setTempDisabled] = React.useState(false);
   const displayUser =
     Object.keys(userProfile).length > 0 ? userProfile : authUser;
+  const [tempDisabled, setTempDisabled] = React.useState(false);
+  const [bio, setBio] = React.useState(""); // will want to populate using users bio data, may want to relook into Country List complicatiob, no need to explicitly store users data into a state, can just retrieve from localStorage. may also want to reuse profile_edit route
+  const [isEdit, setIsEdit] = React.useState(false);
+  // need this to handle render load issue
+  React.useEffect(() => {
+    if (displayUser) {
+      setBio(displayUser.bio);
+    }
+  }, [displayUser]);
+
   // This is to handle the api call for the follow btn
   React.useEffect(() => {
     setAuthUser(JSON.parse(localStorage.getItem("profile"))?.result);
@@ -57,6 +77,9 @@ const ProfileBio = () => {
   /*  dispatch(getSingleUser(displayUser._id));
     dispatch(getUserPosts(displayUser._id));
   }, [userReducer]); */
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setBio(e.target.value);
+  };
   const handleFollow = () => {
     setTempDisabled(true);
     dispatch(followUser(displayUser._id));
@@ -111,18 +134,29 @@ const ProfileBio = () => {
                 Follow
               </Button>
             )}
+            {authUser && authUser?._id === displayUser?._id && (
+              <Button
+                variant="outlined"
+                className={classes.btnEdit}
+                startIcon={isEdit ? <Close /> : <Edit />}
+                onClick={() => setIsEdit(!isEdit)}
+              >
+                Edit Bio
+              </Button>
+            )}
           </div>
-
-          <Typography variant="body1">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores
-            nobis dicta totam voluptatem ipsum hic error tempore? Incidunt
-            suscipit in amet neque dolorem recusandae sunt ipsum, tempora
-            aliquid perferendis! Labore. Lorem ipsum dolor sit, amet consectetur
-            adipisicing elit. Odio dolores magnam quisquam, impedit mollitia
-            tempora repellendus, ipsam voluptatibus, praesentium laboriosam
-            perferendis itaque! Veritatis deserunt, nobis modi autem voluptatem
-            itaque iusto.
-          </Typography>
+          {isEdit ? (
+            <TextField
+              multiline
+              label="Edit Bio"
+              maxRows={4}
+              value={bio}
+              onChange={handleChange}
+              inputProps={{ maxLength: 400 }}
+            />
+          ) : (
+            <Typography variant="body1">{bio}</Typography>
+          )}
         </React.Fragment>
       ) : (
         <div style={{ marginTop: "3rem" }}>

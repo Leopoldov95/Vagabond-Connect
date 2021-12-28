@@ -4,9 +4,9 @@ import {
   FETCH_ALL_USER,
   DELETE_USER,
   AUTH,
-  API_ERROR,
   FETCH_COMMENT_USER,
   SNACKBAR_SUCCESS,
+  SNACKBAR_ERROR,
 } from "../constants/actionTypes";
 
 import * as API from "../api";
@@ -22,7 +22,10 @@ export const signin =
       // console.log(data);
       history.push("/");
     } catch (error: any) {
-      dispatch({ type: API_ERROR, payload: error?.response?.data?.message });
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: error?.response?.data?.message,
+      });
     }
   };
 
@@ -36,8 +39,10 @@ export const signup =
       dispatch({ type: SNACKBAR_SUCCESS, payload: "Account Created!" });
       history.push("/");
     } catch (error: any) {
-      //console.log(error);
-      dispatch({ type: API_ERROR, payload: error?.response?.data?.message });
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: error?.response?.data?.message,
+      });
     }
   };
 export const editProfileImg = (formData: any) => async (dispatch: any) => {
@@ -55,9 +60,15 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
     // may need to change location to reflect change in real time
   } catch (error: any) {
     if (error?.response?.data?.message) {
-      dispatch({ type: API_ERROR, payload: error?.response?.data?.message });
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: error?.response?.data?.message,
+      });
     } else {
-      dispatch({ type: API_ERROR, payload: "Something Went Wrong..." });
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: "Something Went Wrong...",
+      });
     }
   }
 };
@@ -69,17 +80,23 @@ export const editUserDetails = (formData: any) => async (dispatch: any) => {
     dispatch({ type: EDIT_USER, data });
   } catch (error: any) {
     if (error?.response?.data?.message) {
-      dispatch({ type: API_ERROR, payload: error?.response?.data?.message });
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: error?.response?.data?.message,
+      });
     } else {
-      dispatch({ type: API_ERROR, payload: "Something Went Wrong..." });
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: "Something Went Wrong...",
+      });
     }
   }
 };
 
 export const getSingleUser = (id: any) => async (dispatch: any) => {
   try {
-    const { data } = await API.fetchSingleUser({ id });
-    dispatch({ type: FETCH_USER, payload: data });
+    const { data }: any = await API.fetchSingleUser({ id });
+    dispatch({ type: FETCH_USER, payload: data[0] });
   } catch (error) {
     console.log(error);
   }
@@ -144,5 +161,24 @@ export const updateUserCountryList =
       dispatch({ type: EDIT_USER, data });
     } catch (error) {
       console.log(error);
+    }
+  };
+
+// DELETE USER
+
+export const deleteUser =
+  (id: any, password: any, history: any) => async (dispatch: any) => {
+    try {
+      //console.log(password);
+      await API.deleteUser(id, { password });
+      dispatch({ type: DELETE_USER });
+      dispatch({ type: SNACKBAR_SUCCESS, payload: "Account Deleted!" });
+      // console.log(data);
+      history.push("/");
+    } catch (error: any) {
+      dispatch({
+        type: SNACKBAR_ERROR,
+        payload: error?.response?.data?.message,
+      });
     }
   };

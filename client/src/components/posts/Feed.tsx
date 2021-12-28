@@ -36,7 +36,6 @@ const Feed = (props: any) => {
         editPostId={editPostId}
         setEditPostId={setEditPostId}
       />
-      <LoadMore />
     </Container>
   );
 };

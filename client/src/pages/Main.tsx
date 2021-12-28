@@ -9,6 +9,7 @@ import Feed from "../components/posts/Feed";
 import Rightbar from "../components/home/Rightbar";
 import PostsToggle from "../components/home/PostsToggle";
 import SnackbarTool from "../components/snackbar/SnackbarTool";
+import LoadMore from "../components/posts/LoadMore";
 const useStyles = makeStyles((theme: Theme) => ({
   right: {
     [theme.breakpoints.down("sm")]: {
@@ -78,6 +79,7 @@ const Main = () => {
       <Grid item sm={7} xs={10}>
         {user && <PostsToggle toggle={toggle} setToggle={setToggle} />}
         <Feed />
+        <LoadMore filter={filter} />
       </Grid>
       <Grid item sm={3} className={classes.right}>
         <Rightbar filter={filter} setFilter={setFilter} />

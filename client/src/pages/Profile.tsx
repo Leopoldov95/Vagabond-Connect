@@ -23,6 +23,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { id }: any = useParams(); // retrieves user_id from url params
+
   React.useEffect(() => {
     if (id.length !== 24) {
       history.push("/");
@@ -32,6 +33,7 @@ const Profile = () => {
     dispatch(getUserPosts(id));
     console.log("I was initiated");
   }, [dispatch, history, id]);
+
   // this will trigger the entire page to rerender
   return (
     <React.Fragment>

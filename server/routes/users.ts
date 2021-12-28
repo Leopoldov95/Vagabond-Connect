@@ -7,16 +7,20 @@ import {
   editUserDetails,
   fetchSingleUser,
   fetchAllUsers,
+  searchUsers,
   followUser,
   fetchUserCommentInfo,
   editUserCountryList,
+  deleteUser,
 } from "../controllers/users";
 import auth from "../middleware/auth";
 const router = express.Router();
 
 //router.post("/signin", signin);
 router.post("/", auth, editUserDetails);
+router.post("/delete/:id", auth, deleteUser);
 router.get("/:params?", fetchAllUsers);
+router.get("/search/:query", searchUsers);
 router.post("/follow/:id", auth, followUser);
 router.post("/single", fetchSingleUser);
 router.post("/signup", signup);

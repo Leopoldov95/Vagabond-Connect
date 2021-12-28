@@ -110,10 +110,6 @@ export const createPost = async (req: any, res: Response) => {
     commentAccess,
     continent,
   } = req.body;
-  ////////////////////
-  // POSSIBLE FUTURE ISSUE //////////
-  // So for now I will store user avatar image as part of the posts,
-  // IF houwver the post owner changes their porfile picture in the future, MUST apply porofile pic change to all posts, might need a better method in the futrue?
   const { profile_cloudinary, firstName, lastName } = await Users.findById(
     req?.userId
   );
@@ -132,13 +128,16 @@ export const createPost = async (req: any, res: Response) => {
     cloudinary_id: public_id,
     ownerId: req?.userId,
     ownerName: `${firstName} ${lastName}`,
-    ownerAvatar: profile_cloudinary,
+    ownerAvatar: profile_cloudinary ? profile_cloudinary : "",
     createdAt: new Date().toISOString(),
   });
+  console.log(newPost);
   try {
+    console.log("I got her first, befre the post creation");
     await newPost.save(); //save() is asynchronous\
     res.status(201).json(newPost);
   } catch (err) {
+    console.log(err);
     res.status(409).json({ message: err.message });
   }
 };
@@ -212,10 +211,9 @@ export const deletePost = async (req: Request, res: Response) => {
     // checks if id is valid
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).send("No post with that ID");
-
+    const existingPost: any = await Posts.findById(id);
+    await deleteCloudinaryImg(existingPost.cloudinary_id);
     await Posts.findByIdAndRemove(id);
-
-    console.log("DELETE REACHED");
 
     res.json({ message: "Post Deleted Successfully" });
   } catch (error) {
@@ -330,7 +328,7 @@ export const getAllPosts = async (req: Request, res: Response) => {
   const urlParams = new URLSearchParams(params);
   const filters = Object.fromEntries(urlParams);
   try {
-    const { userId, continentFilter, skip } = req.body;
+    //const { userId, continentFilter, skip } = req.body;
     let user;
     if (filters.userId) {
       if (!mongoose.Types.ObjectId.isValid(filters.userId))
@@ -346,7 +344,9 @@ export const getAllPosts = async (req: Request, res: Response) => {
       .sort({ createdAt: -1 })
       .limit(10)
       .skip(filters.skip ? Number(filters.skip) : 0);
-    res.status(200).json(posts);
+    const isMore = posts?.length % 10 === 0;
+
+    res.status(200).json({ posts, isMore });
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }

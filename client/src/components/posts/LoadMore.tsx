@@ -4,7 +4,7 @@
 // may want a special get route for this
 // might want to make fetching posts a POST request to handle different filters...
 import * as React from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Button,
   makeStyles,
@@ -12,6 +12,7 @@ import {
   CircularProgress,
   Typography,
 } from "@material-ui/core";
+import { getAllPosts } from "../../actions/posts";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     textAlign: "center",
@@ -37,15 +38,25 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-const LoadMore = () => {
+const LoadMore = ({ filter }) => {
+  const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const classes = useStyles();
+  const dispatch = useDispatch();
   const currentPosts = useSelector((state: any) => state.postsReducer);
+  const isMore = useSelector((state: any) => state.isMorePostsReducer);
   const [loading, setLoading] = React.useState(false);
-  const [isMore, setIsMore] = React.useState(true); // set to false if no more posts can be loaded
-
+  //const [isMore, setIsMore] = React.useState(true); // set to false if no more posts can be loaded
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log(currentPosts.length);
+    let filterForm = {};
+    if (filter.length > 0) {
+      filterForm["continentFilter"] = filter;
+    }
+    if (user) {
+      filterForm["userId"] = user._id;
+    }
+    filterForm["skip"] = currentPosts.length;
+    dispatch(getAllPosts(filterForm));
     // we will use the length of the current posts and use that to implement the MongoDB skip method
   };
   return (
@@ -54,7 +65,7 @@ const LoadMore = () => {
         <Button
           color="primary"
           variant="outlined"
-          disabled={loading}
+          disabled={loading || currentPosts === "empty"}
           onClick={handleClick}
         >
           Load More

@@ -11,9 +11,12 @@ function Alert(props: AlertProps) {
 const SnackbarTool = () => {
   const dispatch = useDispatch();
   const snackbarMessage = useSelector((state: any) => state.snackbar);
-  const [open, setOpen] = React.useState(
-    Object.keys(snackbarMessage).length > 0
-  );
+  const [open, setOpen] = React.useState(false);
+  React.useEffect(() => {
+    if (snackbarMessage?.message?.length > 0) {
+      setOpen(true);
+    }
+  }, [snackbarMessage]);
   const handleClose = (
     event: React.SyntheticEvent | React.MouseEvent,
     reason?: string

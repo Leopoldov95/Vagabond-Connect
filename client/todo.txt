@@ -26,9 +26,10 @@
 - For user edit, may not need to pass user props for id, get value from params instead (user.userId)
 
 - 12/13/21 - To do
+- make bio editable
 - clean up posts fetch and know how to handle empty post returns AND porfile post view
-- redo friends retrive by using filter
 - will want to figure out a method to retrieve "load more" on posts and users
+- get serachbar to work, show users
 - later on, will want to handle offline errors
 - When updating a post, either by patch or put, must provide params, better practive // REVIEW API ROUTES (1 issue)
 - create snackbar for the following actions: account deletion

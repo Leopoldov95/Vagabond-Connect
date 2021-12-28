@@ -4,7 +4,7 @@ const postSchema = new mongoose.Schema({
   title: { type: String, required: true },
   ownerId: { type: String, required: true },
   ownerName: { type: String, required: true },
-  ownerAvatar: { type: String, required: true },
+  ownerAvatar: { type: String },
   cloudinary_url: { type: String, required: true },
   cloudinary_id: { type: String, required: true },
   description: { type: String, required: true },

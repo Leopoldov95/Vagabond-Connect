@@ -1,5 +1,6 @@
 // Posts
 export const FETCH_ALL_POSTS = "FETCH_ALL_POSTS"; // retrieve all posts
+export const FETCH_MORE_POSTS = "FETCH_MORE_POSTS"; // Loads more posts
 export const FETCH_USER_POSTS = "FETCH_USER_POSTS"; // retrieve all users posts
 export const CREATE_POST = "CREATE_POST"; // create a post, user MUST be logged in
 export const DELETE_POST = "DELETE_POST"; // delete a post, user MUST be logged in and can ONLY delete their own posts
@@ -24,4 +25,8 @@ export const API_ERROR = "API_ERROR"; // check authentication
 // Snackbar Success Messages
 export const SNACKBAR_SUCCESS = "SNACKBAR_SUCCESS";
 export const SNACKBAR_WARNING = "SNACKBAR_WARNING";
+export const SNACKBAR_ERROR = "SNACKBAR_ERROR";
 export const SNACKBAR_CLEAR = "SNACKBAR_CLEAR";
+// Load More
+export const IS_MORE_POSTS = "IS_MORE_POSTS";
+export const IS_MORE_USERS = "IS_MORE_USERS";

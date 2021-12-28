@@ -98,19 +98,17 @@ const SignUp = () => {
   const [formData, setFormData] = React.useState<any>(initialState);
   const [loading, setLoading] = React.useState(false);
   const [errors, setErrors] = React.useState<any>({});
-  const API_ERRORS = useSelector((state: any) => state.apiErrors);
+  const snackbarMessage = useSelector((state: any) => state.snackbar);
+  //const API_ERRORS = useSelector((state: any) => state.apiErrors);
 
   // remember that using dispatch means that we are accessing state that is usable across our entire appplication
   const dispatch = useDispatch();
   // if there is an auth error, make sure to clear it
   React.useEffect(() => {
-    if (API_ERRORS) {
+    if (snackbarMessage?.type === "error") {
       setLoading(false);
-      setTimeout(() => {
-        dispatch({ type: API_ERROR, payload: null });
-      }, 2000);
     }
-  }, [API_ERRORS]);
+  }, [snackbarMessage]);
   const toggleMode = () => {
     setFormData(initialState);
     setErrors({});
@@ -361,13 +359,6 @@ const SignUp = () => {
               </React.Fragment>
             )}
           </Grid>
-          {API_ERRORS && (
-            <Typography
-              style={{ textAlign: "center", color: "red", marginTop: "8px" }}
-            >
-              {API_ERRORS}
-            </Typography>
-          )}
           <Button
             type="submit"
             fullWidth

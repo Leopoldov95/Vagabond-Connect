@@ -30,6 +30,9 @@ export const userAuthReducer = (state = { authData: null }, action: any) => {
       return { ...state, authData: newData };
     // may want toset user as a reducer state
     //return state;
+    case DELETE_USER:
+      localStorage.clear();
+      return { ...state, authData: action?.data };
     case LOGOUT:
       localStorage.clear(); // clears the entire local storage, needed to remove user from localStorage
       return { ...state, authData: action?.data };

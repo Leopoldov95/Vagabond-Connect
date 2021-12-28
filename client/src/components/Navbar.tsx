@@ -31,6 +31,8 @@ import {
   Lock,
 } from "@material-ui/icons";
 import { Link, useLocation, useHistory } from "react-router-dom";
+import { searchUsers } from "../api";
+import SearchResults from "./search/Search";
 interface Props {
   open: boolean;
 }
@@ -75,6 +77,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   search: {
+    position: "relative",
     display: "flex",
     paddingLeft: theme.spacing(1),
     alignItems: "center",
@@ -130,6 +133,8 @@ const Navbar = () => {
     JSON.parse(localStorage.getItem("profile"))
   ); // profile is being access from local storage, shich was set in the reducer file auth.js
   const [open, setOpen] = React.useState(false);
+  const [search, setSearch] = React.useState("");
+  const [searchResult, setSearchResult] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   /*   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null); */
@@ -150,11 +155,25 @@ const Navbar = () => {
 
     setUser(JSON.parse(localStorage.getItem("profile")));
   }, [location]);
+  React.useEffect(() => {
+    if (search.length > 0) {
+      console.log("a changw was made in the searchbar");
+      const timeOutId = setTimeout(async () => {
+        const { data }: any = await searchUsers(search);
+        setSearchResult(data);
+      }, 500);
+      return () => clearTimeout(timeOutId);
+      // will want to dispatch an action that fetches all users posts
+      // might not need external files as all user lookup will be handled here...
+    }
+  }, [search]);
   const classes = useStyles({ open });
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+  };
   const handleMenuClose = () => {
     setAnchorEl(null);
     //handleMobileMenuClose();
@@ -238,8 +257,19 @@ const Navbar = () => {
               placeholder="Search..."
               className={classes.input}
               fullWidth
+              value={search}
+              onChange={handleChange}
             />
             <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
+            {searchResult.length > 0 && search.length > 0 ? (
+              <SearchResults
+                results={searchResult}
+                setSearchResult={setSearchResult}
+                setSearch={setSearch}
+              />
+            ) : (
+              ""
+            )}
           </div>
           <div className={classes.icons}>
             <Search

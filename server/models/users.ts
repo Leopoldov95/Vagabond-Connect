@@ -12,7 +12,7 @@ const userSchema = new mongoose.Schema({
   profile_cloudinary_id: { type: String },
   background_cloudinary: { type: String },
   background_cloudinary_id: { type: String },
-  bio: { type: String },
+  bio: { type: String, default: "Hi! I'm new to Vagabond Connect!" },
   followers: { type: [String] },
   following: { type: [String] },
   messages: { type: [] },

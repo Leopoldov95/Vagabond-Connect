@@ -1,4 +1,5 @@
 import Users from "../models/users";
+import Posts from "../models/posts";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -13,7 +14,7 @@ export const signin = async (req, res) => {
   try {
     // check to see if user exists
     const existingUser = await Users.findOne({ email }); // look for an existing user by using the email
-
+    console.log(existingUser);
     if (!existingUser)
       return res.status(404).json({ message: "User does not exist." });
 
@@ -205,37 +206,26 @@ export const fetchAllUsers = async (req: any, res: Response) => {
 };
 
 export const fetchSingleUser = async (req: Request, res: Response) => {
+  const ignore = {
+    email: 0,
+    password: 0,
+    profile_cloudinary_id: 0,
+    background_cloudinary_id: 0,
+    messages: 0,
+    notifications: 0,
+  };
   try {
     const { id } = req.body;
     if (!mongoose.Types.ObjectId.isValid(id))
       return res.status(404).json({ message: "No Valid User" });
-    const result = await Users.findById(id);
-    const {
-      _id,
-      firstName,
-      lastName,
-      country,
-      profile_cloudinary,
-      background_cloudinary,
-      followers,
-      following,
-      favoriteCountries,
-      visitedCountries,
-      privacy,
-    } = result;
-    res.status(200).json({
-      _id,
-      firstName,
-      lastName,
-      country,
-      profile_cloudinary,
-      background_cloudinary,
-      followers,
-      following,
-      favoriteCountries,
-      visitedCountries,
-      privacy,
-    });
+    const result = await Users.find(
+      { _id: id },
+      {
+        ...ignore,
+      }
+    );
+
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong." });
   }
@@ -336,31 +326,90 @@ export const editUserCountryList = async (req: any, res: Response) => {
     res.status(500).json({ message: "Something went wrong." });
   }
 };
-/* 
-export const likePost = async (req, res) => {
-  const { id } = req.params;
-  // we get access to req.userId from the middleware we are passing (auth)
-  if (!req.userId) return res.json({ message: "Unauthenticated" });
 
-  // chacking of id is valid
-  if (!mongoose.Types.ObjectId.isValid(id))
-    return res.status(404).send("No post with that ID");
+// DELETE USER
 
-  const post = await PostMessage.findById(id);
-  // handling like logic for user
-  const index = post.likes.findIndex((id) => id === String(req.userId));
-  if (index === -1) {
-    // like the post
-    post.likes.push(req.userId);
-  } else {
-    // dislike a post
-    post.likes = post.likes.filter((id) => id !== String(req.userId));
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const { id: _id } = req.params;
+    const { password } = req.body;
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("Not A Valid User Id!");
+    const existingUser: any = await Users.findById(_id);
+    if (!existingUser)
+      return res.status(404).json({ message: "User does not exist." });
+    const isPasswordCorrect = await bcrypt.compare(
+      password,
+      existingUser.password
+    );
+    if (!isPasswordCorrect)
+      return res.status(400).json({ message: "Invalid credentials." });
+    // At this point the userId and password have been authenticated
+    // handle users following and followers
+    if (existingUser?.following?.length > 0 && existingUser?.following) {
+      // update folloeing list
+      for (let user of existingUser.following) {
+        console.log(`you are following ${user}`);
+        await Users.findByIdAndUpdate(user, {
+          $pull: { followers: _id },
+        });
+      }
+    }
+    if (existingUser?.followers?.length > 0 && existingUser?.followers) {
+      // update followers list
+      for (let user of existingUser.followers) {
+        console.log(`${user} is your follower`);
+        await Users.findByIdAndUpdate(user, {
+          $pull: { following: _id },
+        });
+      }
+    }
+    const usersPosts: any = await Posts.find({ ownerId: _id });
+
+    if (usersPosts.length > 0) {
+      for (let post of usersPosts) {
+        await deleteCloudinaryImg(post.cloudinary_id);
+      }
+    }
+    // delete all users posts
+    await Posts.deleteMany({
+      ownerId: _id,
+    });
+    // remove user from db
+    await Users.findByIdAndDelete(_id);
+    res.json({ message: "Account Deleted Successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Something went wrong." });
   }
-  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
-    new: true,
-  });
-
-  res.json(updatedPost);
 };
 
-*/
+export const searchUsers = async (req: Request, res: Response) => {
+  const ignore = {
+    country: 0,
+    email: 0,
+    password: 0,
+    privacy: 0,
+    profile_cloudinary_id: 0,
+    followers: 0,
+    following: 0,
+    messages: 0,
+    notifications: 0,
+    favoriteCountries: 0,
+    visitedCountries: 0,
+  };
+  try {
+    const { query } = req.params;
+    console.log(query);
+    const result = await Users.find(
+      {
+        firstName: { $regex: query, $options: "i" },
+      },
+      { ...ignore }
+    );
+    console.log(result);
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};

@@ -6,16 +6,7 @@ function Posts(props: any) {
   // this is to access the posts state from the redux store
   const posts = useSelector((state: any) => state.postsReducer);
   // remember that mongodb can sort for you
-  if (posts.length > 0 && posts !== "empty") {
-    posts.sort(function (a: any, b: any) {
-      var keyA = new Date(a.createdAt),
-        keyB = new Date(b.createdAt);
-      // Compare the 2 dates
-      if (keyA > keyB) return -1;
-      if (keyA < keyB) return 1;
-      return 0;
-    });
-  }
+  console.log(posts);
   return !posts.length ? (
     <div
       style={{
@@ -28,7 +19,11 @@ function Posts(props: any) {
       <CircularProgress size={60} />
     </div>
   ) : posts === "empty" ? (
-    <Typography variant="h5" align="center" style={{ marginTop: 10 }}>
+    <Typography
+      variant="h5"
+      align="center"
+      style={{ marginBottom: 16, marginTop: 32, color: "gray" }}
+    >
       No Posts Yet!
     </Typography>
   ) : (

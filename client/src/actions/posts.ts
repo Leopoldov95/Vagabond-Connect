@@ -4,8 +4,10 @@ import {
   CREATE_POST,
   DELETE_POST,
   FETCH_ALL_POSTS,
+  FETCH_MORE_POSTS,
   FETCH_USER_POSTS,
   SNACKBAR_SUCCESS,
+  IS_MORE_POSTS,
 } from "../constants/actionTypes";
 import * as api from "../api";
 
@@ -20,11 +22,19 @@ export const getAllPosts = (filterForm: any) => async (dispatch: any) => {
       .map((key) => `${key}=${filterForm[key]}`)
       .join("&");
     console.log(qs);
-    const { data }: any = await api.fetchAllPosts(qs);
+    if (filterForm.hasOwnProperty("skip")) {
+      const { data }: any = await api.fetchAllPosts(qs);
 
-    data.length !== 0
-      ? dispatch({ type: FETCH_ALL_POSTS, payload: data })
-      : dispatch({ type: FETCH_ALL_POSTS, payload: "empty" });
+      dispatch({ type: FETCH_MORE_POSTS, payload: data.posts });
+      dispatch({ type: IS_MORE_POSTS, payload: data.isMore });
+    } else {
+      const { data }: any = await api.fetchAllPosts(qs);
+      //console.log(data);
+      data.posts.length !== 0
+        ? dispatch({ type: FETCH_ALL_POSTS, payload: data.posts })
+        : dispatch({ type: FETCH_ALL_POSTS, payload: "empty" });
+      dispatch({ type: IS_MORE_POSTS, payload: data.isMore });
+    }
   } catch (error) {
     console.log(error);
   }
