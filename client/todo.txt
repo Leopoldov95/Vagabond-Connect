@@ -26,10 +26,8 @@
 - For user edit, may not need to pass user props for id, get value from params instead (user.userId)
 
 - 12/13/21 - To do
-- make bio editable
 - clean up posts fetch and know how to handle empty post returns AND porfile post view
 - will want to figure out a method to retrieve "load more" on posts and users
-- get serachbar to work, show users
 - later on, will want to handle offline errors
 - When updating a post, either by patch or put, must provide params, better practive // REVIEW API ROUTES (1 issue)
 - create snackbar for the following actions: account deletion
@@ -38,4 +36,5 @@
 - handle main page post filter by continent
 - implement a way to message other users (only those who you follow) 
 - implement typescript more properly (when all is done)
+- might want set Loader as a seperate component sinc eit is being resuded so much (keep in mind that at any given time, we only have one loeader running, keep this info for state management)
 ** Later on, create a univeral style sheet that contains classes that gt used across multiple pages and compnents (such as buttons)

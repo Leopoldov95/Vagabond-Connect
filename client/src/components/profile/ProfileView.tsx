@@ -71,6 +71,7 @@ const ProfileView = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
+
   /*   console.log(user);
   console.log(USER_API);
   console.log(userProfile); */
@@ -84,6 +85,7 @@ const ProfileView = () => {
   //console.log(userProfile);
   // This is to handle viewing users profile firend list
   React.useEffect(() => {
+    setLoading(true);
     let filterForm = {};
     filterForm["userId"] = id;
     switch (value) {

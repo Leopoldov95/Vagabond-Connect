@@ -14,6 +14,7 @@ import { followUser } from "../../actions/users";
 import countries from "../country/countries";
 import { useHistory } from "react-router";
 import { lightGreen } from "@material-ui/core/colors";
+import { editUserDetails } from "../../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(4),
@@ -22,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: "auto",
     display: "flex",
     flexDirection: "column",
+    position: "relative",
   },
   profileAction: {
     display: "flex",
@@ -38,6 +40,22 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: lightGreen[50],
     },
   },
+  overlayLoader: {
+    position: "absolute",
+    left: 0,
+    top: 16,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    "&::before": {
+      content: '""',
+      backgroundColor: "white",
+      opacity: 0.6,
+      height: "100%",
+      width: "100%",
+    },
+  },
 }));
 // will want to showcase follwing and followers in group avatar, can use post id reucer to manage users profile img
 // to display profile owner country info, may want to use data from MongoDB
@@ -50,18 +68,28 @@ const ProfileBio = () => {
   const [authUser, setAuthUser] = React.useState(
     JSON.parse(localStorage.getItem("profile"))?.result
   );
-  const displayUser =
-    Object.keys(userProfile).length > 0 ? userProfile : authUser;
+  const [displayUser, setDisplayUser] = React.useState(
+    Object.keys(userProfile).length > 0 ? userProfile : authUser
+  );
   const [tempDisabled, setTempDisabled] = React.useState(false);
   const [bio, setBio] = React.useState(""); // will want to populate using users bio data, may want to relook into Country List complicatiob, no need to explicitly store users data into a state, can just retrieve from localStorage. may also want to reuse profile_edit route
   const [isEdit, setIsEdit] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   // need this to handle render load issue
   React.useEffect(() => {
     if (displayUser) {
       setBio(displayUser.bio);
     }
   }, [displayUser]);
-
+  React.useEffect(() => {
+    console.log("there were changes to this user from the server");
+    console.log(userReducer);
+    if (userReducer.authData !== null) {
+      setDisplayUser(userReducer.authData.result);
+      setIsEdit(false);
+      setLoading(false);
+    }
+  }, [userReducer]);
   // This is to handle the api call for the follow btn
   React.useEffect(() => {
     setAuthUser(JSON.parse(localStorage.getItem("profile"))?.result);
@@ -84,6 +112,21 @@ const ProfileBio = () => {
     setTempDisabled(true);
     dispatch(followUser(displayUser._id));
   };
+  const handleEditClick = () => {
+    setIsEdit(!isEdit);
+    setBio(displayUser.bio);
+  };
+
+  const handleSave = () => {
+    setLoading(true);
+    const { email } = authUser;
+    dispatch(editUserDetails({ email, bio }));
+  };
+  // bio edit behavior
+  // need to have 'current' bio from db stored
+  // if current bio is diffeent from db
+  // add option to cancel
+  // add option to save
 
   return (
     <Grid container className={classes.container}>
@@ -139,11 +182,24 @@ const ProfileBio = () => {
                 variant="outlined"
                 className={classes.btnEdit}
                 startIcon={isEdit ? <Close /> : <Edit />}
-                onClick={() => setIsEdit(!isEdit)}
+                onClick={handleEditClick}
               >
-                Edit Bio
+                {isEdit ? "Cancel" : "Edit Bio"}
               </Button>
             )}
+            {authUser &&
+              authUser?._id === displayUser?._id &&
+              displayUser.bio !== bio &&
+              isEdit && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  style={{ margin: "0 10px" }}
+                  onClick={handleSave}
+                >
+                  Save
+                </Button>
+              )}
           </div>
           {isEdit ? (
             <TextField
@@ -161,6 +217,14 @@ const ProfileBio = () => {
       ) : (
         <div style={{ marginTop: "3rem" }}>
           <CircularProgress size={60} />
+        </div>
+      )}
+      {loading && (
+        <div className={classes.overlayLoader}>
+          <CircularProgress
+            size={60}
+            style={{ position: "absolute", zIndex: 10 }}
+          />
         </div>
       )}
     </Grid>

@@ -74,6 +74,7 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
 };
 
 export const editUserDetails = (formData: any) => async (dispatch: any) => {
+  console.log(formData);
   try {
     //console.log(formData);
     const { data } = await API.editUserDetails(formData);

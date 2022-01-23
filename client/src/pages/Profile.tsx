@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     maxWidth: 1280,
     margin: "auto",
     marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(8),
   },
 }));
 

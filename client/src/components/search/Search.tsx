@@ -25,10 +25,15 @@ const useStyles = makeStyles((theme: Theme) => ({
       cursor: "pointer",
     },
   },
+  empty: {
+    padding: "1rem 8px",
+    color: "gray",
+  },
 }));
 
-const Search = ({ results, setSearchResult, setSearch }) => {
-  const [isOpen, setIsOpen] = React.useState(results.length > 0);
+const Search = ({ results, setSearchResult, setSearch, search }) => {
+  console.log("I am in use!");
+  const [isOpen, setIsOpen] = React.useState(search.length > 1);
   function useOutsideAlerter(ref) {
     React.useEffect(() => {
       /**
@@ -67,27 +72,33 @@ const Search = ({ results, setSearchResult, setSearch }) => {
       ref={wrapperRef}
     >
       <Paper>
-        <ul className={classes.listContainer}>
-          {results.map((user) => (
-            <li>
-              <Link
-                to={`/profile/${user._id}`}
-                className={classes.listItem}
-                key={user.firstName}
-                onClick={handleClick}
-              >
-                <Avatar
-                  alt={user.firstName}
-                  src={user.profile_cloudinary}
-                  style={{ marginRight: 10 }}
-                />
-                <Typography>
-                  {user.firstName} {user.lastName}
-                </Typography>
-              </Link>
-            </li>
-          ))}
-        </ul>
+        {results.length > 0 ? (
+          <ul className={classes.listContainer}>
+            {results.map((user) => (
+              <li>
+                <Link
+                  to={`/profile/${user._id}`}
+                  className={classes.listItem}
+                  key={user.firstName}
+                  onClick={handleClick}
+                >
+                  <Avatar
+                    alt={user.firstName}
+                    src={user.profile_cloudinary}
+                    style={{ marginRight: 10 }}
+                  />
+                  <Typography>
+                    {user.firstName} {user.lastName}
+                  </Typography>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className={classes.empty}>
+            <Typography>No Users Found</Typography>
+          </div>
+        )}
       </Paper>
     </div>
   );

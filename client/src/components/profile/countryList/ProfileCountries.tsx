@@ -46,9 +46,7 @@ const ProfileCountries = () => {
   const [visited, setVisited] = React.useState(displayUser?.visitedCountries); // intially, this will be populated from user data
   const [isFavoriteEdit, setIsFavoriteEdit] = React.useState(false);
   const [isVisitedEdit, setIsVisitedEdit] = React.useState(false);
-  console.log(visited);
-  console.log(favorite);
-  console.log(displayUser);
+
   React.useEffect(() => {
     setVisited(displayUser?.visitedCountries);
     setFavorite(displayUser?.favoriteCountries);

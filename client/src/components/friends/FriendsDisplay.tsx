@@ -58,10 +58,10 @@ const FriendsDisplay = (props: any) => {
   const { id }: any = params; // Need this to determin if viewing friends on Friends Page OR from Profile
   const allUsers = useSelector((state: any) => state.allUsers);
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
-  // If a user is logged in, their profile card won't be shown here as it is redundant
   React.useEffect(() => {
     props.setLoading(false);
   }, [allUsers]);
+  // If a user is logged in, their profile card won't be shown here as it is redundant
   // this filters out the logged in users profile card
   const renderUsers =
     user && !id

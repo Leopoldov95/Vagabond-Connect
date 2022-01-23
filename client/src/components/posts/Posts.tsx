@@ -6,7 +6,7 @@ function Posts(props: any) {
   // this is to access the posts state from the redux store
   const posts = useSelector((state: any) => state.postsReducer);
   // remember that mongodb can sort for you
-  console.log(posts);
+
   return !posts.length ? (
     <div
       style={{

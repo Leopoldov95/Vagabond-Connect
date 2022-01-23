@@ -52,7 +52,6 @@ const CountryList = (props: any) => {
   const [isSame, setIsSame] = React.useState(true); // will remain true until user changes value of local countries array
   const [localCountries, setLocalCountries] = React.useState(props.countries); // this is needed so we can make chnges to the local level
   // here we will handle the changed country
-  console.log(localCountries);
   // will need this to handle profile url changes
   React.useEffect(() => {
     setLocalCountries(props.countries);
@@ -85,7 +84,6 @@ const CountryList = (props: any) => {
     props.setIsEdit(false);
   };
 
-  //console.log(localCountries.indexOf("KP"));
   const addCountry = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (props.name === "favorite") {

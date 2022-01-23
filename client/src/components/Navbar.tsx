@@ -157,7 +157,6 @@ const Navbar = () => {
   }, [location]);
   React.useEffect(() => {
     if (search.length > 0) {
-      console.log("a changw was made in the searchbar");
       const timeOutId = setTimeout(async () => {
         const { data }: any = await searchUsers(search);
         setSearchResult(data);
@@ -165,6 +164,9 @@ const Navbar = () => {
       return () => clearTimeout(timeOutId);
       // will want to dispatch an action that fetches all users posts
       // might not need external files as all user lookup will be handled here...
+    } else {
+      // need this so old results don't appear when creating a new search
+      setSearchResult([]);
     }
   }, [search]);
   const classes = useStyles({ open });
@@ -261,11 +263,12 @@ const Navbar = () => {
               onChange={handleChange}
             />
             <Cancel className={classes.cancel} onClick={() => setOpen(false)} />
-            {searchResult.length > 0 && search.length > 0 ? (
+            {search.length > 1 ? (
               <SearchResults
                 results={searchResult}
                 setSearchResult={setSearchResult}
                 setSearch={setSearch}
+                search={search}
               />
             ) : (
               ""
