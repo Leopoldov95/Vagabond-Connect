@@ -55,3 +55,14 @@ export const deleteComment = (postId: any, commentId: any) =>
   API.patch(`/posts/comment/delete/${postId}/${commentId}`);
 /////// NOTE
 // When updating a post, either by patch or put, must provide params, better practive
+
+// MESSAGE ROUTES
+export const fetchMessageThread = (id: any) => {
+  API.get(`message/get/${id}`);
+};
+export const postMessage = (id: any, formData: any) => {
+  API.post(`message/post/${id}`, formData);
+};
+// export const fetchMessageThread = (id: any) => {
+//   API.get(`message/get/${id}`)
+// }

@@ -8,7 +8,7 @@ import { SNACKBAR_WARNING } from "../constants/actionTypes";
 import { getSingleUser } from "../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    marginTop: theme.spacing(9),
+    paddingTop: theme.spacing(9),
   },
 }));
 export const Messages = () => {
@@ -30,7 +30,7 @@ export const Messages = () => {
     id && dispatch(getSingleUser(id));
   }, [id]);
   return (
-    <Grid container className={classes.container}>
+    <Grid container>
       <Grid item sm={4}>
         <MessageList />
       </Grid>

@@ -12,6 +12,9 @@ import { useHistory, useParams } from "react-router-dom";
 import { MailOutlined } from "@material-ui/icons";
 import CreateMessage from "./CreateMessage";
 const useStyles = makeStyles((theme: Theme) => ({
+  container: {
+    paddingTop: theme.spacing(9),
+  },
   noMail: {
     display: "flex",
     position: "relative",
@@ -33,7 +36,7 @@ const MessageContent = () => {
     }
   }, []); */
   return (
-    <Container>
+    <Container className={classes.container}>
       {user && user.messages.length > 0 ? (
         <Typography>You have messages!</Typography>
       ) : (

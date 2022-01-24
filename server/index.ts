@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 //import logging from "./config/logging";
 import userRoutes from "./routes/users";
 import postsRoutes from "./routes/posts";
+import messageRoutes from "./routes/message";
 //const NAMESPACE = "Server";
 //let CONNECTION_URL = process.env["CONNECTION_URL"];
 const app = express();
@@ -19,6 +20,7 @@ app.get("/", (req, res) => {
 });
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
+app.use("/message", messageRoutes);
 
 const PORT = process.env.PORT || 5001;
 

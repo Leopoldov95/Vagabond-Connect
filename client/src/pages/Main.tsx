@@ -79,7 +79,7 @@ const Main = () => {
       <Grid item sm={7} xs={10}>
         {user && <PostsToggle toggle={toggle} setToggle={setToggle} />}
         <Feed />
-        <LoadMore filter={filter} />
+        <LoadMore filter={filter} toggle={toggle} />
       </Grid>
       <Grid item sm={3} className={classes.right}>
         <Rightbar filter={filter} setFilter={setFilter} />

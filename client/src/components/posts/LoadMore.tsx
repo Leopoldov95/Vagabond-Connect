@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-const LoadMore = ({ filter }) => {
+const LoadMore = ({ filter, toggle }) => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -52,7 +52,8 @@ const LoadMore = ({ filter }) => {
     if (filter.length > 0) {
       filterForm["continentFilter"] = filter;
     }
-    if (user) {
+    // added the toggle condition so that a loged in user can fetch more posts that they are not following
+    if (user && !toggle) {
       filterForm["userId"] = user._id;
     }
     filterForm["skip"] = currentPosts.length;
