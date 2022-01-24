@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import {
   Grid,
   Typography,
@@ -9,7 +10,7 @@ import {
   Button,
   TextField,
 } from "@material-ui/core";
-import { Edit, Close } from "@material-ui/icons";
+import { Edit, Close, MailOutline } from "@material-ui/icons";
 import { followUser } from "../../actions/users";
 import countries from "../country/countries";
 import { useHistory } from "react-router";
@@ -68,24 +69,24 @@ const ProfileBio = () => {
   const [authUser, setAuthUser] = React.useState(
     JSON.parse(localStorage.getItem("profile"))?.result
   );
-  const [displayUser, setDisplayUser] = React.useState(
-    Object.keys(userProfile).length > 0 ? userProfile : authUser
-  );
+  let displayUser =
+    Object.keys(userProfile).length > 0 ? userProfile : authUser;
+
   const [tempDisabled, setTempDisabled] = React.useState(false);
   const [bio, setBio] = React.useState(""); // will want to populate using users bio data, may want to relook into Country List complicatiob, no need to explicitly store users data into a state, can just retrieve from localStorage. may also want to reuse profile_edit route
   const [isEdit, setIsEdit] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   // need this to handle render load issue
   React.useEffect(() => {
+    console.log(displayUser);
     if (displayUser) {
       setBio(displayUser.bio);
     }
   }, [displayUser]);
   React.useEffect(() => {
     console.log("there were changes to this user from the server");
-    console.log(userReducer);
-    if (userReducer.authData !== null) {
-      setDisplayUser(userReducer.authData.result);
+    if (userReducer.authData !== null && displayUser._id === authUser._id) {
+      displayUser = userReducer.authData.result;
       setIsEdit(false);
       setLoading(false);
     }
@@ -176,6 +177,13 @@ const ProfileBio = () => {
               >
                 Follow
               </Button>
+            )}
+            {authUser && authUser?._id !== displayUser?._id && (
+              <Link to={`/messages/${displayUser._id}`}>
+                <Button variant="outlined" className={classes.btnEdit}>
+                  <MailOutline />
+                </Button>
+              </Link>
             )}
             {authUser && authUser?._id === displayUser?._id && (
               <Button

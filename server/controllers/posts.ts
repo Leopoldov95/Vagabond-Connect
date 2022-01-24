@@ -327,8 +327,10 @@ export const getAllPosts = async (req: Request, res: Response) => {
   const { params } = req.params; // this will be the name of the modified URL
   const urlParams = new URLSearchParams(params);
   const filters = Object.fromEntries(urlParams);
+  console.log(filters);
   try {
     //const { userId, continentFilter, skip } = req.body;
+    // what's happening is that since a userId is detected here, it assumes it is fetching ONLY for followers
     let user;
     if (filters.userId) {
       if (!mongoose.Types.ObjectId.isValid(filters.userId))

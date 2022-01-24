@@ -15,7 +15,16 @@ const userSchema = new mongoose.Schema({
   bio: { type: String, default: "Hi! I'm new to Vagabond Connect!" },
   followers: { type: [String] },
   following: { type: [String] },
-  messages: { type: [] },
+  messages: {
+    type: [
+      {
+        createdAt: { type: Date, default: new Date() },
+        messageOwnerId: String,
+        message: String,
+      },
+    ],
+    default: [],
+  },
   notifications: { type: [] },
   favoriteCountries: { type: [String] },
   visitedCountries: { type: [String] },

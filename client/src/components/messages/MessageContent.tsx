@@ -8,11 +8,13 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
-import { useHistory } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 import { MailOutlined } from "@material-ui/icons";
+import CreateMessage from "./CreateMessage";
 const useStyles = makeStyles((theme: Theme) => ({
   noMail: {
     display: "flex",
+    position: "relative",
     alignItems: "center",
     justifyContent: "center",
     color: "gray",
@@ -21,6 +23,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const MessageContent = () => {
   const history = useHistory();
+  const { id }: any = useParams();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const classes = useStyles();
   console.log(user);
@@ -39,6 +42,7 @@ const MessageContent = () => {
           <MailOutlined fontSize="large" style={{ marginLeft: 10 }} />
         </div>
       )}
+      {id && <CreateMessage />}
     </Container>
   );
 };

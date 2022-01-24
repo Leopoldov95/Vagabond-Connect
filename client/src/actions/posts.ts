@@ -24,7 +24,7 @@ export const getAllPosts = (filterForm: any) => async (dispatch: any) => {
     console.log(qs);
     if (filterForm.hasOwnProperty("skip")) {
       const { data }: any = await api.fetchAllPosts(qs);
-
+      console.log(data);
       dispatch({ type: FETCH_MORE_POSTS, payload: data.posts });
       dispatch({ type: IS_MORE_POSTS, payload: data.isMore });
     } else {

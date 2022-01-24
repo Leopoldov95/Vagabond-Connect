@@ -27,6 +27,7 @@
 
 - 12/13/21 - To do
 - clean up posts fetch and know how to handle empty post returns AND porfile post view
+- may want to make loading class universal so as to not repeat it in multiple componetns
 - will want to figure out a method to retrieve "load more" on posts and users
 - later on, will want to handle offline errors
 - When updating a post, either by patch or put, must provide params, better practive // REVIEW API ROUTES (1 issue)
