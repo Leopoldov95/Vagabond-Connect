@@ -21,12 +21,21 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: lightGreen[100],
     },
   },
+
+  selected: {
+    backgroundColor: lightGreen[300],
+    color: "white",
+  },
 }));
 
-const ListUser = ({ user }) => {
+const ListUser = ({ user, selectedUser }) => {
   const classes = useStyles();
   return (
-    <li className={classes.listItem}>
+    <li
+      className={`${classes.listItem} ${
+        user._id === selectedUser && classes.selected
+      }`}
+    >
       <div style={{ display: "flex", alignItems: "center" }}>
         <Avatar
           alt="account_icon"

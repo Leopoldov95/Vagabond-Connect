@@ -8,9 +8,11 @@ import {
   makeStyles,
   Theme,
 } from "@material-ui/core";
+import { useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { MailOutlined } from "@material-ui/icons";
 import CreateMessage from "./CreateMessage";
+import MessageBox from "./MessageBox";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     paddingTop: theme.spacing(9),
@@ -24,12 +26,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(2),
   },
 }));
-const MessageContent = () => {
+const MessageContent = ({ selectedUser, setSelectedUser }) => {
   const history = useHistory();
   const { id }: any = useParams();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const messageReducer = useSelector((state: any) => state.messageReducer);
   const classes = useStyles();
-  console.log(user);
+
   /*  React.useEffect(() => {
     if (!user) {
       history.push("/auth");
@@ -37,15 +40,23 @@ const MessageContent = () => {
   }, []); */
   return (
     <Container className={classes.container}>
-      {user && user.messages.length > 0 ? (
-        <Typography>You have messages!</Typography>
+      {user && !messageReducer.hasOwnProperty("message") ? (
+        messageReducer.map((d, i) => (
+          <MessageBox
+            key={i}
+            createdAt={d.createdAt}
+            message={d.message}
+            messageOwner={d.messageOwner}
+            isUser={user._id === d.messageOwner}
+          />
+        ))
       ) : (
         <div className={classes.noMail}>
-          <Typography variant="h4">You Have No Messages</Typography>
+          <Typography variant="h4">{messageReducer.message}</Typography>
           <MailOutlined fontSize="large" style={{ marginLeft: 10 }} />
         </div>
       )}
-      {id && <CreateMessage />}
+      {id && selectedUser && <CreateMessage selectedUser={selectedUser._id} />}
     </Container>
   );
 };

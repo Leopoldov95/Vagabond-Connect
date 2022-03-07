@@ -2,7 +2,7 @@ import axios from "axios";
 
 // so by using this url, we can use the backend logic
 const API = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: "http://localhost:5000",
 });
 // this function will run on every request, it's helping the middleware function
 API.interceptors.request.use((req: any) => {
@@ -57,12 +57,11 @@ export const deleteComment = (postId: any, commentId: any) =>
 // When updating a post, either by patch or put, must provide params, better practive
 
 // MESSAGE ROUTES
-export const fetchMessageThread = (id: any) => {
-  API.get(`message/get/${id}`);
-};
-export const postMessage = (id: any, formData: any) => {
-  API.post(`message/post/${id}`, formData);
-};
-// export const fetchMessageThread = (id: any) => {
-//   API.get(`message/get/${id}`)
-// }
+// Note to self, wrapping function in {} WILL NOT RETURN the results
+export const fetchMessageThread = (id: any) => API.get(`/message/get/${id}`);
+
+export const postMessage = (id: any, formData: any) =>
+  API.post(`/message/post/${id}`, formData);
+
+export const deleteMessageThread = (id: any) =>
+  API.delete(`/message/delete/${id}`);

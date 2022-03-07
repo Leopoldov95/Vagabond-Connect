@@ -9,8 +9,10 @@ import {
 import { snackbarMessage } from "./snackbar";
 import { isMorePostsReducer, isMoreUsersReducer } from "./isMore";
 import postsReducer from "./posts";
+import messageReducer from "./message";
 const RootReducer = combineReducers({
   userAuthReducer,
+  messageReducer,
   postsReducer,
   isMorePostsReducer,
   isMoreUsersReducer,

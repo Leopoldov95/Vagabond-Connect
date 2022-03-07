@@ -33,10 +33,10 @@
 - later on, will want to handle offline errors
 - When updating a post, either by patch or put, must provide params, better practive // REVIEW API ROUTES (1 issue)
 - create snackbar for the following actions: account deletion
-- For fetching users posts for their profile page, handle filter logic on the backend (such as sorting them)
 - fix render issue when showing guest users (such as showing a load circle on profile pic and background image)
 - handle main page post filter by continent
 - implement a way to message other users (only those who you follow) 
 - implement typescript more properly (when all is done)
 - might want set Loader as a seperate component sinc eit is being resuded so much (keep in mind that at any given time, we only have one loeader running, keep this info for state management)
 ** Later on, create a univeral style sheet that contains classes that gt used across multiple pages and compnents (such as buttons)
+** make web app mobile friendly

@@ -15,3 +15,5 @@ export const updatePostAvatar = async (id: any, imgURL: any) => {
     console.log(error);
   }
 };
+
+// helper function to initializae message thread

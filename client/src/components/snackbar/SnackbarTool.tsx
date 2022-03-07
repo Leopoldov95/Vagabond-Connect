@@ -36,7 +36,7 @@ const SnackbarTool = () => {
         horizontal: "left",
       }}
       open={open}
-      autoHideDuration={4000}
+      autoHideDuration={2500}
       onClose={handleClose}
     >
       <Alert onClose={handleClose} severity={snackbarMessage?.type}>

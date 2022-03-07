@@ -1,6 +1,8 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
+import { type } from "os";
 
 // Schema is a mongoose data structure
+// may need a nested message object
 const userSchema = new mongoose.Schema({
   firstName: { type: String, required: true },
   lastName: { type: String, required: true },
@@ -15,45 +17,20 @@ const userSchema = new mongoose.Schema({
   bio: { type: String, default: "Hi! I'm new to Vagabond Connect!" },
   followers: { type: [String] },
   following: { type: [String] },
-  messages: { type: {} },
   notifications: { type: [] },
   favoriteCountries: { type: [String] },
   visitedCountries: { type: [String] },
 });
 
-// reference
-// messages: {
-
-//   {
-//     createdAt: { type: Date, default: new Date() },
-//     messageOwnerId: String,
-//     message: String,
-//   },
-
-// default: {},
-// },
-// here is how I want message property to look:
-// var message = {
-//   "2873yuhiufs89sd9": {
-//     messages: [
-//       {
-//         createdAt: "date",
-//         message: "message here",
-//       },
-//       {
-//         createdAt: "date",
-//         message: "message here",
-//       },
-//     ],
-//   },
-//   "2873yuhiufs89sd9": {
-//     messages: [
-//       {
-//         createdAt: "date",
-//         message: "message here",
-//       },
-//     ],
-//   },
-// };
+// how to set empty object in mongodb
+/* 
+{
+    messages: {
+      type: Schema.Types.Mixed,
+      default: {},
+    },
+  },
+  { minimize: false }
+*/
 
 export default mongoose.model("users", userSchema);

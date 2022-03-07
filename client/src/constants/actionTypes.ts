@@ -30,3 +30,7 @@ export const SNACKBAR_CLEAR = "SNACKBAR_CLEAR";
 // Load More
 export const IS_MORE_POSTS = "IS_MORE_POSTS";
 export const IS_MORE_USERS = "IS_MORE_USERS";
+// Message
+export const FETCH_MESSAGES = "FETCH_MESSAGES";
+export const POST_MESSAGE = "POST_MESSAGE";
+export const DELETE_MESSAGE = "DELETE_MESSAGE";

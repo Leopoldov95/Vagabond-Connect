@@ -8,8 +8,10 @@ import {
   Button,
   Paper,
 } from "@material-ui/core";
+import { useDispatch } from "react-redux";
 import { lightGreen, blueGrey } from "@material-ui/core/colors";
 import { Send } from "@material-ui/icons";
+import { postMessage } from "../../actions/message";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     bottom: 10,
@@ -43,13 +45,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const CreateMessage = () => {
+const CreateMessage = ({ selectedUser }) => {
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [message, setMessage] = React.useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMessage(e.target.value);
+  };
+
+  const handleSubmit = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault();
+    dispatch(postMessage(selectedUser, { message }));
+    setMessage("");
   };
   return (
     <Paper className={classes.container}>
@@ -71,7 +80,7 @@ const CreateMessage = () => {
         variant="contained"
         disabled={message.length < 1}
         className={classes.submit}
-        //onClick={handleSubmit}
+        onClick={handleSubmit}
       >
         <Send />
       </Button>
