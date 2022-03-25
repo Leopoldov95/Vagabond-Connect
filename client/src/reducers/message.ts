@@ -3,9 +3,11 @@ import {
   FETCH_MESSAGES,
   POST_MESSAGE,
   DELETE_MESSAGE,
+  TARGET_ID,
+  FETCH_CONTACTS,
 } from "../constants/actionTypes";
 
-const messageReducer = (messages: any = [], action: any) => {
+export const messageReducer = (messages: any = [], action: any) => {
   switch (action.type) {
     case FETCH_MESSAGES:
       return action.payload;
@@ -17,4 +19,20 @@ const messageReducer = (messages: any = [], action: any) => {
   }
 };
 
-export default messageReducer;
+export const contactsReducer = (contacts: any = [], action: any) => {
+  switch (action.type) {
+    case FETCH_CONTACTS:
+      return action.payload;
+    default:
+      return contacts;
+  }
+};
+
+export const targetIdReducer = (state = null, action: any) => {
+  switch (action.type) {
+    case TARGET_ID:
+      return action.payload;
+    default:
+      return state;
+  }
+};

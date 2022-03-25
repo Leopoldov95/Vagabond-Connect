@@ -4,6 +4,41 @@ import Messages from "../models/messages";
 import Users from "../models/users";
 import { Request, Response } from "express";
 
+// fetch all open messages from users message db
+export const fetchAllContacts = async (req: any, res: Response) => {
+  const _id = req.userId;
+  const contactList = [];
+  console.log("hello from contacts api");
+  try {
+    // get the users message db
+    const userMessages = await Messages.find({ ownerId: _id });
+
+    // the user does not have a message db
+    // will need to test this later for empty/no messages
+    if (!userMessages) {
+      return res.json({ message: "You do not have any messages" });
+    }
+
+    const { allMessages } = userMessages[0];
+
+    for (let user in allMessages) {
+      let tempObj = {};
+      const { profile_cloudinary, firstName, lastName } = await Users.findById(
+        user
+      );
+      tempObj["_id"] = user;
+      tempObj["profile_cloudinary"] = profile_cloudinary;
+      tempObj["firstName"] = firstName;
+      tempObj["lastName"] = lastName;
+      contactList.push(tempObj);
+    }
+    return res.status(200).json(contactList);
+    // make sure on the frontend that the first index user is automatically selected and that message thread called and applied
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
 // this will feth the messaging thread for the slected user
 export const fetchUserMessage = async (req: any, res: Response) => {
   console.log("I am being called twice from the client, please fix me");
@@ -17,15 +52,17 @@ export const fetchUserMessage = async (req: any, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(_id)) {
       return res.status(404).send("No User with that ID");
     }
-    const userMessages: any = await Messages.find({ ownderId: userId });
+    const userMessages: any = await Messages.find({ ownerId: userId });
+    const targetDb: any = await Messages.find({ ownerId: _id });
+    const targetId = targetDb[0]._id;
     const { allMessages } = userMessages[0];
-
-    console.log(allMessages);
-
     if (allMessages) {
-      return allMessages[_id]
-        ? res.json(allMessages[_id])
-        : res.json({ message: "No messages with this user" });
+      if (allMessages[_id]) {
+        // don't need extra conditional for targetId as the existance of the message thread will mean the existing of the targetId
+        return res.json([allMessages[_id], targetId]);
+      } else {
+        return res.json({ message: "No messages with this user" });
+      }
     }
     return res.json({ message: "no messages" });
   } catch (error) {

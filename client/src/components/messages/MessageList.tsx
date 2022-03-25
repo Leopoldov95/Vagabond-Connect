@@ -19,20 +19,24 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
   const dispatch = useDispatch();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
+  const contactList = useSelector((state: any) => state.contactsReducer);
   const { id }: any = useParams();
   const classes = useStyles();
   const [alluser, setAllUsers] = React.useState([]); // this state is to manage the users that will appear on the left hand side of the message bar
   // populate the local state if user has active messages
-  React.useEffect(() => {
-    if (user) {
-      console.log("setAllUsers will be populated");
-    } else {
-      console.log("no users in db");
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   if (user) {
+  //     console.log("setAllUsers will be populated");
+  //   } else {
+  //     console.log("no users in db");
+  //   }
+  // }, []);
   React.useEffect(() => {
     Object.keys(userProfile).length > 0 && setSelectedUser(userProfile);
   }, [userProfile]);
+  React.useEffect(() => {
+    setAllUsers(contactList);
+  }, [contactList]);
   // React.useEffect(() => {
   //   setSelectedUser(userProfile);
   //   // when we change the selected user, we will automitcally fetch the message thread for that user
@@ -58,10 +62,17 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
           </Typography>
         ) : (
           <React.Fragment>
+            {/* This check ensures that a duplicate user is not listed when selected AND in the users message db */}
             {alluser.length > 0 &&
-              alluser.map((listUser) => (
-                <ListUser user={listUser} selectedUser={selectedUser?._id} />
-              ))}
+              alluser.map(
+                (listUser) =>
+                  listUser._id !== userProfile._id && (
+                    <ListUser
+                      user={listUser}
+                      selectedUser={selectedUser?._id}
+                    />
+                  )
+              )}
             {userProfile && (
               <ListUser selectedUser={selectedUser?._id} user={userProfile} />
             )}

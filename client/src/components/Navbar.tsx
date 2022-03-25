@@ -9,7 +9,6 @@ import {
   makeStyles,
   Toolbar,
   Typography,
-  Badge,
   Theme,
   Avatar,
   Menu,
@@ -256,7 +255,7 @@ const Navbar = () => {
           <div className={classes.search}>
             <Search />
             <InputBase
-              placeholder="Search..."
+              placeholder="Find Users..."
               className={classes.input}
               fullWidth
               value={search}
@@ -300,9 +299,7 @@ const Navbar = () => {
 
             <div className={classes.item}>
               <Link to="/messages" className={classes.link}>
-                <Badge badgeContent={4} color="secondary">
-                  <Mail />
-                </Badge>
+                <Mail />
                 <Typography className={classes.text}>Messages</Typography>
               </Link>
             </div>

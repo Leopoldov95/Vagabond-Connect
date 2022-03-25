@@ -34,3 +34,5 @@ export const IS_MORE_USERS = "IS_MORE_USERS";
 export const FETCH_MESSAGES = "FETCH_MESSAGES";
 export const POST_MESSAGE = "POST_MESSAGE";
 export const DELETE_MESSAGE = "DELETE_MESSAGE";
+export const FETCH_CONTACTS = "FETCH_CONTACTS";
+export const TARGET_ID = "TARGET_ID";

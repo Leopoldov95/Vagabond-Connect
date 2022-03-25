@@ -1,5 +1,6 @@
 import { Typography, Theme, makeStyles, Avatar } from "@material-ui/core";
 import { lightGreen, blue } from "@material-ui/core/colors";
+import { light } from "@material-ui/core/styles/createPalette";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -8,34 +9,42 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(2),
     color: "white",
   },
-  userContainer: {
-    backgroundColor: blue[500],
-  },
   targetContainer: {
-    backgroundColor: lightGreen[500],
+    justifyContent: "right",
+    flexDirection: "row-reverse",
   },
 
   comment: {
-    borderRadius: 16,
-    padding: theme.spacing(1),
-    display: "flex",
+    borderRadius: 18,
+    padding: theme.spacing(2),
+    display: "inline-block",
     flexDirection: "column",
     alignItems: "flex-start",
   },
   avatar: {
-    marginRight: 10,
+    margin: "0 10px",
   },
 }));
-const MessageBox = ({ createdAt, message, messageOwner, isUser }) => {
-  console.log(createdAt, message, messageOwner);
+const MessageBox = ({ createdAt, message, messageOwner, isUser, avatar }) => {
   const classes = useStyles();
   return (
     <div
-      className={`${classes.container} ${
-        isUser ? classes.userContainer : classes.targetContainer
-      }`}
+      className={`${classes.container} ${isUser && classes.targetContainer}`}
     >
-      <div className={classes.comment}>
+      <Avatar src={avatar} className={classes.avatar} />
+      <div
+        className={classes.comment}
+        style={{ backgroundColor: isUser ? blue[500] : lightGreen[500] }}
+      >
+        <Typography>
+          <strong>
+            {new Date(createdAt).toLocaleString("en-US", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            })}
+          </strong>
+        </Typography>
         <Typography>{message}</Typography>
       </div>
     </div>

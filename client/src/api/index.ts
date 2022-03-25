@@ -1,8 +1,8 @@
 import axios from "axios";
-
+export const baseURL = "http://localhost:5000";
 // so by using this url, we can use the backend logic
-const API = axios.create({
-  baseURL: "http://localhost:5000",
+export const API = axios.create({
+  baseURL,
 });
 // this function will run on every request, it's helping the middleware function
 API.interceptors.request.use((req: any) => {
@@ -58,6 +58,7 @@ export const deleteComment = (postId: any, commentId: any) =>
 
 // MESSAGE ROUTES
 // Note to self, wrapping function in {} WILL NOT RETURN the results
+export const fetchAllContacts = () => API.get("message/get/all");
 export const fetchMessageThread = (id: any) => API.get(`/message/get/${id}`);
 
 export const postMessage = (id: any, formData: any) =>
