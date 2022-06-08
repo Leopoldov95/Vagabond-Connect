@@ -11,6 +11,7 @@ import * as api from "../api";
 export const fetchAllContacts = () => async (dispatch: any) => {
   try {
     const { data } = await api.fetchAllContacts();
+    console.log(data);
     dispatch({ type: FETCH_CONTACTS, payload: data });
   } catch (error) {
     console.log(error);
@@ -20,8 +21,7 @@ export const fetchAllContacts = () => async (dispatch: any) => {
 export const fetchMessageThread = (id: any) => async (dispatch: any) => {
   try {
     const { data }: any = await api.fetchMessageThread(id);
-    dispatch({ type: FETCH_MESSAGES, payload: data[0] });
-    dispatch({ type: TARGET_ID, payload: data[1] });
+    dispatch({ type: FETCH_MESSAGES, payload: data });
   } catch (error) {
     console.log(error);
   }
@@ -29,7 +29,7 @@ export const fetchMessageThread = (id: any) => async (dispatch: any) => {
 export const postMessage =
   (id: any, formData: any) => async (dispatch: any) => {
     try {
-      const { data } = await api.postMessage(id, formData);
+      const { data }: any = await api.postMessage(id, formData);
       dispatch({ type: POST_MESSAGE, payload: data });
     } catch (error) {
       console.log(error);

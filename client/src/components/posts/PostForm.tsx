@@ -117,7 +117,9 @@ const PostForm = (props: any) => {
   );
   const postsReducer = useSelector((state: any) => state.postsReducer);
   //console.log(post);
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   // const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);

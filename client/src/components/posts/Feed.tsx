@@ -9,7 +9,9 @@ import LoadMore from "./LoadMore";
 // there should always be posts on the feed, perhaps add some sort of error handling if no posts are available or if posts failed to load
 const Feed = (props: any) => {
   const params = useParams();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   let displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
   const [editPostId, setEditPostId] = React.useState<any>(null);

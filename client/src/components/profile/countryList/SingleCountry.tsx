@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Edit, Delete, Close } from "@material-ui/icons";
+import { Delete } from "@material-ui/icons";
 import countries from "../../country/countries";
 import CountryNav from "../../country/countryNav";
 import { makeStyles, IconButton, Theme } from "@material-ui/core";

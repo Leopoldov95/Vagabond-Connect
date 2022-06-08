@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const Search = ({ results, setSearchResult, setSearch, search }) => {
-  console.log("I am in use!");
   const [isOpen, setIsOpen] = React.useState(search.length > 1);
   function useOutsideAlerter(ref) {
     React.useEffect(() => {

@@ -13,7 +13,6 @@ export const getUsersPosts = async (req: Request, res: Response) => {
     if (!mongoose.Types.ObjectId.isValid(_id))
       return res.status(404).send("No User with that ID");
     const fetchedPosts = await Posts.find({ ownerId: _id }).limit(10);
-    //console.log(allPosts);
     res.status(200).json(fetchedPosts);
   } catch (error) {
     res.status(404).json({ message: error.message });
@@ -54,9 +53,7 @@ export const createPost = async (req: any, res: Response) => {
     ownerAvatar: profile_cloudinary ? profile_cloudinary : "",
     createdAt: new Date().toISOString(),
   });
-  console.log(newPost);
   try {
-    console.log("I got her first, befre the post creation");
     await newPost.save(); //save() is asynchronous\
     res.status(201).json(newPost);
   } catch (err) {
@@ -85,8 +82,6 @@ export const updatePost = async (req: any, res: Response) => {
 
   if (!mongoose.Types.ObjectId.isValid(_id))
     return res.status(404).send("No post with that ID");
-  /* console.log(_id);
-  console.log(post); */
   // the selectedFile is not an url, therefore we need exisitng cloudinary_id
   // const exisitngCloudinaryId = post.selectedFile.includes("cloudinary") ? null : await Posts.findById(_id)
   if (!selectedFile.includes("cloudinary")) {
@@ -186,7 +181,6 @@ export const createComment = async (req: any, res: Response) => {
       commentOwnerId: req.userId,
       message: formData,
     });
-    console.log(post);
     const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true });
 
     // make changes to the post
@@ -250,7 +244,6 @@ export const getAllPosts = async (req: Request, res: Response) => {
   const { params } = req.params; // this will be the name of the modified URL
   const urlParams = new URLSearchParams(params);
   const filters = Object.fromEntries(urlParams);
-  console.log(filters);
   try {
     //const { userId, continentFilter, skip } = req.body;
     // what's happening is that since a userId is detected here, it assumes it is fetching ONLY for followers

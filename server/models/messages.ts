@@ -3,38 +3,21 @@ import mongoose, { Schema } from "mongoose";
 // creating a new, seperate Schema for messages as I don't want users db to be overly cluttered
 const messageSchema = new mongoose.Schema(
   {
-    ownerId: { type: String, required: true },
-    allMessages: { type: Schema.Types.Mixed, default: {} },
+    users: { type: [String], required: true, default: [] },
+    messages: {
+      type: [
+        {
+          createdBy: String,
+          createdAt: { type: Date, default: new Date() },
+          message: String,
+        },
+      ],
+      default: [],
+    },
   },
   { minimize: false }
 );
 
 export default mongoose.model("message", messageSchema);
 
-// allMessages will look like this;
-/* 
-{
-    "_id123" : [
-       {
-         createdAt: "date",
-         message: "message here",
-       },
-       {
-         createdAt: "date",
-         message: "message here",
-       },
-     ],
-    "_id58" : [
-       {
-         createdAt: "date",
-         message: "message here",
-       },
-       {
-         createdAt: "date",
-         message: "message here",
-       },
-     ],
-}
-
-
-*/
+// message object will look like this:

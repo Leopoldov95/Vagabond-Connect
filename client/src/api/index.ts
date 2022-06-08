@@ -6,8 +6,8 @@ export const API = axios.create({
 });
 // this function will run on every request, it's helping the middleware function
 API.interceptors.request.use((req: any) => {
-  if (localStorage.getItem("profile")) {
-    let JSONData: any = localStorage.getItem("profile");
+  if (localStorage.getItem("vagabond_connect_profile")) {
+    let JSONData: any = localStorage.getItem("vagabond_connect_profile");
     ////// due to how headers are handled, VAR NAMES AFTER req MUST BE IN LOWERCASE ///////
     // name of a property must match!!! Authorization !== authorization
     req.headers.authorization = `Bearer ${JSON.parse(JSONData).token}`;

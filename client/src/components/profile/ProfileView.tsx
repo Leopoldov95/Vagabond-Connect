@@ -5,7 +5,6 @@ import {
   Paper,
   Tab,
   Tabs,
-  Box,
   Typography,
   Grid,
   makeStyles,
@@ -62,7 +61,7 @@ const ProfileView = () => {
   const dispatch = useDispatch();
   const { id }: any = useParams();
   const [user, setUser] = React.useState(
-    JSON.parse(localStorage.getItem("profile"))?.result
+    JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   );
   const USER_API = useSelector((state: any) => state.userAuthReducer);
   const userProfile = useSelector((state: any) => state.singleUser);

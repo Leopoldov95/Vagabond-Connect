@@ -1,9 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { Button, Snackbar, IconButton } from "@material-ui/core";
+import { Snackbar } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import CloseIcon from "@material-ui/icons/Close";
-import { SNACKBAR_CLEAR, SNACKBAR_SUCCESS } from "../../constants/actionTypes";
+import { SNACKBAR_CLEAR } from "../../constants/actionTypes";
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }

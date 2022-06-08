@@ -26,11 +26,37 @@ const useStyles = makeStyles((theme: Theme) => ({
     left: 0,
     right: 0,
     margin: "auto",
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      height: "400px",
+    },
   },
   btnDelete: {
     backgroundColor: theme.palette.warning.main,
+    margin: 10,
     "&:hover": {
       backgroundColor: theme.palette.warning.light,
+    },
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      width: "100%",
+      margin: "10px 0px",
+    },
+  },
+  btn: {
+    [theme.breakpoints.down("xs")]: {
+      display: "block",
+      width: "100%",
+    },
+  },
+  title: {
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "1.5rem",
+    },
+  },
+  text: {
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "14px",
     },
   },
 }));
@@ -38,7 +64,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 const Delete = (props: any) => {
   const dispatch = useDispatch();
   const history = useHistory();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const snackbarMessage = useSelector((state: any) => state.snackbar);
   const classes = useStyles();
   const [password, setPassword] = React.useState("");
@@ -61,16 +89,22 @@ const Delete = (props: any) => {
   return (
     <Modal open={props?.open}>
       <Container className={classes.container}>
-        <Typography gutterBottom variant="h4" color="secondary" align="center">
+        <Typography
+          className={classes.title}
+          gutterBottom
+          variant="h4"
+          color="secondary"
+          align="center"
+        >
           Account Deletion
         </Typography>
-        <Typography gutterBottom>
+        <Typography className={classes.text} gutterBottom>
           Deleting you account will also delete all your posts and other users
           will no longer be able to find you. Once you delete your account there
           is no way to recover it.
         </Typography>
         <form autoComplete="off">
-          <Typography>
+          <Typography className={classes.text}>
             Please enter your password to confirm account deletion:
           </Typography>
           <TextField
@@ -94,11 +128,11 @@ const Delete = (props: any) => {
             variant="outlined"
             color="secondary"
             onClick={() => props.setOpen(false)}
+            className={classes.btn}
           >
             Close
           </Button>
           <Button
-            style={{ margin: 10 }}
             className={classes.btnDelete}
             variant="contained"
             startIcon={<Warning />}

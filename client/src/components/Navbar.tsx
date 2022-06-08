@@ -50,6 +50,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   logoSm: {
     display: "block",
+    lineHeight: 1,
     [theme.breakpoints.up("sm")]: {
       display: "none",
     },
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
     borderRadius: theme.shape.borderRadius,
     width: "30%",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       display: (props: Props) => (props.open ? "flex" : "none"),
       width: "70%",
     },
@@ -129,16 +130,13 @@ const Navbar = () => {
   const history = useHistory();
   const dispatch = useDispatch();
   const [user, setUser] = React.useState(
-    JSON.parse(localStorage.getItem("profile"))
-  ); // profile is being access from local storage, shich was set in the reducer file auth.js
+    JSON.parse(localStorage.getItem("vagabond_connect_profile"))
+  ); // profile is being access from local storage, which was set in the reducer file auth.js
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [searchResult, setSearchResult] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  /*   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    useState<null | HTMLElement>(null); */
   const isMenuOpen = Boolean(anchorEl);
-  //  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
   React.useEffect(() => {
     const token = user?.token;
@@ -152,7 +150,7 @@ const Navbar = () => {
       }
     }
 
-    setUser(JSON.parse(localStorage.getItem("profile")));
+    setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
   }, [location]);
   React.useEffect(() => {
     if (search.length > 0) {
@@ -297,7 +295,7 @@ const Navbar = () => {
               </Link>
             </div>
 
-            <div className={classes.item}>
+            <div className={classes.item} style={{ display: "none" }}>
               <Link to="/messages" className={classes.link}>
                 <Mail />
                 <Typography className={classes.text}>Messages</Typography>

@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     position: "sticky",
     top: theme.spacing(10),
     padding: 0,
+    marginBottom: theme.spacing(4),
+    [theme.breakpoints.down(450)]: {
+      padding: "0 1rem",
+    },
   },
   profile: {
     display: "flex",
@@ -29,6 +33,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     padding: "24px 0",
     justifyContent: "center",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+    },
   },
   lgIcon: {
     width: theme.spacing(12),
@@ -37,6 +45,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   bioText: {
     display: "flex",
+    flexDirection: "column",
     alignItems: "center",
     color: "#555",
   },
@@ -44,6 +53,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    paddingTop: "2rem",
+    borderTop: "1px solid #ccc",
+    width: "100%",
+    [theme.breakpoints.down("xs")]: {
+      width: "50%",
+      paddingTop: "1rem",
+    },
+  },
+  profileInfoContainer: {
+    display: "block",
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      width: "100%",
+    },
   },
   profileImg: {
     width: 20,
@@ -59,57 +82,69 @@ const useStyles = makeStyles((theme: Theme) => ({
     textDecoration: "none",
     color: "inherit",
   },
+  profileText: {
+    display: "flex",
+    flexDirection: "column",
+  },
 }));
 const LeftProfile = () => {
   const classes = useStyles();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
 
   return (
     <Container className={classes.container}>
       <Paper>
         <div className={classes.profile}>
-          <Avatar
-            className={classes.lgIcon}
-            alt="account_icon"
-            src={user ? user?.profile_cloudinary : "img/auth/default.jpeg"}
-          />
-          <Typography gutterBottom variant="h6">
-            {user ? `${user?.firstName} ${user?.lastName}` : "GUEST"}
-          </Typography>
-          <Typography gutterBottom className={classes.bioText}>
-            <img
-              className={user ? classes.profileImg : ""}
-              alt={user ? user?.country : ""}
-              src={
-                user
-                  ? `https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${(user?.country).toLowerCase()}.svg`
-                  : ""
-              }
+          <div>
+            <Avatar
+              className={classes.lgIcon}
+              alt="account_icon"
+              src={user ? user?.profile_cloudinary : "img/auth/default.jpeg"}
             />
-            {user
-              ? `${countries[user?.country].name}, ${
-                  countries[user?.country].continent
-                }`
-              : "UNKOWN"}
-          </Typography>
+          </div>
+          <div className={classes.profileText}>
+            <Typography gutterBottom variant="h6">
+              {user ? `${user?.firstName} ${user?.lastName}` : "GUEST"}
+            </Typography>
+            <Typography gutterBottom className={classes.bioText}>
+              <img
+                className={user ? classes.profileImg : ""}
+                alt={user ? user?.country : ""}
+                src={
+                  user
+                    ? `https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${(user?.country).toLowerCase()}.svg`
+                    : ""
+                }
+              />
+              {user
+                ? `${countries[user?.country].name}, ${
+                    countries[user?.country].continent
+                  }`
+                : "UNKOWN"}
+            </Typography>
+          </div>
         </div>
-        <Divider className={classes.divider} />
-        <div className={classes.profileInfo}>
-          <Typography gutterBottom className={classes.bioText}>
-            Following
-          </Typography>
-          <Typography gutterBottom variant="h6">
-            {user ? user?.following?.length : 0}
-          </Typography>
-        </div>
-        <Divider className={classes.divider} />
-        <div className={classes.profileInfo}>
-          <Typography gutterBottom className={classes.bioText}>
-            Followers
-          </Typography>
-          <Typography gutterBottom variant="h6">
-            {user ? user?.followers?.length : 0}
-          </Typography>
+        {/* <Divider className={classes.divider} /> */}
+        <div className={classes.profileInfoContainer}>
+          <div className={classes.profileInfo}>
+            <Typography gutterBottom className={classes.bioText}>
+              Following
+            </Typography>
+            <Typography gutterBottom variant="h6">
+              {user ? user?.following?.length : 0}
+            </Typography>
+          </div>
+          {/* <Divider className={classes.divider} /> */}
+          <div className={classes.profileInfo}>
+            <Typography gutterBottom className={classes.bioText}>
+              Followers
+            </Typography>
+            <Typography gutterBottom variant="h6">
+              {user ? user?.followers?.length : 0}
+            </Typography>
+          </div>
         </div>
 
         {user && (

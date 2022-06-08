@@ -1,6 +1,5 @@
 // This component will FETCH posts based on the continent
 // deleting/removing the filter will fetch back to default
-// for performance, should store continent info in db
 import {
   makeStyles,
   Container,
@@ -9,24 +8,36 @@ import {
   CardActionArea,
   CardMedia,
   Chip,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     position: "sticky",
-
     top: theme.spacing(10),
+    [theme.breakpoints.down("sm")]: {
+      position: "relative",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+    },
   },
   header: {
     display: "flex",
     justifyContent: "space-between",
     marginBottom: theme.spacing(1),
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column",
+    },
   },
   title: {
     fontSize: 16,
     fontWeight: 500,
-    color: "#500",
+    color: "#555",
   },
   link: {
     position: "absolute",
@@ -49,6 +60,20 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     height: 100,
+  },
+  filterOptionsLg: {
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
+  filterOptionsSm: {
+    [theme.breakpoints.up("md")]: {
+      display: "none",
+    },
+  },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
   },
 }));
 const continents = [
@@ -85,6 +110,9 @@ const Rightbar = ({ filter, setFilter }) => {
   const handleDelete = () => {
     setFilter("");
   };
+  const handleChange = (event) => {
+    setFilter(event.target.value);
+  };
   const classes = useStyles();
   return (
     <Container className={classes.container}>
@@ -100,23 +128,36 @@ const Rightbar = ({ filter, setFilter }) => {
           />
         )}
       </div>
-
-      {continents.map((item) => (
-        <Card
-          className={classes.card}
-          onClick={() => handleClick(item.title)}
-          key={item.title}
-        >
-          <CardActionArea>
-            <CardMedia
-              className={classes.media}
-              title={item.title}
-              image={`/img/home/${item.image}`}
-            />
-            <Typography className={classes.link}>{item.title}</Typography>
-          </CardActionArea>
-        </Card>
-      ))}
+      <div className={classes.filterOptionsLg}>
+        {continents.map((item) => (
+          <Card
+            className={classes.card}
+            onClick={() => handleClick(item.title)}
+            key={item.title}
+          >
+            <CardActionArea>
+              <CardMedia
+                className={classes.media}
+                title={item.title}
+                image={`/img/home/${item.image}`}
+              />
+              <Typography className={classes.link}>{item.title}</Typography>
+            </CardActionArea>
+          </Card>
+        ))}
+      </div>
+      <div className={classes.filterOptionsSm}>
+        <FormControl variant="outlined" className={classes.formControl}>
+          <InputLabel>Country</InputLabel>
+          <Select value={filter} onChange={handleChange} label="Country">
+            {continents.map((item) => (
+              <MenuItem key={item.title} value={item.title}>
+                {item.title}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </div>
     </Container>
   );
 };

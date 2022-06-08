@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
 import {
   Typography,
   Theme,
@@ -27,13 +26,22 @@ const useStyles = makeStyles((theme: Theme) => ({
   header: {
     textAlign: "center",
     marginBottom: theme.spacing(2),
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "2rem",
+    },
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "1.5rem",
+    },
   },
-
   settingItem: {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
     padding: "6px 1rem",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+      alignItems: "normal",
+    },
   },
   formControl: {
     margin: theme.spacing(1),
@@ -47,11 +55,27 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     marginTop: theme.spacing(2),
     justifyContent: "center",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+    },
+  },
+  countryMenu: {
+    [theme.breakpoints.down("xs")]: {
+      marginTop: "20px",
+    },
   },
   btnDelete: {
     backgroundColor: theme.palette.warning.main,
     "&:hover": {
       backgroundColor: theme.palette.warning.light,
+    },
+    [theme.breakpoints.down("xs")]: {
+      margin: "4px 10px",
+    },
+  },
+  actionBtn: {
+    [theme.breakpoints.down("xs")]: {
+      margin: "4px 10px",
     },
   },
   overlayLoader: {
@@ -75,9 +99,10 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const SettingsLayout = () => {
   const dispatch = useDispatch();
-  const history = useHistory();
   const classes = useStyles();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const USER_API = useSelector((state: any) => state.userAuthReducer);
   const [initData, setInitData] = React.useState({
     firstName: user?.firstName,
@@ -281,7 +306,7 @@ const SettingsLayout = () => {
           <Divider style={{ backgroundColor: lightGreen[100] }} />
           <li className={classes.settingItem}>
             <Typography>Country</Typography>
-            <div>
+            <div className={classes.countryMenu}>
               <CountryNav
                 callback={handleCallback}
                 existingCountry={settingsData.country}
@@ -312,6 +337,7 @@ const SettingsLayout = () => {
       )}
       <div className={classes.actionContainer}>
         <Button
+          className={classes.actionBtn}
           style={{ margin: 10 }}
           variant="outlined"
           color="primary"
@@ -325,6 +351,7 @@ const SettingsLayout = () => {
           Save
         </Button>
         <Button
+          className={classes.actionBtn}
           style={{ margin: 10 }}
           variant="outlined"
           color="secondary"

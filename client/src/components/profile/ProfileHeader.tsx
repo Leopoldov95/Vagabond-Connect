@@ -80,7 +80,7 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const ProfileHeader = () => {
   const [user, setUser] = React.useState(
-    JSON.parse(localStorage.getItem("profile"))?.result
+    JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   );
   // This code serves to update the page in real time
   const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData

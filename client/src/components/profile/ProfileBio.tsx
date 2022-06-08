@@ -16,6 +16,7 @@ import countries from "../country/countries";
 import { useHistory } from "react-router";
 import { lightGreen } from "@material-ui/core/colors";
 import { editUserDetails } from "../../actions/users";
+import Loader from "../Loader";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(4),
@@ -41,22 +42,6 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: lightGreen[50],
     },
   },
-  overlayLoader: {
-    position: "absolute",
-    left: 0,
-    top: 16,
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    "&::before": {
-      content: '""',
-      backgroundColor: "white",
-      opacity: 0.6,
-      height: "100%",
-      width: "100%",
-    },
-  },
 }));
 // will want to showcase follwing and followers in group avatar, can use post id reucer to manage users profile img
 // to display profile owner country info, may want to use data from MongoDB
@@ -67,7 +52,7 @@ const ProfileBio = () => {
   const userReducer = useSelector((state: any) => state.userAuthReducer);
   const userProfile = useSelector((state: any) => state.singleUser);
   const [authUser, setAuthUser] = React.useState(
-    JSON.parse(localStorage.getItem("profile"))?.result
+    JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   );
   let displayUser =
     Object.keys(userProfile).length > 0 ? userProfile : authUser;
@@ -84,7 +69,6 @@ const ProfileBio = () => {
     }
   }, [displayUser]);
   React.useEffect(() => {
-    console.log("there were changes to this user from the server");
     if (userReducer.authData !== null && displayUser._id === authUser._id) {
       displayUser = userReducer.authData.result;
       setIsEdit(false);
@@ -98,14 +82,6 @@ const ProfileBio = () => {
     /*     dispatch(getSingleUser(displayUser._id));
     dispatch(getUserPosts(displayUser._id)); */
   }, [userReducer]);
-  /*   React.useEffect(() => {
-    /*  if (id.length !== 24) {
-      history.push("/");
-    } */
-  // get the user here
-  /*  dispatch(getSingleUser(displayUser._id));
-    dispatch(getUserPosts(displayUser._id));
-  }, [userReducer]); */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBio(e.target.value);
   };
@@ -123,12 +99,6 @@ const ProfileBio = () => {
     const { email } = authUser;
     dispatch(editUserDetails({ email, bio }));
   };
-  // bio edit behavior
-  // need to have 'current' bio from db stored
-  // if current bio is diffeent from db
-  // add option to cancel
-  // add option to save
-
   return (
     <Grid container className={classes.container}>
       {displayUser ? (
@@ -227,14 +197,7 @@ const ProfileBio = () => {
           <CircularProgress size={60} />
         </div>
       )}
-      {loading && (
-        <div className={classes.overlayLoader}>
-          <CircularProgress
-            size={60}
-            style={{ position: "absolute", zIndex: 10 }}
-          />
-        </div>
-      )}
+      {loading && <Loader />}
     </Grid>
   );
 };

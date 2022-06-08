@@ -1,15 +1,9 @@
 // This component will display the active messages for a selected person
 // will assume a user is logged in
 import * as React from "react";
-import {
-  Typography,
-  Grid,
-  Container,
-  makeStyles,
-  Theme,
-} from "@material-ui/core";
+import { Typography, Container, makeStyles, Theme } from "@material-ui/core";
 import { useSelector } from "react-redux";
-import { useHistory, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { MailOutlined } from "@material-ui/icons";
 import CreateMessage from "./CreateMessage";
 import MessageBox from "./MessageBox";
@@ -33,39 +27,33 @@ const MessageContent = ({
   selectedUser,
   setSelectedUser,
   selectedChatCompare,
-  setTargetId,
+  setRoomId,
 }) => {
-  const history = useHistory();
   const { id }: any = useParams();
   const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const messageReducer = useSelector((state: any) => state.messageReducer);
-  const targetIdReducer = useSelector((state: any) => state.targetIdReducer);
   const userProfile = useSelector((state: any) => state.singleUser);
   const classes = useStyles();
 
   // this code is a bit redundant, may need to remove later
-  React.useEffect(() => {
-    if (messageReducer.length > 0) {
-      selectedChatCompare = messageReducer;
-    }
-    if (targetIdReducer !== null) {
-      setTargetId(targetIdReducer);
-    }
-  }, [messageReducer]);
+
   ////// ************* //////////
+  //console.log(messageReducer);
   return (
     <Container className={classes.container}>
       <div className={classes.messageContainer}>
-        {user && !messageReducer.hasOwnProperty("message") ? (
-          messageReducer.map((d, i) => (
+        {user &&
+        !messageReducer.hasOwnProperty("message") &&
+        messageReducer.hasOwnProperty("messages") ? (
+          messageReducer.messages.map((message, i) => (
             <MessageBox
               key={i}
-              createdAt={d.createdAt}
-              message={d.message}
-              messageOwner={d.messageOwner}
-              isUser={user._id === d.messageOwner}
+              createdAt={message.createdAt}
+              message={message.message}
+              messageOwner={message.createdBy}
+              isUser={user._id === message.createdBy}
               avatar={
-                user._id === d.messageOwner
+                user._id === message.createdBy
                   ? user.profile_cloudinary
                   : userProfile.profile_cloudinary
               }

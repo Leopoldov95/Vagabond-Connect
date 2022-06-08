@@ -18,10 +18,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: theme.spacing(12),
     maxWidth: 1200,
     margin: "auto",
-    width: "100%",
   },
   gridContainer: {
     paddingTop: theme.spacing(6),
+    width: "100%",
+    [theme.breakpoints.down("sm")]: {
+      margin: "auto",
+    },
   },
   section: {
     paddingTop: theme.spacing(3),
@@ -30,6 +33,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   title: {
     textAlign: "center",
     fontWeight: 500,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "2rem",
+    },
   },
   media: {
     height: 160,
@@ -42,10 +48,27 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   cardTitle: {
     color: lightGreen[700],
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.6rem",
+    },
   },
   link: {
     color: "inherit",
     textDecoration: "none",
+  },
+  text: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1rem",
+    },
+    [theme.breakpoints.down(420)]: {
+      fontSize: "14px",
+    },
+  },
+  cardContainer: {
+    [theme.breakpoints.down("sm")]: {
+      flexBasis: "auto",
+      margin: "auto",
+    },
   },
 }));
 const Resources = () => {
@@ -53,10 +76,15 @@ const Resources = () => {
   return (
     <div>
       <Container className={classes.container}>
-        <Typography gutterBottom variant="h3" style={{ textAlign: "center" }}>
+        <Typography
+          gutterBottom
+          variant="h3"
+          className={classes.title}
+          style={{ textAlign: "center" }}
+        >
           Travel Resources
         </Typography>
-        <Typography variant="h6">
+        <Typography variant="h6" className={classes.text}>
           Trying to decide which companies to book your trip with? Over the last
           fifteen years of travel, I’ve used hundreds of companies. Some have
           been great, some have been awful. Below is a list of the companies I
@@ -73,7 +101,13 @@ const Resources = () => {
               </Typography>
               <Grid container spacing={4} className={classes.gridContainer}>
                 {information[index].map((info?: any) => (
-                  <Grid xs={12} sm={6} md={4} key={info.title}>
+                  <Grid
+                    xs={12}
+                    sm={6}
+                    md={4}
+                    key={info.title}
+                    className={classes.cardContainer}
+                  >
                     <a
                       className={classes.link}
                       rel="noopener noreferrer"

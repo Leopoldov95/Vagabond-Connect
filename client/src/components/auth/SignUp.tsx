@@ -17,7 +17,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { lightGreen } from "@material-ui/core/colors";
 import CountryNav from "../country/countryNav";
 // API calls
-//import { signup } from "../../api/users";
 // Redux importa
 import { useDispatch, useSelector } from "react-redux";
 import { signup, signin } from "../../actions/users";
@@ -336,9 +335,6 @@ const SignUp = () => {
                   </label>
                   {formData.selectedFile ? (
                     <React.Fragment>
-                      {/* <Typography component="span" style={{ marginLeft: 10 }}>
-                        Image Selected!
-                      </Typography> */}
                       <Typography component="span" style={{ marginLeft: 10 }}>
                         Image Selected!
                       </Typography>

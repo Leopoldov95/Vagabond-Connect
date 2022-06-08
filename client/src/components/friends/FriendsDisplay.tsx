@@ -18,6 +18,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: theme.spacing(4),
     display: "flex",
     position: "relative",
+    [theme.breakpoints.down("sm")]: {
+      padding: "2rem 1rem",
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginTop: 0,
+      padding: "10px 8px",
+    },
   },
   profileContainer: {
     padding: "0 1rem",
@@ -50,6 +57,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: "gray",
     marginTop: theme.spacing(2),
   },
+  gridItem: {
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+    },
+  },
 }));
 
 const FriendsDisplay = (props: any) => {
@@ -57,7 +69,9 @@ const FriendsDisplay = (props: any) => {
   const params = useParams();
   const { id }: any = params; // Need this to determin if viewing friends on Friends Page OR from Profile
   const allUsers = useSelector((state: any) => state.allUsers);
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   React.useEffect(() => {
     props.setLoading(false);
   }, [allUsers]);
@@ -75,7 +89,7 @@ const FriendsDisplay = (props: any) => {
       {props.selected === "find" ? (
         renderUsers.length > 0 ? (
           renderUsers.map((user) => (
-            <Grid item key={user.firstName}>
+            <Grid className={classes.gridItem} item key={user.firstName}>
               <FriendCard user={user} />
             </Grid>
           ))
@@ -87,7 +101,7 @@ const FriendsDisplay = (props: any) => {
       ) : user || id ? (
         renderUsers.length > 0 ? (
           renderUsers.map((user) => (
-            <Grid item>
+            <Grid className={classes.gridItem} item>
               <FriendCard key={user.firstName} user={user} />
             </Grid>
           ))

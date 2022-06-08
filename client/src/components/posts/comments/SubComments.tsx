@@ -39,7 +39,9 @@ const SubComments = ({ comment, postId, setEditComment, setCommentId }) => {
   // use props.commentOwnerId to fetch user profile
   const classes = useStyles();
   const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   //const [commentAvatar, setCommentAvatar] = useState(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =

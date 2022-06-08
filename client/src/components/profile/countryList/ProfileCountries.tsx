@@ -37,7 +37,9 @@ const useStyles = makeStyles((theme: Theme) => ({
 ///// IMPORTANT //////
 // use this component to handle master state changes
 const ProfileCountries = () => {
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user;
   const [favorite, setFavorite] = React.useState(

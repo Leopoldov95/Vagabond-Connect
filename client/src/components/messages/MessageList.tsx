@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { Paper, makeStyles, Theme, Typography } from "@material-ui/core";
 import ListUser from "./ListUser";
-import { fetchMessageThread } from "../../actions/message";
+//import { fetchMessageThread } from "../../actions/message";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     height: "100vh",
@@ -16,11 +16,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 const MessageList = ({ selectedUser, setSelectedUser }) => {
-  const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  //const dispatch = useDispatch();
+  //const user = JSON.parse(localStorage.getItem("profile"))?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const contactList = useSelector((state: any) => state.contactsReducer);
-  const { id }: any = useParams();
+  //const { id }: any = useParams();
   const classes = useStyles();
   const [alluser, setAllUsers] = React.useState([]); // this state is to manage the users that will appear on the left hand side of the message bar
   // populate the local state if user has active messages
@@ -32,7 +32,9 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
   //   }
   // }, []);
   React.useEffect(() => {
-    Object.keys(userProfile).length > 0 && setSelectedUser(userProfile);
+    if (Object.keys(userProfile).length > 0) {
+      setSelectedUser(userProfile);
+    }
   }, [userProfile]);
   React.useEffect(() => {
     setAllUsers(contactList);
@@ -43,7 +45,6 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
   //   selectedUser && dispatch(fetchMessageThread(selectedUser._id));
   // }, [id, selectedUser]);
 
-  // console.log(user.messages);
   // since we will only be messaging one user at a time, we can do the following
   // on page load, start to populate the current message p[age wioth existing messages from the authenticate user
   // put the user I am currently messagind id onto the url
@@ -68,12 +69,13 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
                 (listUser) =>
                   listUser._id !== userProfile._id && (
                     <ListUser
+                      key={listUser}
                       user={listUser}
                       selectedUser={selectedUser?._id}
                     />
                   )
               )}
-            {userProfile && (
+            {userProfile && Object.keys(userProfile).length > 0 && (
               <ListUser selectedUser={selectedUser?._id} user={userProfile} />
             )}
           </React.Fragment>

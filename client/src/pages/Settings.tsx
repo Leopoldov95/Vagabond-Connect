@@ -4,7 +4,9 @@ import SettingsLayout from "../components/settings/SettingsLayout";
 import SnackbarTool from "../components/snackbar/SnackbarTool";
 const Settings = () => {
   const history = useHistory();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   React.useEffect(() => {
     if (!user) {
       history.push("/auth");

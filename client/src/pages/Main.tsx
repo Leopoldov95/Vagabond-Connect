@@ -16,37 +16,32 @@ const useStyles = makeStyles((theme: Theme) => ({
       display: "none",
     },
   },
+  filterMobile: {
+    display: "none",
+    [theme.breakpoints.down("sm")]: {
+      display: "block",
+      marginBottom: theme.spacing(12),
+      marginTop: "-65px",
+    },
+  },
   container: {
     padding: "0 1rem",
     marginTop: theme.spacing(10),
+    [theme.breakpoints.down(450)]: {
+      padding: 0,
+    },
   },
 }));
 const Main = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const currentPosts = useSelector((state: any) => state.postsReducer);
   const [filter, setFilter] = React.useState(""); // any filter used in order to fetch posts based on continent, must consider that will need to take all vs following posts to consider
   const [toggle, setToggle] = React.useState(true);
   const firstUpdate = React.useRef(true);
-  /*   React.useEffect(() => {
-    dispatch(getAllPosts());
-  }, [dispatch]);
-  React.useEffect(() => {
-    if (filter.length > 0) {
-      dispatch(getAllPosts());
-    }
-  }, [filter]);
-  React.useEffect(() => {
-    if (firstUpdate.current) {
-      firstUpdate.current = false;
-      return;
-    }
-    if (user) {
-      toggle ? dispatch(getAllPosts()) : dispatch(getAllPosts(user._id));
-    }
-  }, [toggle]); */
-  // this will be used to handle the filter formdata
   React.useEffect(() => {
     const filterForm = {};
     if (filter.length > 0) {
@@ -57,31 +52,21 @@ const Main = () => {
     }
     dispatch(getAllPosts(filterForm));
   }, [dispatch, filter, toggle]);
-  // dispatch
-  /*   React.useEffect(() => {
-    if (user) {
-      if (user.following.length > 0) {
-        user.following.forEach((x) => {
-          console.log(x);
-        });
-      }
-      if (user.followers.length > 0) {
-      }
-      /*      console.log(user.following);
-      console.log(user.followers); */
-  /*   }
-  }, []);  */
+
   return (
     <Grid container className={classes.container}>
-      <Grid item sm={2} xs={2}>
+      <Grid item md={2} sm={4} xs={12}>
         <LeftProfile />
       </Grid>
-      <Grid item sm={7} xs={10}>
+      <Grid item md={7} sm={8} xs={12}>
+        <div className={classes.filterMobile}>
+          <Rightbar filter={filter} setFilter={setFilter} />
+        </div>
         {user && <PostsToggle toggle={toggle} setToggle={setToggle} />}
         <Feed />
         <LoadMore filter={filter} toggle={toggle} />
       </Grid>
-      <Grid item sm={3} className={classes.right}>
+      <Grid item md={3} className={classes.right}>
         <Rightbar filter={filter} setFilter={setFilter} />
       </Grid>
       <SnackbarTool />

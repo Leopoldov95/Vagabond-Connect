@@ -13,10 +13,13 @@ import {
 export const userAuthReducer = (state = { authData: null }, action: any) => {
   switch (action.type) {
     case AUTH:
-      localStorage.setItem("profile", JSON.stringify({ ...action?.data }));
+      localStorage.setItem(
+        "vagabond_connect_profile",
+        JSON.stringify({ ...action?.data })
+      );
       return { ...state, authData: action?.data };
     case EDIT_USER:
-      const authUser: any = localStorage.getItem("profile");
+      const authUser: any = localStorage.getItem("vagabond_connect_profile");
       // grab existing token, no need to generate a new one
       const { token } = JSON.parse(authUser);
       const newData = {
@@ -26,7 +29,10 @@ export const userAuthReducer = (state = { authData: null }, action: any) => {
 
       // go here Upon a successful proifle edit
       // we want to keep the local token, and overwrite the current localstorage and authData
-      localStorage.setItem("profile", JSON.stringify({ ...newData }));
+      localStorage.setItem(
+        "vagabond_connect_profile",
+        JSON.stringify({ ...newData })
+      );
       return { ...state, authData: newData };
     // may want toset user as a reducer state
     //return state;

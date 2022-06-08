@@ -39,7 +39,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 const LoadMore = ({ filter, toggle }) => {
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const classes = useStyles();
   const dispatch = useDispatch();
   const currentPosts = useSelector((state: any) => state.postsReducer);

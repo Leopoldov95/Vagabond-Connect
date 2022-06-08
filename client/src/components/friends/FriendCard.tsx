@@ -11,12 +11,35 @@ import {
 } from "@material-ui/core";
 import { useDispatch, useSelector } from "react-redux";
 import { lightGreen } from "@material-ui/core/colors";
+import { Visibility, PersonAdd, PersonAddDisabled } from "@material-ui/icons";
 import { Link } from "react-router-dom";
 import { followUser } from "../../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   card: {
     width: 200,
     margin: theme.spacing(2),
+    [theme.breakpoints.down("sm")]: {
+      width: 180,
+      margin: theme.spacing(1),
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      height: "100px",
+    },
+  },
+  btnLg: {
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
+  btnSm: {
+    display: "none",
+    [theme.breakpoints.down("xs")]: {
+      display: "block",
+    },
   },
   profileCard: {
     width: 170,
@@ -24,6 +47,13 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   media: {
     height: 180,
+    [theme.breakpoints.down("sm")]: {
+      height: 160,
+    },
+    [theme.breakpoints.down("sm")]: {
+      height: "100%",
+      width: "90px",
+    },
   },
   profileMedia: {
     height: 150,
@@ -38,6 +68,14 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: "0 1rem 1rem 1rem",
     display: "flex",
     flexDirection: "column",
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 1rem 0 0",
+    },
+  },
+  cardName: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
   },
 }));
 const FriendCard = (props: any) => {
@@ -49,11 +87,13 @@ const FriendCard = (props: any) => {
   const userReducer = useSelector((state: any) => state.userAuthReducer);
   const [tempDisabled, setTempDisabled] = React.useState(false);
   const [authUser, setAuthUser] = React.useState(
-    JSON.parse(localStorage.getItem("profile"))?.result
+    JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   );
   //const authUser = JSON.parse(localStorage.getItem("profile"))?.result;
   React.useEffect(() => {
-    setAuthUser(JSON.parse(localStorage.getItem("profile"))?.result);
+    setAuthUser(
+      JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
+    );
     setTempDisabled(false);
   }, [userReducer]);
   const handleFollow = () => {
@@ -69,6 +109,7 @@ const FriendCard = (props: any) => {
       ></CardMedia>
       <CardContent>
         <Typography
+          className={classes.cardName}
           style={{ textAlign: "center" }}
           variant={id ? "body2" : "h6"}
         >
@@ -77,30 +118,79 @@ const FriendCard = (props: any) => {
       </CardContent>
       <div className={classes.btnContainer}>
         {authUser && authUser.following.includes(user._id) ? (
-          <Button
-            style={{ marginBottom: 10 }}
-            color="secondary"
-            variant="outlined"
-            onClick={handleFollow}
-            disabled={!authUser || authUser._id === user._id || tempDisabled}
-          >
-            Unfollow
-          </Button>
+          <React.Fragment>
+            <div className={classes.btnLg}>
+              <Button
+                style={{ marginBottom: 10 }}
+                color="secondary"
+                variant="outlined"
+                onClick={handleFollow}
+                disabled={
+                  !authUser || authUser._id === user._id || tempDisabled
+                }
+              >
+                Unfollow
+              </Button>
+            </div>
+            <div className={classes.btnSm}>
+              <Button
+                style={{ marginBottom: 10 }}
+                color="secondary"
+                variant="outlined"
+                onClick={handleFollow}
+                disabled={
+                  !authUser || authUser._id === user._id || tempDisabled
+                }
+                startIcon={<PersonAddDisabled />}
+              ></Button>
+            </div>
+          </React.Fragment>
         ) : (
-          <Button
-            style={{ marginBottom: 10 }}
-            color="primary"
-            variant="outlined"
-            onClick={handleFollow}
-            disabled={!authUser || authUser._id === user._id || tempDisabled}
-          >
-            Follow
-          </Button>
+          // change the buttons to icons on mobile views
+          <React.Fragment>
+            <div className={classes.btnLg}>
+              <Button
+                style={{ marginBottom: 10 }}
+                color="primary"
+                variant="outlined"
+                onClick={handleFollow}
+                disabled={
+                  !authUser || authUser._id === user._id || tempDisabled
+                }
+              >
+                Follow
+              </Button>
+            </div>
+            <div className={classes.btnSm}>
+              <Button
+                style={{ marginBottom: 10 }}
+                color="primary"
+                variant="outlined"
+                onClick={handleFollow}
+                disabled={
+                  !authUser || authUser._id === user._id || tempDisabled
+                }
+                startIcon={<PersonAdd />}
+              ></Button>
+            </div>
+          </React.Fragment>
         )}
-
-        <Button className={classes.btnProfile} variant="contained">
-          <Link to={`/profile/${user._id}`}>View Profile</Link>
-        </Button>
+        <React.Fragment>
+          <div className={classes.btnLg}>
+            <Button className={classes.btnProfile} variant="contained">
+              <Link to={`/profile/${user._id}`}>View Profile</Link>
+            </Button>
+          </div>
+          <div className={classes.btnSm}>
+            <Button
+              className={classes.btnProfile}
+              variant="contained"
+              startIcon={<Visibility />}
+            >
+              <Link to={`/profile/${user._id}`}></Link>
+            </Button>
+          </div>
+        </React.Fragment>
       </div>
     </Card>
   );

@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
   notifications: { type: [] },
   favoriteCountries: { type: [String] },
   visitedCountries: { type: [String] },
+  messageRooms: { type: [String] },
 });
 
 // how to set empty object in mongodb

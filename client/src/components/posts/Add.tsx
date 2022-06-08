@@ -32,7 +32,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 const Add = (props: any) => {
   const classes = useStyles();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
 
   return (
     <React.Fragment>

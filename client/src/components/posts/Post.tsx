@@ -15,6 +15,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Collapse,
 } from "@material-ui/core";
 import {
   FavoriteBorder,
@@ -43,6 +44,18 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     textAlign: "center",
   },
+  textLg: {
+    display: "block",
+    [theme.breakpoints.down(450)]: {
+      display: "none",
+    },
+  },
+  textMobile: {
+    display: "none",
+    [theme.breakpoints.down(450)]: {
+      display: "block",
+    },
+  },
   icon: {
     marginRight: theme.spacing(1),
   },
@@ -65,14 +78,29 @@ const useStyles = makeStyles((theme) => ({
   country: {
     display: "flex",
     justifyContent: "center",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1rem",
+    },
+    [theme.breakpoints.down(450)]: {
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      gap: "6px",
+    },
+  },
+  cardTitle: {
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.2rem",
+    },
   },
 }));
 // MAKE SURE TO HAVE POST CREATOR ID
-// POST.ownerId === user._id
 const Post = (props: any) => {
   const dispatch = useDispatch();
   /* make sure to create a state to manage likes  */
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const post = props?.post;
   const userCommentInfo = useSelector((state: any) => state.commentUser);
   const postReducer = useSelector((state: any) => state.postsReducer); // need this to update changes when posts change
@@ -84,8 +112,12 @@ const Post = (props: any) => {
   const [showComments, setShowComments] = React.useState(false);
   const [editComment, setEditComment] = React.useState(null);
   const [commentId, setCommentId] = React.useState(null);
+  const [expanded, setExpanded] = React.useState(false);
+
+  const handleExpandClick = () => {
+    setExpanded(!expanded);
+  };
   const isMenuOpen = Boolean(anchorEl);
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   // not sure it this is the best approach, diapstaching on parent level component so child doesn't have render/fetching issues
   // this method will render ALL comments profile pictures even when not in view...
   React.useEffect(() => {
@@ -117,10 +149,8 @@ const Post = (props: any) => {
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
-    // props.setOpen(true);
   };
   const handleDelete = () => {
-    // console.log(post._id);
     dispatch(deletePost(post._id));
     setAnchorEl(null);
     handleMobileMenuClose();
@@ -159,7 +189,6 @@ const Post = (props: any) => {
       )}
     </Menu>
   );
-
   return (
     <Card className={classes.card}>
       <div className={classes.postOwner}>
@@ -182,7 +211,6 @@ const Post = (props: any) => {
               {post.ownerName}
             </Typography>
             <Typography style={{ color: "#555", fontSize: 14 }}>
-              {/*  {new Date().toLocaleString("en-US")} */}{" "}
               {new Date(post.createdAt).toLocaleString()}
             </Typography>
           </div>
@@ -194,14 +222,13 @@ const Post = (props: any) => {
           </IconButton>
         </div>
       </div>
-      {/*   <CardActionArea> */}
       <CardMedia
         className={classes.media}
         title="travel"
         image={post.cloudinary_url}
       />
       <CardContent>
-        <Typography gutterBottom variant="h5">
+        <Typography className={classes.cardTitle} gutterBottom variant="h5">
           {post.title}
         </Typography>
         <Typography gutterBottom className={classes.country} variant="h6">
@@ -214,7 +241,29 @@ const Post = (props: any) => {
             countries[post.country].continent
           }`}
         </Typography>
-        <Typography variant="body2">{post.description}</Typography>
+        <div className={classes.textLg}>
+          <Typography variant="body2">{post.description}</Typography>
+        </div>
+        <div className={classes.textMobile}>
+          {post.description && post.description.length < 200 ? (
+            <Typography variant="body2">{post.description}</Typography>
+          ) : (
+            <React.Fragment>
+              <Collapse in={expanded} timeout="auto" unmountOnExit>
+                <Typography variant="body2">{post.description}</Typography>
+              </Collapse>
+              <Button
+                variant="outlined"
+                color={!expanded ? "primary" : "default"}
+                size="small"
+                onClick={handleExpandClick}
+                style={{ margin: "10px 0" }}
+              >
+                {!expanded ? "Read More" : "Hide"}
+              </Button>
+            </React.Fragment>
+          )}
+        </div>
       </CardContent>
       {/*  </CardActionArea> */}
       <Divider />
@@ -240,9 +289,10 @@ const Post = (props: any) => {
           onClick={() => setShowComments(!showComments)}
         >
           {/* will want to show how many comments */}
-
           <Comment />
-          <Typography className={classes.buttonText}>Comments</Typography>
+          <Typography
+            className={classes.buttonText}
+          >{`${post.comments.length} Comments`}</Typography>
         </Button>
       </CardActions>
       <Divider />

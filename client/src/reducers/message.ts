@@ -27,12 +27,3 @@ export const contactsReducer = (contacts: any = [], action: any) => {
       return contacts;
   }
 };
-
-export const targetIdReducer = (state = null, action: any) => {
-  switch (action.type) {
-    case TARGET_ID:
-      return action.payload;
-    default:
-      return state;
-  }
-};

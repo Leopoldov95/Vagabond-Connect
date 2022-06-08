@@ -52,7 +52,9 @@ const Comments = ({
 }) => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const [comment, setComment] = useState("");
   React.useEffect(() => {
     if (editComment) {

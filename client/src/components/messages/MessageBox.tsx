@@ -1,6 +1,5 @@
 import { Typography, Theme, makeStyles, Avatar } from "@material-ui/core";
 import { lightGreen, blue } from "@material-ui/core/colors";
-import { light } from "@material-ui/core/styles/createPalette";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
