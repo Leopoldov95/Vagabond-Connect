@@ -37,11 +37,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-/* interface Props {
-  favorite: string[];
-  isFavoriteEdit: any;
-} */
-
 /////// IMPORTANT ///////
 // The tools to make changes should be here, however the functions to change the top level state must be in parent component
 // set country name to '' or null
@@ -80,7 +75,6 @@ const CountryList = (props: any) => {
   };
   const handleCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    //setLocalCountries(props.countries);
     props.setIsEdit(false);
   };
 
@@ -103,6 +97,7 @@ const CountryList = (props: any) => {
   const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     dispatch(updateUserCountryList(props.name, localCountries));
+    props.setIsEdit(false);
   };
   return (
     <React.Fragment>

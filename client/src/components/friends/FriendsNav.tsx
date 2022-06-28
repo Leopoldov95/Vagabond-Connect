@@ -1,30 +1,18 @@
 import * as React from "react";
 import { useDispatch } from "react-redux";
-import {
-  Button,
-  Paper,
-  makeStyles,
-  Theme,
-  FormControl,
-  Select,
-  InputLabel,
-  MenuItem,
-} from "@material-ui/core";
+import { Paper, makeStyles, Theme, Tab, Tabs } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
-import { Person, PeopleAlt, PersonAdd, Search } from "@material-ui/icons";
+import { PeopleAlt, Search, SupervisorAccount } from "@material-ui/icons";
 import { getAllUsers } from "../../actions/users";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    paddingTop: theme.spacing(10),
-    height: "100vh",
+    margin: "auto",
+    maxWidth: 1200,
+    padding: "5rem 1rem 0 1rem",
     [theme.breakpoints.down(600)]: {
-      height: "auto",
-      margin: "70px 0.5rem 0 0.5rem",
-      display: "flex",
-      paddingTop: 0,
-    },
-    [theme.breakpoints.down(450)]: {
-      display: "none",
+      paddingTop: theme.spacing(9),
+      paddingLeft: theme.spacing(1),
+      paddingRight: theme.spacing(1),
     },
   },
   navBtn: {
@@ -54,6 +42,15 @@ const useStyles = makeStyles((theme: Theme) => ({
       fontSize: "1.5rem",
     },
   },
+  tabContainer: {
+    marginBottom: theme.spacing(3),
+    marginLeft: theme.spacing(3),
+    marginRight: theme.spacing(3),
+    justifyContent: "center",
+    [theme.breakpoints.down("xs")]: {
+      marginTop: theme.spacing(2),
+    },
+  },
   mobileMenu: {
     display: "none",
     [theme.breakpoints.down(450)]: {
@@ -61,23 +58,43 @@ const useStyles = makeStyles((theme: Theme) => ({
       margin: "80px 1rem 0 1rem",
     },
   },
+  mobileTab: {
+    [theme.breakpoints.down(450)]: {
+      fontSize: "12px",
+    },
+  },
 }));
 
+interface TabPanelProps {
+  children?: React.ReactNode;
+  index: any;
+  value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div role="tabpanel" hidden={value !== index} {...other}>
+      {value === index && <React.Fragment>{children}</React.Fragment>}
+    </div>
+  );
+}
 const FriendsNav = (props: any) => {
   const classes = useStyles();
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
   const dispatch = useDispatch();
-  const navItems = [
-    { name: "following", icon: <Person className={classes.navIcon} /> },
-    { name: "followers", icon: <PeopleAlt className={classes.navIcon} /> },
-    { name: "find", icon: <Search className={classes.navIcon} /> },
-  ];
-
-  const handleChange = (event) => {
-    props.setSelected(event.target.value);
+  const [value, setValue] = React.useState("find");
+  const handleChange = (event: React.ChangeEvent<{}>, newValue: string) => {
+    setValue(newValue);
+    props.setSelected(newValue);
   };
+
+  // const handleChange = (event) => {
+  //   props.setSelected(event.target.value);
+  // };
   // everytime the nac changes, make a fetch
   React.useEffect(() => {
     // No user is logged in
@@ -89,31 +106,36 @@ const FriendsNav = (props: any) => {
     dispatch(getAllUsers(filterForm));
   }, [props.selected]);
   return (
-    <div>
-      <Paper className={classes.container}>
-        {navItems.map((item) => (
-          <Button
-            key={item.name}
-            className={`${classes.navBtn} ${
-              props.selected === item.name && classes.active
-            }`}
-            startIcon={item.icon}
-            onClick={() => props.setSelected(item.name)}
-          >
-            {item.name}
-          </Button>
-        ))}
+    <div className={classes.container}>
+      <Paper>
+        <Tabs
+          value={value}
+          variant="fullWidth"
+          indicatorColor={"primary"}
+          textColor="primary"
+          onChange={handleChange}
+          aria-label="disabled tabs example"
+        >
+          <Tab
+            value="find"
+            className={classes.mobileTab}
+            icon={<Search className={classes.navIcon} />}
+            label="Find"
+          />
+          <Tab
+            value="following"
+            className={classes.mobileTab}
+            icon={<PeopleAlt className={classes.navIcon} />}
+            label="Following"
+          />
+          <Tab
+            value="followers"
+            className={classes.mobileTab}
+            icon={<SupervisorAccount className={classes.navIcon} />}
+            label="Followers"
+          />
+        </Tabs>
       </Paper>
-      <FormControl className={classes.mobileMenu}>
-        <InputLabel>Display</InputLabel>
-        <Select value={props.selected} onChange={handleChange}>
-          {navItems.map((item) => (
-            <MenuItem key={item.name} value={item.name}>
-              {item.name}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
     </div>
   );
 };

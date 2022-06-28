@@ -10,10 +10,9 @@ import {
   Button,
   TextField,
 } from "@material-ui/core";
-import { Edit, Close, MailOutline } from "@material-ui/icons";
+import { Edit, Close } from "@material-ui/icons";
 import { followUser } from "../../actions/users";
 import countries from "../country/countries";
-import { useHistory } from "react-router";
 import { lightGreen } from "@material-ui/core/colors";
 import { editUserDetails } from "../../actions/users";
 import Loader from "../Loader";
@@ -31,6 +30,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    [theme.breakpoints.down(450)]: {
+      flexDirection: "column",
+      marginBottom: theme.spacing(1),
+    },
   },
   btnEdit: {
     color: lightGreen[700],
@@ -42,14 +45,34 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: lightGreen[50],
     },
   },
+  btnMobile: {
+    [theme.breakpoints.down("xs")]: {
+      margin: 0,
+    },
+  },
+  profileName: {
+    margin: "1rem",
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "1.4rem",
+    },
+  },
+  bioText: {
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 1rem",
+    },
+  },
+  bioEditMobile: {
+    [theme.breakpoints.down("xs")]: {
+      margin: "0 1rem",
+    },
+  },
 }));
 // will want to showcase follwing and followers in group avatar, can use post id reucer to manage users profile img
 // to display profile owner country info, may want to use data from MongoDB
 const ProfileBio = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
-  const history = useHistory();
-  const userReducer = useSelector((state: any) => state.userAuthReducer);
+  const userReducer = useSelector((state: any) => state.userAuthReducer); // this is needed to make live changes to user profile
   const userProfile = useSelector((state: any) => state.singleUser);
   const [authUser, setAuthUser] = React.useState(
     JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
@@ -62,14 +85,14 @@ const ProfileBio = () => {
   const [isEdit, setIsEdit] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   // need this to handle render load issue
+  // creating local bio state for editing
   React.useEffect(() => {
-    console.log(displayUser);
     if (displayUser) {
       setBio(displayUser.bio);
     }
   }, [displayUser]);
   React.useEffect(() => {
-    if (userReducer.authData !== null && displayUser._id === authUser._id) {
+    if (userReducer.authData !== null && displayUser?._id === authUser?._id) {
       displayUser = userReducer.authData.result;
       setIsEdit(false);
       setLoading(false);
@@ -77,10 +100,10 @@ const ProfileBio = () => {
   }, [userReducer]);
   // This is to handle the api call for the follow btn
   React.useEffect(() => {
-    setAuthUser(JSON.parse(localStorage.getItem("profile"))?.result);
+    setAuthUser(
+      JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
+    );
     setTempDisabled(false);
-    /*     dispatch(getSingleUser(displayUser._id));
-    dispatch(getUserPosts(displayUser._id)); */
   }, [userReducer]);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setBio(e.target.value);
@@ -121,67 +144,75 @@ const ProfileBio = () => {
             }`}
           </Typography>
           <div className={classes.profileAction}>
-            <Typography variant="h4" style={{ margin: "1rem" }}>
+            <Typography className={classes.profileName} variant="h4">
               {displayUser?.firstName} {displayUser?.lastName}
             </Typography>
-            {authUser && authUser.following.includes(displayUser._id) ? (
-              <Button
-                style={{ margin: "1rem" }}
-                color="secondary"
-                variant="outlined"
-                onClick={handleFollow}
-                disabled={
-                  !authUser || authUser._id === displayUser._id || tempDisabled
-                }
-              >
-                Unfollow
-              </Button>
-            ) : (
-              <Button
-                color="primary"
-                variant="outlined"
-                onClick={handleFollow}
-                disabled={
-                  !authUser || authUser._id === displayUser._id || tempDisabled
-                }
-              >
-                Follow
-              </Button>
-            )}
-            {authUser && authUser?._id !== displayUser?._id && (
+            <div>
+              {authUser && authUser.following.includes(displayUser._id) ? (
+                <Button
+                  className={classes.btnMobile}
+                  color="secondary"
+                  variant="outlined"
+                  onClick={handleFollow}
+                  disabled={
+                    !authUser ||
+                    authUser._id === displayUser._id ||
+                    tempDisabled
+                  }
+                >
+                  Unfollow
+                </Button>
+              ) : (
+                <Button
+                  color="primary"
+                  variant="outlined"
+                  onClick={handleFollow}
+                  disabled={
+                    !authUser ||
+                    authUser._id === displayUser._id ||
+                    tempDisabled
+                  }
+                >
+                  Follow
+                </Button>
+              )}
+              {/* Messaging feature disabled */}
+              {/* {authUser && authUser?._id !== displayUser?._id && (
               <Link to={`/messages/${displayUser._id}`}>
                 <Button variant="outlined" className={classes.btnEdit}>
                   <MailOutline />
                 </Button>
               </Link>
-            )}
-            {authUser && authUser?._id === displayUser?._id && (
-              <Button
-                variant="outlined"
-                className={classes.btnEdit}
-                startIcon={isEdit ? <Close /> : <Edit />}
-                onClick={handleEditClick}
-              >
-                {isEdit ? "Cancel" : "Edit Bio"}
-              </Button>
-            )}
-            {authUser &&
-              authUser?._id === displayUser?._id &&
-              displayUser.bio !== bio &&
-              isEdit && (
+            )} */}
+              {authUser && authUser?._id === displayUser?._id && (
                 <Button
                   variant="outlined"
-                  color="primary"
-                  style={{ margin: "0 10px" }}
-                  onClick={handleSave}
+                  className={classes.btnEdit}
+                  startIcon={isEdit ? <Close /> : <Edit />}
+                  onClick={handleEditClick}
                 >
-                  Save
+                  {isEdit ? "Cancel" : "Edit Bio"}
                 </Button>
               )}
+              {authUser &&
+                authUser?._id === displayUser?._id &&
+                displayUser.bio !== bio &&
+                isEdit && (
+                  <Button
+                    variant="outlined"
+                    color="primary"
+                    style={{ margin: "0 10px" }}
+                    onClick={handleSave}
+                  >
+                    Save
+                  </Button>
+                )}
+            </div>
           </div>
           {isEdit ? (
             <TextField
               multiline
+              className={classes.bioEditMobile}
               label="Edit Bio"
               maxRows={4}
               value={bio}
@@ -189,7 +220,9 @@ const ProfileBio = () => {
               inputProps={{ maxLength: 400 }}
             />
           ) : (
-            <Typography variant="body1">{bio}</Typography>
+            <Typography variant="body1" className={classes.bioText}>
+              {bio}
+            </Typography>
           )}
         </React.Fragment>
       ) : (

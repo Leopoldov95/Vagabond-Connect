@@ -1,5 +1,4 @@
 import express from "express";
-//import { signin, signup } from "../controllers/users";
 import {
   signup,
   signin,
@@ -12,14 +11,17 @@ import {
   fetchUserCommentInfo,
   editUserCountryList,
   deleteUser,
+  fetchAllFollowers,
+  fetchAllFollowing,
 } from "../controllers/users";
 import auth from "../middleware/auth";
 const router = express.Router();
 
-//router.post("/signin", signin);
 router.post("/", auth, editUserDetails);
 router.post("/delete/:id", auth, deleteUser);
 router.get("/:params?", fetchAllUsers);
+router.get("/get/following", auth, fetchAllFollowing);
+router.get("/get/followers", auth, fetchAllFollowers);
 router.get("/search/:query", searchUsers);
 router.post("/follow/:id", auth, followUser);
 router.post("/single", fetchSingleUser);

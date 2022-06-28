@@ -62,7 +62,6 @@ export const Messages = () => {
   React.useEffect(() => {
     if (roomId !== null && user) {
       socket = io(baseURL);
-      console.log(roomId);
       socket.emit("setup", user._id);
       socket.on("connected", () => {
         setSocketConnected(true);

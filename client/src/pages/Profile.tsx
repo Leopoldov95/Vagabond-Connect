@@ -14,6 +14,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     margin: "auto",
     marginTop: theme.spacing(4),
     marginBottom: theme.spacing(8),
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+      flexDirection: "column",
+    },
   },
 }));
 
@@ -24,7 +28,7 @@ const Profile = () => {
   const dispatch = useDispatch();
   const classes = useStyles();
   const { id }: any = useParams(); // retrieves user_id from url params
-
+  // const [authUser, setAuthUser] = JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   React.useEffect(() => {
     if (id.length !== 24) {
       history.push("/");
@@ -32,7 +36,7 @@ const Profile = () => {
     // get the user here
     dispatch(getSingleUser(id));
     dispatch(getUserPosts(id));
-    console.log("I was initiated");
+    window.scrollTo(0, 0);
   }, [dispatch, history, id]);
 
   // this will trigger the entire page to rerender

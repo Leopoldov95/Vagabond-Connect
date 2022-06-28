@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     left: 0,
     right: 0,
     margin: "auto",
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       width: "100vw",
       height: "100vh",
     },
@@ -116,26 +116,25 @@ const PostForm = (props: any) => {
       : null
   );
   const postsReducer = useSelector((state: any) => state.postsReducer);
-  //console.log(post);
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
-  // const [open, setOpen] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [openAlert, setOpenAlert] = React.useState(false);
   const [formData, setFormData] = React.useState<any>(initialState);
   const [errors, setErrors] = React.useState<any>({});
   // this is to "set" this component to editing form
   React.useEffect(() => {
-    if (post)
+    if (post) {
       setFormData({
         title: post.title,
         description: post.description,
         selectedFile: post.cloudinary_url,
         country: post.country,
-        continent: countries[post.countries].continent,
+        continent: post.continent,
         commentAccess: post.commentAccess,
       });
+    }
   }, [post, props.open]);
   // This is automatically close the component when a post os created or editted
   React.useEffect(() => {
@@ -216,12 +215,7 @@ const PostForm = (props: any) => {
     });
     return allErrors;
   };
-  /*   const handleCallback = (data) => {
-    setFormData({
-      ...formData,
-      country: data?.code,
-    });
-  }; */
+
   const handleSubmit = async (e: any) => {
     // setOpenAlert(true) -- ned this at some point
     e.preventDefault();
@@ -236,24 +230,22 @@ const PostForm = (props: any) => {
         // Get info from here! Then sent to server, will make mass profile avatar change easier as well
         // when user updates profile picture, run a seperate action/reducer that updates all users posts avatar and get data from user local storage
         if (props.editPostId) {
-          console.log(formData);
           dispatch(
             updatePost(props.editPostId, {
               ...formData,
               cloudinary_id: post.cloudinary_id,
             })
           );
-          return console.log("You want to make changes to an existing post");
+        } else {
+          dispatch(
+            createPost({
+              ...formData,
+              profile_cloudinary: user?.profile_cloudinary,
+              firstName: user?.firstName,
+              lastName: user?.lastName,
+            })
+          );
         }
-        dispatch(
-          createPost({
-            ...formData,
-            profile_cloudinary: user?.profile_cloudinary,
-            firstName: user?.firstName,
-            lastName: user?.lastName,
-          })
-        );
-        console.log("You want to submit a form");
       }
     } catch (error) {
       setLoading(false);
@@ -380,7 +372,7 @@ const PostForm = (props: any) => {
                 onClick={handleSubmit}
                 disabled={Object.keys(errors).length > 0}
               >
-                Create
+                {props.editPostId ? "Update" : "Create"}
               </Button>
               <Button
                 variant="outlined"

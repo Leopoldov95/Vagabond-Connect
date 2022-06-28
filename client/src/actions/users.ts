@@ -19,7 +19,6 @@ export const signin =
       dispatch({ type: AUTH, data });
       // we will want to use this reducer for the snackbar component
       dispatch({ type: SNACKBAR_SUCCESS, payload: "Successfully signed in!" });
-      // console.log(data);
       history.push("/");
     } catch (error: any) {
       dispatch({
@@ -74,9 +73,7 @@ export const editProfileImg = (formData: any) => async (dispatch: any) => {
 };
 
 export const editUserDetails = (formData: any) => async (dispatch: any) => {
-  console.log(formData);
   try {
-    //console.log(formData);
     const { data } = await API.editUserDetails(formData);
     dispatch({ type: EDIT_USER, data });
   } catch (error: any) {
@@ -109,10 +106,7 @@ export const getAllUsers = (filterForm: any) => async (dispatch: any) => {
     const qs = Object.keys(filterForm)
       .map((key) => `${key}=${filterForm[key]}`)
       .join("&");
-    console.log(qs);
-    // console.log(id, action, skip);
     const { data } = await API.fetchAllUsers(qs);
-    //console.log(data);
     dispatch({ type: FETCH_ALL_USER, payload: data });
   } catch (error) {
     console.log(error);
@@ -126,7 +120,6 @@ export const getAllUsers = (filterForm: any) => async (dispatch: any) => {
 export const followUser = (id: any) => async (dispatch: any) => {
   try {
     // so we want to follow a user - need params
-    console.log(id);
     const { data } = await API.followUser(id);
     dispatch({ type: EDIT_USER, data });
     // users following must be updated - for updating, we will push the _id onto the array
@@ -140,15 +133,12 @@ export const followUser = (id: any) => async (dispatch: any) => {
 
 export const fetchUserCommentInfo = (id: any) => async (dispatch: any) => {
   try {
-    //console.log(id); // needs to be comment owner
     const { data } = await API.fetchUserCommentInfo(id);
 
     const user = {
       user: id,
       data: data,
     };
-    //console.log(user);
-    //console.log(data);
     dispatch({ type: FETCH_COMMENT_USER, payload: user });
   } catch (error) {
     console.log(error);
@@ -170,11 +160,9 @@ export const updateUserCountryList =
 export const deleteUser =
   (id: any, password: any, history: any) => async (dispatch: any) => {
     try {
-      //console.log(password);
       await API.deleteUser(id, { password });
       dispatch({ type: DELETE_USER });
       dispatch({ type: SNACKBAR_SUCCESS, payload: "Account Deleted!" });
-      // console.log(data);
       history.push("/");
     } catch (error: any) {
       dispatch({

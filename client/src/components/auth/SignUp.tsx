@@ -1,5 +1,6 @@
 import * as React from "react";
 import { API_ERROR } from "../../constants/actionTypes";
+import PropTypes from "prop-types";
 import {
   Avatar,
   Button,
@@ -8,7 +9,9 @@ import {
   Grid,
   Typography,
   Container,
+  useMediaQuery,
   CircularProgress,
+  withWidth,
 } from "@material-ui/core";
 import { useHistory } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -90,7 +93,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const SignUp = () => {
+const SignUp = ({ width }) => {
   const classes = useStyles();
   const history = useHistory();
   const [isSignUp, setIsSignUp] = React.useState(false);
@@ -102,6 +105,10 @@ const SignUp = () => {
 
   // remember that using dispatch means that we are accessing state that is usable across our entire appplication
   const dispatch = useDispatch();
+  const isSmallScreen = /xs|sm/.test(width);
+  const formProps = {
+    size: isSmallScreen ? "small" : "medium",
+  };
   // if there is an auth error, make sure to clear it
   React.useEffect(() => {
     if (snackbarMessage?.type === "error") {
@@ -125,7 +132,6 @@ const SignUp = () => {
     setFormData({ ...formData, country: country });
   };
   const handleCapture = ({ target }: any) => {
-    //console.log(target);
     if (errors?.upload) {
       let state = { ...errors };
       delete state?.upload;
@@ -225,8 +231,9 @@ const SignUp = () => {
           <Grid container spacing={2}>
             {isSignUp && (
               <React.Fragment>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={6} sm={12}>
                   <TextField
+                    size={isSmallScreen ? "small" : "medium"}
                     autoComplete="fname"
                     name="firstName"
                     value={formData.firstName}
@@ -240,8 +247,9 @@ const SignUp = () => {
                     helperText={errors?.firstName}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid item xs={6} sm={12}>
                   <TextField
+                    size={isSmallScreen ? "small" : "medium"}
                     variant="outlined"
                     required
                     fullWidth
@@ -265,6 +273,7 @@ const SignUp = () => {
             )}
             <Grid item xs={12}>
               <TextField
+                size={isSmallScreen ? "small" : "medium"}
                 variant="outlined"
                 required
                 fullWidth
@@ -280,6 +289,7 @@ const SignUp = () => {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                size={isSmallScreen ? "small" : "medium"}
                 variant="outlined"
                 required
                 fullWidth
@@ -298,6 +308,7 @@ const SignUp = () => {
               <React.Fragment>
                 <Grid item xs={12}>
                   <TextField
+                    size={isSmallScreen ? "small" : "medium"}
                     variant="outlined"
                     required
                     fullWidth
@@ -326,6 +337,7 @@ const SignUp = () => {
                   <label htmlFor="contained-button-file">
                     <Button
                       variant="contained"
+                      size={isSmallScreen ? "small" : "medium"}
                       startIcon={<ImageOutlined />}
                       component="span"
                       className={classes.imgButton}
@@ -357,6 +369,7 @@ const SignUp = () => {
           </Grid>
           <Button
             type="submit"
+            size={isSmallScreen ? "small" : "medium"}
             fullWidth
             variant="contained"
             color="primary"
@@ -392,5 +405,9 @@ const SignUp = () => {
     </Container>
   );
 };
+SignUp.propTypes = {
+  /** The name of the current breakpoint, for example "sm" */
+  width: PropTypes.string.isRequired,
+};
 
-export default SignUp;
+export default withWidth()(SignUp);

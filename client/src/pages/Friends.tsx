@@ -8,14 +8,14 @@ const Friends = () => {
   const [loading, setLoading] = React.useState(false);
   return (
     <Grid container>
-      <Grid item sm={3} xs={12}>
+      <Grid item xs={12}>
         <FriendsNav
           setLoading={setLoading}
           selected={selected}
           setSelected={setSelected}
         />
       </Grid>
-      <Grid item sm={9} xs={12}>
+      <Grid item xs={12}>
         <FriendsDisplay
           loading={loading}
           setLoading={setLoading}

@@ -104,6 +104,7 @@ const SettingsLayout = () => {
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
   const USER_API = useSelector((state: any) => state.userAuthReducer);
+  const SNACKBAR_REDUCER = useSelector((state: any) => state.snackbar); // can use this to turn off 404 infinite error
   const [initData, setInitData] = React.useState({
     firstName: user?.firstName,
     lastName: user?.lastName,
@@ -136,6 +137,14 @@ const SettingsLayout = () => {
       setInitData({ firstName, lastName, email, country, privacy });
     }
   }, [USER_API]);
+
+  // This is to ensure we don't get infinite loading loop on 404 error
+  React.useEffect(() => {
+    const { type } = SNACKBAR_REDUCER;
+    if (type === "error") {
+      setLoading(false);
+    }
+  }, [SNACKBAR_REDUCER]);
   const handleChange = (e: React.ChangeEvent<any>) => {
     if (errors) {
       setErrors({});
@@ -163,7 +172,7 @@ const SettingsLayout = () => {
       setErrors({ ...errors, ...changeValidation });
       return false;
     } else {
-      const regex = new RegExp(/.+@.+\..+/);
+      const regex = new RegExp(/.+@.+\..+/); // email regex
       const allErrors: any = {};
       if (settingsData.firstName.length < 1) {
         allErrors.firstName = "Must Enter First Name";

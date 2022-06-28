@@ -14,16 +14,16 @@ import FriendCard from "./FriendCard";
 // will want to change key to userid
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    marginTop: theme.spacing(5),
-    padding: theme.spacing(4),
+    padding: "1rem 2rem 2rem 2rem",
     display: "flex",
     position: "relative",
+    justifyContent: "center",
     [theme.breakpoints.down("sm")]: {
       padding: "2rem 1rem",
     },
     [theme.breakpoints.down("xs")]: {
       marginTop: 0,
-      padding: "10px 8px",
+      padding: "10px 16px 0 0px",
     },
   },
   profileContainer: {
@@ -56,6 +56,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   empty: {
     color: "gray",
     marginTop: theme.spacing(2),
+    [theme.breakpoints.down("xs")]: {
+      fontSize: "1.4rem",
+    },
   },
   gridItem: {
     [theme.breakpoints.down("xs")]: {
@@ -100,8 +103,8 @@ const FriendsDisplay = (props: any) => {
         )
       ) : user || id ? (
         renderUsers.length > 0 ? (
-          renderUsers.map((user) => (
-            <Grid className={classes.gridItem} item>
+          renderUsers.map((user, idx) => (
+            <Grid className={classes.gridItem} item key={idx}>
               <FriendCard key={user.firstName} user={user} />
             </Grid>
           ))

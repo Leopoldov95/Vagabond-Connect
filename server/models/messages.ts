@@ -15,7 +15,7 @@ const messageSchema = new mongoose.Schema(
       default: [],
     },
   },
-  { minimize: false }
+  { minimize: false } // allows us to set an empty object in the Mongo DB
 );
 
 export default mongoose.model("message", messageSchema);

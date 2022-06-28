@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Posts from "../models/posts";
 import Users from "../models/users";
 import { Request, Response } from "express";
+import { checkUserComments } from "./helper";
 
 const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
 
@@ -141,7 +142,8 @@ export const deletePost = async (req: Request, res: Response) => {
 // add like
 
 export const likePost = async (req: any, res: Response) => {
-  const { id } = req.params;
+  const { id } = req.params; // post id
+  const _id = req?.userId;
   // we get access to req.userId from the middleware we are passing (auth)
   if (!req.userId) return res.json({ message: "Unauthenticated" });
 
@@ -150,18 +152,22 @@ export const likePost = async (req: any, res: Response) => {
     return res.status(404).send("No post with that ID");
 
   const post = await Posts.findById(id);
+  const user = await Users.findById(_id);
   // handling like logic for user
   const index = post.likes.findIndex((id) => id === String(req.userId));
   if (index === -1) {
     // like the post
     post.likes.push(req.userId);
+    user.likedPosts.push(id);
   } else {
     // dislike a post
     post.likes = post.likes.filter((id) => id !== String(req.userId));
+    user.likedPosts = user.likedPosts.filter((postId) => postId !== String(id));
   }
   const updatedPost = await Posts.findByIdAndUpdate(id, post, {
     new: true,
   });
+  await Users.findByIdAndUpdate(_id, user, { new: true });
 
   res.json(updatedPost);
 };
@@ -170,6 +176,7 @@ export const likePost = async (req: any, res: Response) => {
 
 export const createComment = async (req: any, res: Response) => {
   try {
+    const userId = req?.userId;
     const { id: _id } = req.params;
     const { formData } = req.body;
     if (!req.userId) return res.json({ message: "Unauthenticated" });
@@ -182,12 +189,7 @@ export const createComment = async (req: any, res: Response) => {
       message: formData,
     });
     const updatedPost = await Posts.findByIdAndUpdate(_id, post, { new: true });
-
-    // make changes to the post
-
-    // create comment + edit
-
-    // send back to user
+    await checkUserComments(_id, userId);
     res.json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
@@ -195,8 +197,9 @@ export const createComment = async (req: any, res: Response) => {
 };
 
 // Delete a comment from the post
-export const deleteComment = async (req: Request, res: Response) => {
+export const deleteComment = async (req: any, res: Response) => {
   try {
+    const userId = req?.userId;
     const { postId, commentId } = req.params;
     if (!mongoose.Types.ObjectId.isValid(postId))
       return res.status(404).send("Not A Valid Post Id!");
@@ -210,14 +213,16 @@ export const deleteComment = async (req: Request, res: Response) => {
     const updatedPost = await Posts.findByIdAndUpdate(postId, post, {
       new: true,
     });
+    await checkUserComments(postId, userId);
     res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
 
-export const editComment = async (req: Request, res: Response) => {
+export const editComment = async (req: any, res: Response) => {
   try {
+    const userId = req?.userId;
     const { postId, commentId } = req.params;
     const { comment } = req.body;
     if (!mongoose.Types.ObjectId.isValid(postId))
@@ -232,6 +237,7 @@ export const editComment = async (req: Request, res: Response) => {
     const updatedPost = await Posts.findByIdAndUpdate(postId, post, {
       new: true,
     });
+    await checkUserComments(postId, userId);
     res.status(200).json(updatedPost);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });

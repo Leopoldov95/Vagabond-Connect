@@ -77,7 +77,6 @@ const ProfileImgHandler = (props: any) => {
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
-  //console.log(authReducer?.authData);
   const [uploadedImg, setUploadedImg] = React.useState(null);
   const [clientError, setClientError] = React.useState(null);
   const [loading, setLoading] = React.useState(false);

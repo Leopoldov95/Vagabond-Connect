@@ -5,7 +5,6 @@ import { useParams } from "react-router";
 import Posts from "./Posts";
 import PostForm from "./PostForm";
 import Add from "./Add";
-import LoadMore from "./LoadMore";
 // there should always be posts on the feed, perhaps add some sort of error handling if no posts are available or if posts failed to load
 const Feed = (props: any) => {
   const params = useParams();

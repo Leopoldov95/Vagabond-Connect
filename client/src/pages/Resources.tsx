@@ -95,13 +95,14 @@ const Resources = () => {
         </Typography>
         {sections.map((section, index) => (
           <>
-            <div className={classes.section}>
+            <div className={classes.section} key={index}>
               <Typography className={classes.title} variant="h2">
                 {section}
               </Typography>
               <Grid container spacing={4} className={classes.gridContainer}>
                 {information[index].map((info?: any) => (
                   <Grid
+                    item
                     xs={12}
                     sm={6}
                     md={4}

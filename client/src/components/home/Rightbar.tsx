@@ -148,7 +148,7 @@ const Rightbar = ({ filter, setFilter }) => {
       </div>
       <div className={classes.filterOptionsSm}>
         <FormControl variant="outlined" className={classes.formControl}>
-          <InputLabel>Country</InputLabel>
+          <InputLabel>Continent</InputLabel>
           <Select value={filter} onChange={handleChange} label="Country">
             {continents.map((item) => (
               <MenuItem key={item.title} value={item.title}>

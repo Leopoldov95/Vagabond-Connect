@@ -21,14 +21,12 @@ export const getAllPosts = (filterForm: any) => async (dispatch: any) => {
     const qs = Object.keys(filterForm)
       .map((key) => `${key}=${filterForm[key]}`)
       .join("&");
-    console.log(qs);
     if (filterForm.hasOwnProperty("skip")) {
       const { data }: any = await api.fetchAllPosts(qs);
       dispatch({ type: FETCH_MORE_POSTS, payload: data.posts });
       dispatch({ type: IS_MORE_POSTS, payload: data.isMore });
     } else {
       const { data }: any = await api.fetchAllPosts(qs);
-      //console.log(data);
       data.posts.length !== 0
         ? dispatch({ type: FETCH_ALL_POSTS, payload: data.posts })
         : dispatch({ type: FETCH_ALL_POSTS, payload: "empty" });

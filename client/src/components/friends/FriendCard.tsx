@@ -44,24 +44,48 @@ const useStyles = makeStyles((theme: Theme) => ({
   profileCard: {
     width: 170,
     margin: theme.spacing(2),
+    [theme.breakpoints.down("xs")]: {
+      margin: "8px 1rem 8px 0px",
+      width: "100%",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      height: "100px",
+    },
   },
   media: {
     height: 180,
     [theme.breakpoints.down("sm")]: {
       height: 160,
     },
-    [theme.breakpoints.down("sm")]: {
+    [theme.breakpoints.down("xs")]: {
       height: "100%",
       width: "90px",
     },
   },
   profileMedia: {
     height: 150,
+    [theme.breakpoints.down("xs")]: {
+      height: "100%",
+      width: "90px",
+    },
+  },
+  btnMobile: {
+    width: "100%",
+    [theme.breakpoints.down("xs")]: {
+      width: "48px",
+      minWidth: 0,
+    },
   },
   btnProfile: {
     backgroundColor: lightGreen[400],
+    width: "100%",
     "&:hover": {
       backgroundColor: lightGreen[300],
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: "48px",
+      minWidth: 0,
     },
   },
   btnContainer: {
@@ -75,6 +99,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   cardName: {
     [theme.breakpoints.down("sm")]: {
       fontSize: 16,
+    },
+  },
+  mobileIcon: {
+    [theme.breakpoints.down("xs")]: {
+      marginRight: "-8px",
     },
   },
 }));
@@ -97,7 +126,6 @@ const FriendCard = (props: any) => {
     setTempDisabled(false);
   }, [userReducer]);
   const handleFollow = () => {
-    // console.log(user._id);
     setTempDisabled(true);
     dispatch(followUser(user._id));
   };
@@ -122,6 +150,7 @@ const FriendCard = (props: any) => {
             <div className={classes.btnLg}>
               <Button
                 style={{ marginBottom: 10 }}
+                className={classes.btnMobile}
                 color="secondary"
                 variant="outlined"
                 onClick={handleFollow}
@@ -135,6 +164,7 @@ const FriendCard = (props: any) => {
             <div className={classes.btnSm}>
               <Button
                 style={{ marginBottom: 10 }}
+                className={classes.btnMobile}
                 color="secondary"
                 variant="outlined"
                 onClick={handleFollow}
@@ -151,6 +181,7 @@ const FriendCard = (props: any) => {
             <div className={classes.btnLg}>
               <Button
                 style={{ marginBottom: 10 }}
+                className={classes.btnMobile}
                 color="primary"
                 variant="outlined"
                 onClick={handleFollow}
@@ -164,13 +195,14 @@ const FriendCard = (props: any) => {
             <div className={classes.btnSm}>
               <Button
                 style={{ marginBottom: 10 }}
+                className={classes.btnMobile}
                 color="primary"
                 variant="outlined"
                 onClick={handleFollow}
                 disabled={
                   !authUser || authUser._id === user._id || tempDisabled
                 }
-                startIcon={<PersonAdd />}
+                startIcon={<PersonAdd className={classes.mobileIcon} />}
               ></Button>
             </div>
           </React.Fragment>
@@ -182,13 +214,13 @@ const FriendCard = (props: any) => {
             </Button>
           </div>
           <div className={classes.btnSm}>
-            <Button
-              className={classes.btnProfile}
-              variant="contained"
-              startIcon={<Visibility />}
-            >
-              <Link to={`/profile/${user._id}`}></Link>
-            </Button>
+            <Link to={`/profile/${user._id}`}>
+              <Button
+                className={classes.btnProfile}
+                variant="contained"
+                startIcon={<Visibility className={classes.mobileIcon} />}
+              ></Button>
+            </Link>
           </div>
         </React.Fragment>
       </div>

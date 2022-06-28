@@ -50,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
       display: "none",
     },
   },
+  textDisabled: {
+    color: "gray",
+    marginTop: theme.spacing(1),
+  },
   textMobile: {
     display: "none",
     [theme.breakpoints.down(450)]: {
@@ -189,6 +193,49 @@ const Post = (props: any) => {
       )}
     </Menu>
   );
+
+  const renderComments = () => {
+    const { commentAccess, ownerId } = post;
+    if (user) {
+      if (commentAccess === "Nobody") {
+        return (
+          <Typography className={classes.textDisabled}>
+            New Comments Disabled
+          </Typography>
+        );
+      } else if (commentAccess === "Followers") {
+        // post contains onerId of creato
+        // we can compare logged in user and check if they have the post owner ID in theor follower array
+        if (user.following.includes(ownerId) || user?._id === post.ownerId) {
+          return (
+            <Comments
+              editComment={editComment}
+              setEditComment={setEditComment}
+              postId={post._id}
+              commentId={commentId}
+              setCommentId={setCommentId}
+            />
+          );
+        } else {
+          return (
+            <Typography className={classes.textDisabled}>
+              Only Followers Can Comment
+            </Typography>
+          );
+        }
+      } else {
+        return (
+          <Comments
+            editComment={editComment}
+            setEditComment={setEditComment}
+            postId={post._id}
+            commentId={commentId}
+            setCommentId={setCommentId}
+          />
+        );
+      }
+    }
+  };
   return (
     <Card className={classes.card}>
       <div className={classes.postOwner}>
@@ -234,7 +281,7 @@ const Post = (props: any) => {
         <Typography gutterBottom className={classes.country} variant="h6">
           <img
             style={{ width: 30, marginRight: 10 }}
-            alt={countries[post.country].name}
+            alt={post.country}
             src={`https://raw.githubusercontent.com/ekwonye-richard/react-flags-select/master/flags/${post.country.toLowerCase()}.svg`}
           />
           {`${countries[post.country].name}, ${
@@ -306,7 +353,7 @@ const Post = (props: any) => {
             setCommentId={setCommentId}
           />
         ))}
-      {user && (
+      {/* {user && (
         <Comments
           editComment={editComment}
           setEditComment={setEditComment}
@@ -314,8 +361,8 @@ const Post = (props: any) => {
           commentId={commentId}
           setCommentId={setCommentId}
         />
-      )}
-
+      )} */}
+      {renderComments()}
       {renderMenu}
     </Card>
   );

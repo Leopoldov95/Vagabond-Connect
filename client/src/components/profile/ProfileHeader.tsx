@@ -1,6 +1,7 @@
 // This component is to display the profile user image and background image
 import * as React from "react";
 import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Grid,
@@ -8,6 +9,7 @@ import {
   Theme,
   Avatar,
   Button,
+  CircularProgress,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import { Edit, CameraAlt } from "@material-ui/icons";
@@ -18,6 +20,9 @@ import ProfileImgHandler from "./ProfileImgHandler";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     marginTop: theme.spacing(10),
+    [theme.breakpoints.down("xs")]: {
+      marginTop: theme.spacing(7),
+    },
   },
   badge: {
     width: 45,
@@ -29,6 +34,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   headerContainer: {
     position: "relative",
+    [theme.breakpoints.down("xs")]: {
+      padding: 0,
+    },
   },
   backgroundImage: {
     width: "100%",
@@ -39,10 +47,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       backgroundColor: lightGreen[400],
     },
+    [theme.breakpoints.down(450)]: {
+      position: "absolute",
+      top: theme.spacing(2),
+    },
   },
   backgroundImageContainer: {
     height: 450,
     overflow: "hidden",
+    [theme.breakpoints.down("xs")]: {
+      height: 300,
+    },
   },
   backgroundInputContainer: {
     display: "flex",
@@ -76,17 +91,45 @@ const useStyles = makeStyles((theme: Theme) => ({
   input: {
     display: "none",
   },
+  overlayLoader: {
+    position: "absolute",
+    left: 0,
+    top: 0,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+
+    "&::before": {
+      content: '""',
+      backgroundColor: "white",
+      opacity: 0.6,
+      height: "106%",
+      width: "100%",
+      zIndex: 10,
+    },
+  },
 }));
 
 const ProfileHeader = () => {
   const [user, setUser] = React.useState(
     JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   );
+  const [loading, setLoading] = React.useState(true);
+  const { id }: any = useParams();
   // This code serves to update the page in real time
   const API_USER = useSelector((state: any) => state.userAuthReducer)?.authData
     ?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const displayUser = Object.keys(userProfile).length > 0 ? userProfile : user; // used to determine whether to display current logged in user or other profile
+  React.useEffect(() => {
+    if (id === displayUser?._id) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [displayUser, id]);
   React.useEffect(() => {
     if (API_USER) {
       setUser(API_USER);
@@ -122,7 +165,14 @@ const ProfileHeader = () => {
             }}
           >
             <div className={classes.backgroundInputContainer}>
-              {user && user?._id === displayUser?._id ? (
+              {loading ? (
+                <div className={classes.overlayLoader}>
+                  <CircularProgress
+                    size={60}
+                    style={{ position: "absolute", zIndex: 10 }}
+                  />
+                </div>
+              ) : user && user?._id === displayUser?._id ? (
                 <Button
                   startIcon={<Edit />}
                   variant="contained"

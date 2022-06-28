@@ -20,18 +20,9 @@ const userSchema = new mongoose.Schema({
   notifications: { type: [] },
   favoriteCountries: { type: [String] },
   visitedCountries: { type: [String] },
+  likedPosts: { type: [String] },
+  commentedPosts: { type: [String] },
   messageRooms: { type: [String] },
 });
-
-// how to set empty object in mongodb
-/* 
-{
-    messages: {
-      type: Schema.Types.Mixed,
-      default: {},
-    },
-  },
-  { minimize: false }
-*/
 
 export default mongoose.model("users", userSchema);

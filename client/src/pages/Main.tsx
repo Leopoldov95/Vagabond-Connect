@@ -20,8 +20,8 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "none",
     [theme.breakpoints.down("sm")]: {
       display: "block",
-      marginBottom: theme.spacing(12),
-      marginTop: "-65px",
+      marginBottom: theme.spacing(11),
+      marginTop: "-100px",
     },
   },
   container: {

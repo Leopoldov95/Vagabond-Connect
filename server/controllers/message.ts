@@ -55,7 +55,6 @@ export const fetchAllContacts = async (req: any, res: Response) => {
 
 // this will feth the messaging thread for the slected user
 export const fetchUserMessage = async (req: any, res: Response) => {
-  // console.log("I am being called twice from the client, please fix me");
   const { id: _id } = req.params; // targeted user id
   const userId = req.userId; // authenticated user ID
   try {
@@ -99,7 +98,6 @@ export const postMessage = async (req: any, res: Response) => {
   const userId = req.userId; // authenticated user ID
   const data = req.body;
   let existingMessageCollection;
-  //console.log(data);
   // check if an instance of a message collection already exists, if not then need to create one
   existingMessageCollection = await Messages.find({
     users: { $in: [userId, _id] },

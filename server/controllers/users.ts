@@ -5,8 +5,23 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
-const { updatePostAvatar } = require("./helper");
+const { updateUsersPosts } = require("./helper");
 
+const ignore = {
+  country: 0,
+  email: 0,
+  password: 0,
+  privacy: 0,
+  profile_cloudinary_id: 0,
+  followers: 0,
+  following: 0,
+  messages: 0,
+  notifications: 0,
+  favoriteCountries: 0,
+  visitedCountries: 0,
+};
+
+// Sign into an existing account
 export const signin = async (req, res) => {
   // need two things from the fronted - email and password
   const { email, password } = req.body;
@@ -37,6 +52,7 @@ export const signin = async (req, res) => {
   }
 };
 
+// Create a new account
 export const signup = async (req: Request, res: Response) => {
   const {
     email,
@@ -85,6 +101,7 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
+// edits the profile image (can be profile picture or background) and deletes old image from Cloudinary
 export const editProfileImg = async (req: any, res: Response) => {
   try {
     const { id: _id } = req.params;
@@ -99,7 +116,7 @@ export const editProfileImg = async (req: any, res: Response) => {
       profile.split("_")[0]
     );
 
-    // create a temporary object to store new/existing properties in using thr profile
+    // create a temporary object to store new/existing properties in using the profile
     let propsToChange = {};
     propsToChange[profile] = cloudinaryImg?.secure_url;
     propsToChange[`${profile}_id`] = cloudinaryImg?.public_id;
@@ -109,12 +126,17 @@ export const editProfileImg = async (req: any, res: Response) => {
       { new: true }
     );
 
+    // this updates the owners avatar on ALL posts
     if (profile === "profile_cloudinary") {
-      await updatePostAvatar(req?.userId, cloudinaryImg?.secure_url);
+      await updateUsersPosts(req?.userId, {
+        ownerAvatar: cloudinaryImg?.secure_url,
+      });
     }
 
     // now that we made changes, delete previous image from db
-    await deleteCloudinaryImg(existingCloudinaryId);
+    if (existingCloudinaryId) {
+      await deleteCloudinaryImg(existingCloudinaryId);
+    }
 
     res.json(result);
   } catch (error) {
@@ -122,21 +144,25 @@ export const editProfileImg = async (req: any, res: Response) => {
   }
 };
 
+// make changes to users db info, must also update all user posts
 export const editUserDetails = async (req: any, res: Response) => {
   const data = req.body;
   const { email } = data;
   const _id = req?.userId;
   try {
     const existingUser = await Users.findOne({ email }); // look for an existing user by using the email
-
-    if (!existingUser)
-      return res.status(404).json({ message: "User does not exist." });
+    if (existingUser && existingUser._id.toString() !== _id)
+      return res
+        .status(409)
+        .json({ message: "User with that Email already exists." });
     const result = await Users.findByIdAndUpdate(
       _id,
       { $set: { ...data } },
       { new: true }
     );
-
+    await updateUsersPosts(_id, {
+      ownerName: `${data.firstName} ${data.lastName}`,
+    });
     // need to update the state and store new info to client
     res.json(result);
   } catch (error) {
@@ -145,26 +171,13 @@ export const editUserDetails = async (req: any, res: Response) => {
 };
 
 // note that it doesnt matter if we are fetcing followers or follwoing, they will share duplicate users. when fetching all/extra users, only filter out people who I am following
-//mondodb has a .sot() method
+//mondodb has a .sort() method
+// This method will be used to fetch user for the following compontnets - AvatarGroup, FreindsNav, ProfileFriendsNav
 export const fetchAllUsers = async (req: any, res: Response) => {
   try {
-    /*  const { id, action, skip } = req.params; */
     const { params } = req.params; // this will be the name of the modified URL
     const urlParams = new URLSearchParams(params);
     const filters = Object.fromEntries(urlParams);
-    const ignore = {
-      country: 0,
-      email: 0,
-      password: 0,
-      privacy: 0,
-      profile_cloudinary_id: 0,
-      followers: 0,
-      following: 0,
-      messages: 0,
-      notifications: 0,
-      favoriteCountries: 0,
-      visitedCountries: 0,
-    };
 
     let user;
     let fetchedUsers;
@@ -181,7 +194,7 @@ export const fetchAllUsers = async (req: any, res: Response) => {
         {
           ...ignore,
         }
-      ).limit(30);
+      );
     } else {
       // we have an authenticad user
       fetchedUsers = await Users.find(
@@ -194,7 +207,7 @@ export const fetchAllUsers = async (req: any, res: Response) => {
         {
           ...ignore,
         }
-      ).limit(30);
+      );
     }
     res.status(200).json(fetchedUsers);
   } catch (error) {
@@ -203,6 +216,47 @@ export const fetchAllUsers = async (req: any, res: Response) => {
   }
 };
 
+// fetch all following users
+export const fetchAllFollowing = async (req: any, res: Response) => {
+  try {
+    const _id = req?.userId;
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("Not A Valid User Id!");
+    const user = await Users.findById(_id);
+    if (!user) return res.status(404).send("User not validated!");
+    const allFollowing = await Users.find(
+      {
+        _id: { $in: user["following"] },
+      },
+      { ...ignore }
+    );
+    res.status(200).json(allFollowing);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
+
+// fetch all followers
+export const fetchAllFollowers = async (req: any, res: Response) => {
+  try {
+    const _id = req?.userId;
+    if (!mongoose.Types.ObjectId.isValid(_id))
+      return res.status(404).send("Not A Valid User Id!");
+    const user = await Users.findById(_id);
+    if (!user) return res.status(404).send("User not validated!");
+    const allFollowers = await Users.find(
+      {
+        _id: { $in: user["followers"] },
+      },
+      { ...ignore }
+    );
+    res.status(200).json(allFollowers);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
+
+// fecthes a single user, used for the profile page
 export const fetchSingleUser = async (req: Request, res: Response) => {
   const ignore = {
     email: 0,
@@ -229,7 +283,6 @@ export const fetchSingleUser = async (req: Request, res: Response) => {
   }
 };
 
-// not that in the future, may want to handle privacy request
 // can use this to follow and unfollow, may want same logic to like and unlike
 export const followUser = async (req: any, res: Response) => {
   try {
@@ -269,21 +322,12 @@ export const followUser = async (req: any, res: Response) => {
     );
 
     res.json(updatedUser);
-    /*  const updatedPost = await PostMessage.findByIdAndUpdate(id, post, {
-      new: true,
-    });
-  
-    res.json(updatedPost);
-    await Users.findByIdAndUpdate( _id,
-      { $set: { followers } },
-      { new: true })
-
-    // we will update the users following array and return the result
-    const result */
   } catch (error) {
     res.status(500).json({ message: "Something went wrong." });
   }
 };
+
+// gets specific user info so that it may appear in the comments section
 export const fetchUserCommentInfo = async (req: Request, res: Response) => {
   try {
     const { id: _id } = req.params;
@@ -301,6 +345,7 @@ export const fetchUserCommentInfo = async (req: Request, res: Response) => {
   }
 };
 
+// edits users country lists
 export const editUserCountryList = async (req: any, res: Response) => {
   try {
     const _id = req.userId;
@@ -325,10 +370,12 @@ export const editUserCountryList = async (req: any, res: Response) => {
 
 // DELETE USER
 
+// deleting user must achieve the following, handle following and followers, delete all posts, delete all post comments, delete all post like, remove user from db
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const { id: _id } = req.params;
     const { password } = req.body;
+    const userToDelete = await Users.findById(_id);
     if (!mongoose.Types.ObjectId.isValid(_id))
       return res.status(404).send("Not A Valid User Id!");
     const existingUser: any = await Users.findById(_id);
@@ -369,6 +416,32 @@ export const deleteUser = async (req: Request, res: Response) => {
     await Posts.deleteMany({
       ownerId: _id,
     });
+
+    // remove likes from liked posts
+    if (userToDelete.likedPosts.length > 0) {
+      for (let postId of userToDelete.likedPosts) {
+        const post = await Posts.findById(postId);
+        post.likes = post.likes.filter((id) => id !== String(_id));
+        await Posts.findByIdAndUpdate(postId, post, {
+          new: true,
+        });
+      }
+    }
+    // remove all comments from commented post
+    if (userToDelete.commentedPosts.length > 0) {
+      for (let postId of userToDelete.commentedPosts) {
+        const post = await Posts.findById(postId);
+        if (post.comments.length > 0) {
+          post.comments = post.comments.filter(
+            (comment) => comment.commentOwnerId !== String(_id)
+          );
+        }
+        await Posts.findByIdAndUpdate(postId, post, {
+          new: true,
+        });
+      }
+    }
+
     // remove user from db
     await Users.findByIdAndDelete(_id);
     res.json({ message: "Account Deleted Successfully" });

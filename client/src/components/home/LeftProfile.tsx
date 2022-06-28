@@ -11,6 +11,9 @@ import {
 import { Link } from "react-router-dom";
 import { lightGreen } from "@material-ui/core/colors";
 import countries from "../country/countries";
+import { useDispatch, useSelector } from "react-redux";
+import { ProfileIcons } from "./ProfileIcons";
+import { fetchAllFollowers, fetchAllFollowing } from "../../api";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
@@ -89,10 +92,29 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 const LeftProfile = () => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
+  //const allFollowers = useSelector((state: any) => state.allUsers);
+  const [following, setFollowing] = React.useState<any>(null);
+  const [followers, setFollowers] = React.useState<any>(null);
 
+  React.useEffect(() => {
+    if (user) {
+      fetchAndUpdate();
+    }
+  }, []);
+  async function fetchAndUpdate() {
+    const allFollowing: any = await fetchAllFollowing();
+    const allFollowers: any = await fetchAllFollowers();
+    if (allFollowing.data.length > 0) {
+      setFollowing(allFollowing.data);
+    }
+    if (allFollowers.data.length > 0) {
+      setFollowers(allFollowers.data);
+    }
+  }
   return (
     <Container className={classes.container}>
       <Paper>
@@ -133,7 +155,11 @@ const LeftProfile = () => {
               Following
             </Typography>
             <Typography gutterBottom variant="h6">
-              {user ? user?.following?.length : 0}
+              {user && user?.following?.length > 0 && following !== null ? (
+                <ProfileIcons users={following} />
+              ) : (
+                0
+              )}
             </Typography>
           </div>
           {/* <Divider className={classes.divider} /> */}
@@ -142,7 +168,11 @@ const LeftProfile = () => {
               Followers
             </Typography>
             <Typography gutterBottom variant="h6">
-              {user ? user?.followers?.length : 0}
+              {user && user?.followers?.length > 0 && followers !== null ? (
+                <ProfileIcons users={followers} />
+              ) : (
+                0
+              )}
             </Typography>
           </div>
         </div>

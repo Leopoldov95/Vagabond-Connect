@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     marginTop: theme.spacing(2),
+    // [theme.breakpoints.down("xs")]: {
+    //   display: "none",
+    // },
   },
   comment: {
     width: "70%",
@@ -37,6 +40,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
   btnContainer: {
     display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
+    },
   },
   btnUpdate: {
     fontSize: 12,
@@ -101,6 +107,7 @@ const Comments = ({
       {editComment ? (
         <div className={classes.btnContainer}>
           <Button
+            size="small"
             variant="outlined"
             disabled={comment.length < 3}
             color="primary"
@@ -110,9 +117,11 @@ const Comments = ({
             Update
           </Button>
           <Button
+            size="small"
             variant="outlined"
             color="secondary"
             onClick={handleCancel}
+            style={{ marginTop: "4px" }}
             className={classes.btnUpdate}
           >
             Cancel
@@ -120,6 +129,7 @@ const Comments = ({
         </div>
       ) : (
         <Button
+          size="small"
           variant="contained"
           disabled={comment.length < 3}
           className={classes.submit}

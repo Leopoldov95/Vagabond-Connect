@@ -49,9 +49,12 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
   logoSm: {
-    display: "block",
+    display: "none",
     lineHeight: 1,
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.down("sm")]: {
+      display: "block",
+    },
+    [theme.breakpoints.down("xs")]: {
       display: "none",
     },
   },

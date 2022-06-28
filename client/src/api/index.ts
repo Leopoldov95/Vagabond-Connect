@@ -24,6 +24,8 @@ export const signin = (formData: any) => API.post("/users/signin", formData);
 export const editUserDetails = (formData: any) => API.post("/users", formData);
 export const fetchSingleUser = (id: any) => API.post("/users/single", id); // why a POST request?
 export const fetchAllUsers = (params: any) => API.get(`/users/${params}`);
+export const fetchAllFollowers = () => API.get("/users/get/followers");
+export const fetchAllFollowing = () => API.get("/users/get/following");
 export const searchUsers = (name: any) => API.get(`/users/search/${name}`);
 export const editProfileImg = (data: any) =>
   API.patch(`/users/${data?.user?._id}/profileImg`, data); // might want to redo this route
@@ -35,8 +37,6 @@ export const deleteUser = (id: any, password: any) =>
   API.post(`users/delete/${id}`, password);
 ///////////////////
 // POSTS routes
-/* export const fetchPosts = (id: any = 0, filter: any = 0, skip: any = 0) =>
-  API.get(`/posts/${id}/${filter}/${skip}`); */
 export const fetchAllPosts = (params: any) => API.get(`/posts/${params}`); // This route will be used to handle fetching all posts and applying filters
 export const fetchUserPosts = (id: any) => API.get(`/posts/user/${id}`);
 export const createPost = (newPost: any) => API.post("/posts/create", newPost);
@@ -60,7 +60,6 @@ export const deleteComment = (postId: any, commentId: any) =>
 // Note to self, wrapping function in {} WILL NOT RETURN the results
 export const fetchAllContacts = () => API.get("message/get/all");
 export const fetchMessageThread = (id: any) => API.get(`/message/get/${id}`);
-
 export const postMessage = (id: any, formData: any) =>
   API.post(`/message/post/${id}`, formData);
 

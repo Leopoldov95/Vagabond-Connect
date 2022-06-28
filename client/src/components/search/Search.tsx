@@ -40,8 +40,6 @@ const Search = ({ results, setSearchResult, setSearch, search }) => {
        */
       function handleClickOutside(event) {
         if (isOpen && ref.current && !ref.current.contains(event.target)) {
-          console.log("You clicked outside of me!");
-          console.log(isOpen);
           setIsOpen(false);
           setSearchResult([]);
           setSearch("");
@@ -73,8 +71,8 @@ const Search = ({ results, setSearchResult, setSearch, search }) => {
       <Paper>
         {results.length > 0 ? (
           <ul className={classes.listContainer}>
-            {results.map((user) => (
-              <li>
+            {results.map((user, idx) => (
+              <li key={idx}>
                 <Link
                   to={`/profile/${user._id}`}
                   className={classes.listItem}

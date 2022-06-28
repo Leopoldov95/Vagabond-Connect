@@ -28,6 +28,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: theme.spacing(3),
     marginRight: theme.spacing(3),
     justifyContent: "center",
+    [theme.breakpoints.down("xs")]: {
+      marginTop: theme.spacing(2),
+    },
   },
   private: {
     display: "flex",
@@ -37,6 +40,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: "gray",
     width: "100%",
     marginBottom: theme.spacing(10),
+  },
+  mobileTab: {
+    [theme.breakpoints.down(450)]: {
+      fontSize: "12px",
+    },
   },
 }));
 
@@ -60,6 +68,9 @@ const ProfileView = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { id }: any = useParams();
+  const authUser = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const [user, setUser] = React.useState(
     JSON.parse(localStorage.getItem("vagabond_connect_profile"))?.result
   );
@@ -70,18 +81,12 @@ const ProfileView = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   };
-
-  /*   console.log(user);
-  console.log(USER_API);
-  console.log(userProfile); */
-  // dont recall why I added this here...
+  // This is ensure that changes made will be visibile to the user without needing to refresh the page
   React.useEffect(() => {
-    //console.log(USER_API);
     if (USER_API) {
       setUser(USER_API?.authData?.result);
     }
   }, [USER_API]);
-  //console.log(userProfile);
   // This is to handle viewing users profile firend list
   React.useEffect(() => {
     setLoading(true);
@@ -101,7 +106,8 @@ const ProfileView = () => {
     }
   }, [value]);
   return userProfile.privacy === "followers" &&
-    !user?.following?.includes(id) ? (
+    !user?.following?.includes(id) &&
+    authUser?._id !== id ? (
     <div className={classes.private}>
       <Typography
         gutterBottom
@@ -118,21 +124,22 @@ const ProfileView = () => {
     </div>
   ) : (
     <React.Fragment>
-      <Grid item sm={4} xs={2}>
+      <Grid item sm={4} xs={12}>
         <ProfileCountries />
       </Grid>
-      <Grid item sm={8} xs={10}>
+      <Grid item sm={8} xs={12}>
         <Paper square className={classes.tabContainer}>
           <Tabs
             value={value}
+            variant="fullWidth"
             indicatorColor={"primary"}
             textColor="primary"
             onChange={handleChange}
             aria-label="disabled tabs example"
           >
-            <Tab label="Posts" />
-            <Tab label="Following" />
-            <Tab label="Followers" />
+            <Tab className={classes.mobileTab} label="Posts" />
+            <Tab className={classes.mobileTab} label="Following" />
+            <Tab className={classes.mobileTab} label="Followers" />
           </Tabs>
         </Paper>
         <TabPanel value={value} index={0}>
