@@ -28,7 +28,7 @@ export const signin = async (req, res) => {
   const formattedEmail = email.toLowerCase();
   try {
     // check to see if user exists
-    const existingUser = await Users.findOne({ formattedEmail }); // look for an existing user by using the email
+    const existingUser = await Users.findOne({ email: formattedEmail }); // look for an existing user by using the email
     if (!existingUser)
       return res.status(404).json({ message: "User does not exist." });
 
@@ -66,7 +66,7 @@ export const signup = async (req: Request, res: Response) => {
   } = req.body;
   const formattedEmail = email.toLowerCase();
   try {
-    const existingUser = await Users.findOne({ formattedEmail });
+    const existingUser = await Users.findOne({ email: formattedEmail });
     if (existingUser)
       return res.status(404).json({ message: "User already exists" });
 
