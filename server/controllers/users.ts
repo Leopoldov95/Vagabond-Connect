@@ -25,9 +25,10 @@ const ignore = {
 export const signin = async (req, res) => {
   // need two things from the fronted - email and password
   const { email, password } = req.body;
+  const formattedEmail = email.toLowerCase();
   try {
     // check to see if user exists
-    const existingUser = await Users.findOne({ email }); // look for an existing user by using the email
+    const existingUser = await Users.findOne({ formattedEmail }); // look for an existing user by using the email
     if (!existingUser)
       return res.status(404).json({ message: "User does not exist." });
 
@@ -63,9 +64,9 @@ export const signup = async (req: Request, res: Response) => {
     selectedFile,
     country,
   } = req.body;
-
+  const formattedEmail = email.toLowerCase();
   try {
-    const existingUser = await Users.findOne({ email });
+    const existingUser = await Users.findOne({ formattedEmail });
     if (existingUser)
       return res.status(404).json({ message: "User already exists" });
 
@@ -80,7 +81,7 @@ export const signup = async (req: Request, res: Response) => {
       firstName,
       lastName,
       country,
-      email,
+      email: formattedEmail,
       profile_cloudinary: cloudinaryImg ? cloudinaryImg?.secure_url : "",
       profile_cloudinary_id: cloudinaryImg ? cloudinaryImg?.public_id : "",
       password: hashedPassword,

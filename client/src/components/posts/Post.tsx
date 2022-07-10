@@ -33,9 +33,15 @@ import { fetchUserCommentInfo } from "../../actions/users";
 import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   media: {
-    height: "250px",
+    height: "400px",
     borderRadius: theme.spacing(1),
+    [theme.breakpoints.down("md")]: {
+      height: 300,
+    },
     [theme.breakpoints.down("sm")]: {
+      height: 250,
+    },
+    [theme.breakpoints.down("xs")]: {
       height: 150,
     },
   },
