@@ -1,6 +1,5 @@
-# Vagabon Connect
+# Vagabond Connect
 
-[![Netlify Status](https://api.netlify.com/api/v1/badges/7e34902a-1bca-4789-b3b5-1a01625925f7/deploy-status)](https://app.netlify.com/sites/vagabondconnect/deploys)
 ## Table of Contents
 * [General Info](#general-info)
 * [Screenshot](#screenshot)
@@ -12,7 +11,7 @@
 
 
 ## General Info
-This is a Proof of Concept (POC) fullstack Travel-based Social Media application created using the MERN stack with Typescript. Users can create posts as well as comment and like other user's posts. Users also have a profile page in which they can write about themselves and display their favorite and visited countries. Users must have an account in order to have these actions available to them. All posts, comments, and users are stored in a MongoDB database managed using NodeJS.
+This is a Full-Stack Social Media website where a user can have an account, create a post and manage it, follow and view other users, comment on posts, and personaliz their profile page. All information is stored in a Mongo database and the frontend was created using React and Typescript.
 
 ## Screenshot
 ![ScreenShot](https://github.com/Leopoldov95/hotel_mern/blob/main/screenshot.png?raw=true)
@@ -25,23 +24,24 @@ If you want to use your own MongoDb Atlas server, you must configure the .env fi
 If you just want to use the client then simply go to the client folder, run ```npm install ``` to install the dependencies and then start the client with ```npm start ```
 
 ## Features
-* Fullstack MERN Hotel Website that utilizes CRUD functionality 
-* Users can browse rooms and create bookings on selected dates
-* Users enter their details in a checkout form to create a booking and store their information
-* Backend handles date collision's and notifies user's if a room is available or unavailable on the selected dates
-* User can view and delete their bookings by entering the provivded confirmation code or email
-* Room and booking data is stored within a MongoDB databse
-* Website is fully responsive and looks great across multiple platforms
+* Fullstack Social Media website
+* Users can create, edit, and delete their account
+* Users can create posts, upload images, like posts, comment on posts, delete their posts, and make edits to their posts
+* Users have a profile page in which they can add a bio and personalize their profile pciture and background image
+* Users can follow one another and keep track of the following count
+* Posts can be sorted based on continent or followers
+* Must have an account to create posts and follow users
 
 
 ## Technologies
 The app was created with the following technologies
-* MongoDB
-* Express.JS
 * ReactJS
 * Redux
+* Typescript
+* MaterialUI
 * NodeJS
-* SASS
+* Express
+* Mongo DB
 
 ## Challenges 
 This is my second fullstack project I have created using the MERN stack.
