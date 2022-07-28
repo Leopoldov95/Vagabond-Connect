@@ -1,4 +1,4 @@
-# Vagabond Connect
+# Vagabond Connect 🌎
 
 ## Table of Contents
 * [General Info](#general-info)
@@ -14,7 +14,7 @@
 This is a Full-Stack Social Media website where a user can have an account, create a post and manage it, follow and view other users, comment on posts, and personaliz their profile page. All information is stored in a Mongo database and the frontend was created using React and Typescript.
 
 ## Screenshot
-![ScreenShot](https://github.com/Leopoldov95/hotel_mern/blob/main/screenshot.png?raw=true)
+![ScreenShot](https://github.com/Leopoldov95/Vagabond-Connect/blob/MERN/vagabond_screenshot.png?raw=true)
 
 ## Usage
 Simply click on the demo link provided.
