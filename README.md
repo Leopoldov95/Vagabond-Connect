@@ -11,7 +11,7 @@
 
 
 ## General Info
-This is a Full-Stack Social Media website where a user can have an account, create a post and manage it, follow and view other users, comment on posts, and personaliz their profile page. All information is stored in a Mongo database and the frontend was created using React and Typescript.
+This is a Full-Stack Social Media website where a user can have an account, create a post and manage it, follow and view other users, comment on posts, and personalise their profile page. All information is stored in a Mongo database and the frontend was created using React and Typescript.
 
 ## Screenshot
 ![ScreenShot](https://github.com/Leopoldov95/Vagabond-Connect/blob/MERN/vagabond_screenshot.png?raw=true)
@@ -44,12 +44,17 @@ The app was created with the following technologies
 * Mongo DB
 
 ## Challenges 
-This is my second fullstack project I have created using the MERN stack.
-This time I decided to add more backend knowlegde to handle creating, reading, and deleting booking information as well as notify the client if a room has been booked on their selected dates and is therefore no available to book.
-I also wanted to use Redux to handle state change. As this was my first time implementing Redux it was quite the learning curve but in the end I was satisified with the resulsts and learned the value of using middlewares such as thunk.
+I wanted to create a web application that heavily used a backend compared to my previous projects. A social media website was an excellent choice in order to fully understand the fundamentals of HTTP requests, managing and updating values in a database, and knowing how to make a flow between the frontend and the backend.
+
+In addition to the aforementioned goals, I used Typescript in this project which was an additional challenge, although far from perfect, I learned the values of having types in order to prevent unexpected behavior as well as provide better documentation for my code.
+
+An amazing library I used for the frontend was MaterialUI, which is a popular React component library. It was a bit tricky to use at first, but once I got the hang of it as well as its features, I was able to really build beautiful components for my website.
 
 ## What I Learned
-Using what I learned on my last MERN stack project, I decided to further advance my knowledge on the backend as well as implementing the state management tool called Redux into my website. I quickly found the value of using Redux as a state managemen tool as I no longer had to pass down a ton of props into child components, but rather simply calling it from the Redux store. I do admit that setting up the boiler plate was a bit of a challenge as well as understanding why I needed to use Redux middlewares such as thunk. I am glad though that I decided to utilize Redux from the start as I could see that trying to implement it into an existing project being a challenge.
-I also learned alot more about the backend and using MongoDB as a databse. I decided to store all malleable data in the database as well as data such as booking details that can be created or deleted. One of the biggest challenges was handling date collisions. If a user searches for a room that has already been booked on a specified date, the user won't be able to boom that room. As a result I learned a lot about MongoDB objects and how to manipulate data on the backend in order to show that a room is unavaiable.
-In the end I gained a great deal of knowledge and I'm looking forward to start creating larger and more ambituous projects.
+This project was a major step-up from previous websites I have created. While I had dabbled in the backend, the use was fairly minimal. With this project I learned how to structure a full-stack applicaion and manage the backend code. I also gained an appreciation for state management tools such as Redux to avoid having too many states floating around.
 
+## Future Enhancemants
+I am currently working on adding th following enhancements to the web application.
+* Notifications
+* Messaging
+* UI improvements
