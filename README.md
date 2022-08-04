@@ -54,7 +54,7 @@ An amazing library I used for the frontend was MaterialUI, which is a popular Re
 This project was a major step-up from previous websites I have created. While I had dabbled in the backend, the use was fairly minimal. With this project I learned how to structure a full-stack applicaion and manage the backend code. I also gained an appreciation for state management tools such as Redux to avoid having too many states floating around.
 
 ## Future Enhancemants
-I am currently working on adding th following enhancements to the web application.
+I am currently working on adding the following enhancements to the web application.
 * Notifications
 * Messaging
 * UI improvements
