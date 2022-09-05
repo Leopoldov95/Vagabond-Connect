@@ -1,6 +1,6 @@
 // Since Navbar will be present on ALL pages, we will manage user auth here
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import decode from "jwt-decode";
 import {
   alpha,
@@ -14,13 +14,13 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Badge,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import {
   Mail,
   Search,
   Cancel,
-  Public,
   ExpandMore,
   Home,
   Person,
@@ -28,10 +28,13 @@ import {
   Settings,
   ExitToApp,
   Lock,
+  Notifications as NotificationsIcon,
 } from "@material-ui/icons";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { searchUsers } from "../api";
 import SearchResults from "./search/Search";
+import Notifications from "./Notifications";
+import { editUserDetails } from "../actions/users";
 interface Props {
   open: boolean;
 }
@@ -129,21 +132,101 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 const Navbar = () => {
+  const DUMMY_DATA = [
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+    {
+      firstName: "Leo",
+      lastName: "Ortega",
+      pofile: "img/auth/default.jpeg",
+      message: "liked your post",
+    },
+  ];
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
   const [user, setUser] = React.useState(
     JSON.parse(localStorage.getItem("vagabond_connect_profile"))
   ); // profile is being access from local storage, which was set in the reducer file auth.js
+  const authUser = useSelector((state: any) => state.userAuthReducer);
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [searchResult, setSearchResult] = React.useState([]);
+  const [showNotifications, setShowNotifcations] = React.useState(false);
+  // Will need to use redux here!
+  const [notifications, setNotifcations] = React.useState(DUMMY_DATA);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
-
+  const socket = useSelector((state: any) => state.socketReducer);
+  console.log("hello fro  navbar");
+  console.log(socket);
+  // Note that we will be using useEffect in order to update the notifucations for socket
   React.useEffect(() => {
     const token = user?.token;
-
     // JWT ...
     if (token) {
       // decodes the token, checking if tken is expired. If so, user must sign back in
@@ -152,8 +235,9 @@ const Navbar = () => {
         logout();
       }
     }
-
     setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
+    // hise the notifications on page change
+    setShowNotifcations(false);
   }, [location]);
   React.useEffect(() => {
     if (search.length > 0) {
@@ -169,6 +253,20 @@ const Navbar = () => {
       setSearchResult([]);
     }
   }, [search]);
+  React.useEffect(() => {
+    if (socket) {
+      // this event is being emmitted fom the server
+      socket.on("notification", (data) => {
+        setNotifcations(data);
+      });
+    }
+  }, [socket]);
+  // sets inital notifcations
+  React.useEffect(() => {
+    if (authUser.authData) {
+      setNotifcations(authUser.authData.result.notifications);
+    }
+  }, [authUser]);
   const classes = useStyles({ open });
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -184,6 +282,14 @@ const Navbar = () => {
     setAnchorEl(null);
     logout();
     //handleMobileMenuClose();
+  };
+  const handleNotifications = () => {
+    if (user) {
+      // need to run a dispatch and update the records in the databse, THEN use the nptifications socket listeneer and send the newly updated empty db onto the client
+      setNotifcations([]);
+      dispatch(editUserDetails({ notifications: [] }));
+      //clearNotifications(user.result?._id);
+    }
   };
   const logout = () => {
     dispatch({ type: "LOGOUT" });
@@ -250,9 +356,6 @@ const Navbar = () => {
           <Typography variant="h6" className={classes.logoLg}>
             Vagabond Connect
           </Typography>
-          <Typography variant="h6" className={classes.logoSm}>
-            <Public />
-          </Typography>
           <div className={classes.search}>
             <Search />
             <InputBase
@@ -297,12 +400,21 @@ const Navbar = () => {
                 <Typography className={classes.text}>Resources</Typography>
               </Link>
             </div>
-
-            <div className={classes.item} style={{ display: "none" }}>
+            <div className={classes.item}>
               <Link to="/messages" className={classes.link}>
                 <Mail />
                 <Typography className={classes.text}>Messages</Typography>
               </Link>
+            </div>
+            <div
+              className={classes.item}
+              onClick={() => setShowNotifcations(!showNotifications)}
+            >
+              <Badge color="secondary" badgeContent={notifications.length}>
+                <NotificationsIcon />
+              </Badge>
+
+              <Typography className={classes.text}>Notifications</Typography>
             </div>
           </div>
           <div className={classes.avatar} onClick={handleProfileMenuOpen}>
@@ -332,6 +444,12 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      {showNotifications && (
+        <Notifications
+          notifications={notifications}
+          clearNotifications={handleNotifications}
+        />
+      )}
     </React.Fragment>
   );
 };

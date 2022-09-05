@@ -45,3 +45,5 @@ export const checkUserComments = async (postId, userId) => {
   }
 };
 // helper function to initializae message thread
+
+// helper function for notifications message

@@ -171,3 +171,15 @@ export const deleteUser =
       });
     }
   };
+
+// Clear notifications from user's database
+export const clearNotifications = (userId: any) => async (dispatch: any) => {
+  try {
+    await API.clearNotifications(userId);
+  } catch (error: any) {
+    dispatch({
+      type: SNACKBAR_ERROR,
+      payload: error?.response?.data?.message,
+    });
+  }
+};

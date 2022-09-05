@@ -3,6 +3,7 @@ import Posts from "../models/posts";
 import Users from "../models/users";
 import { Request, Response } from "express";
 import { checkUserComments } from "./helper";
+import { updateNotification } from "../socket";
 
 const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
 
@@ -152,17 +153,70 @@ export const likePost = async (req: any, res: Response) => {
     return res.status(404).send("No post with that ID");
 
   const post = await Posts.findById(id);
-  const user = await Users.findById(_id);
+  const user = await Users.findById(_id); // the client who liked the post
+  const { ownerId } = post;
+  const { notifications } = user; // getting the existing notifcation array from the database
+  const message = `${user.firstName} ${user.lastName} has liked your post`;
+  // creating a new single notification
+  const singleUpdate = {
+    message,
+    userId: _id,
+    postId: id,
+    postOwnerId: ownerId,
+    userImgURL: user.profile_cloudinary,
+  };
+  // adding the new notification to our local notification array that we retrieved
+  notifications.unshift(singleUpdate);
+  /* [
+    {
+      message: 
+      userId:
+      postId:
+      postOwnerId:
+      userImgURL:
+    }
+  ] */
+  // find a way to pinpint to a post, similar to smooth scrolling
   // handling like logic for user
   const index = post.likes.findIndex((id) => id === String(req.userId));
   if (index === -1) {
     // like the post
     post.likes.push(req.userId);
     user.likedPosts.push(id);
+    // add notifcation <-- may want to specify which post was liked, maybe add an image thumbail of it
+    // updting the target user's database with the new notifcation array
+    await Users.findByIdAndUpdate(
+      ownerId,
+      { notifications: notifications },
+      { new: true }
+    );
+    updateNotification(ownerId, notifications);
   } else {
     // dislike a post
     post.likes = post.likes.filter((id) => id !== String(req.userId));
     user.likedPosts = user.likedPosts.filter((postId) => postId !== String(id));
+    // if post owner HAS NOT seen notification (meaning it's still present in the DB, remove it)
+    const { notifications }: any = await Users.findById(ownerId);
+    if (notifications.length > 0) {
+      let doesExist = false;
+      notifications.forEach((item, idx) => {
+        if (
+          item.userId === singleUpdate.userId &&
+          item.postId === singleUpdate.postId &&
+          item.postOwnerId === singleUpdate.postOwnerId
+        ) {
+          notifications.splice(idx, 1);
+          return (doesExist = true);
+        }
+      });
+      if (doesExist) {
+        await Users.findByIdAndUpdate(
+          ownerId,
+          { notifications: notifications },
+          { new: true }
+        );
+      }
+    }
   }
   const updatedPost = await Posts.findByIdAndUpdate(id, post, {
     new: true,

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Request, Response } from "express";
+import { updateNotification } from "../socket";
 const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
 const { updateUsersPosts } = require("./helper");
 
@@ -37,8 +38,9 @@ export const signin = async (req, res) => {
       existingUser.password
     );
 
-    if (!isPasswordCorrect)
+    if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials." });
+    }
     // if user does exist by passing the above checks, then the user can proceed to logging in
     // send a json web token to the frontend
     // the 'test' string here is the secret key for the token
@@ -146,24 +148,31 @@ export const editProfileImg = async (req: any, res: Response) => {
 };
 
 // make changes to users db info, must also update all user posts
+// This function needs to be used in multiple scenarios
 export const editUserDetails = async (req: any, res: Response) => {
   const data = req.body;
   const { email } = data;
   const _id = req?.userId;
   try {
     const existingUser = await Users.findOne({ email }); // look for an existing user by using the email
+    // this is to check that when upating the user email, it doesn't match an existing email
     if (existingUser && existingUser._id.toString() !== _id)
       return res
         .status(409)
         .json({ message: "User with that Email already exists." });
+
     const result = await Users.findByIdAndUpdate(
       _id,
       { $set: { ...data } },
       { new: true }
     );
-    await updateUsersPosts(_id, {
-      ownerName: `${data.firstName} ${data.lastName}`,
-    });
+
+    // only update the users post's if the first name or last name keys were updated, NOTE that image updates are handeled in a different function
+    if (data.firstName || data.lastName) {
+      await updateUsersPosts(_id, {
+        ownerName: `${data.firstName} ${data.lastName}`,
+      });
+    }
     // need to update the state and store new info to client
     res.json(result);
   } catch (error) {
@@ -475,6 +484,21 @@ export const searchUsers = async (req: Request, res: Response) => {
       { ...ignore }
     );
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
+
+// Clear Notifications
+export const clearNotifications = async (req: Request, res: Response) => {
+  try {
+    const { id: _id } = req.params;
+    const user = await Users.findByIdAndUpdate(
+      _id,
+      { notifications: [] },
+      { new: true }
+    );
+    res.send(200).json(user);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong." });
   }

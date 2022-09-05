@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { lightGreen } from "@material-ui/core/colors";
 import countries from "../country/countries";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ProfileIcons } from "./ProfileIcons";
 import { fetchAllFollowers, fetchAllFollowing } from "../../api";
 

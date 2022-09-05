@@ -19,6 +19,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     marginTop: theme.spacing(2),
+    padding: "0 1rem 1rem 1rem",
     // [theme.breakpoints.down("xs")]: {
     //   display: "none",
     // },

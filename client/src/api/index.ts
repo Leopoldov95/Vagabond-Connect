@@ -1,5 +1,6 @@
 import axios from "axios";
-export const baseURL = "https://vagabond-connect-api.herokuapp.com/";
+//export const baseURL = "https://vagabond-connect-api.herokuapp.com/";
+export const baseURL = "http://localhost:5000";
 // so by using this url, we can use the backend logic
 export const API = axios.create({
   baseURL,
@@ -65,3 +66,8 @@ export const postMessage = (id: any, formData: any) =>
 
 export const deleteMessageThread = (id: any) =>
   API.delete(`/message/delete/${id}`);
+
+// NOTIFICATION ROUTES
+
+export const clearNotifications = (id: any) =>
+  API.patch(`/users/patch/clearNotification/${id}`);
