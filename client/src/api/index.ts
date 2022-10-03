@@ -17,6 +17,9 @@ API.interceptors.request.use((req: any) => {
   return req;
 });
 
+// Integrity
+export const connectionCheck = () => API.get("/");
+
 // USERS Routes
 // authentication
 export const signup = (formData: any) => API.post("/users/signup", formData);

@@ -28,36 +28,35 @@ import {
   Settings,
   ExitToApp,
   Lock,
+  Close,
+  Menu as MenuIcon,
   Notifications as NotificationsIcon,
 } from "@material-ui/icons";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { searchUsers } from "../api";
 import SearchResults from "./search/Search";
 import Notifications from "./Notifications";
+import { MobileNav } from "./MobileNav";
 import { editUserDetails } from "../actions/users";
 interface Props {
   open: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
+  nav: {
+    backgroundColor: lightGreen[700],
+  },
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
     backgroundColor: lightGreen[700],
+    maxWidth: 1440,
+    width: "100%",
+    margin: "auto",
   },
   logoLg: {
     display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
-    },
-  },
-  logoSm: {
-    display: "none",
-    lineHeight: 1,
-    [theme.breakpoints.down("sm")]: {
-      display: "block",
-    },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("md")]: {
       display: "none",
     },
   },
@@ -66,8 +65,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column",
     alignItems: "center",
     marginRight: theme.spacing(2),
+    cursor: "pointer",
     "&:hover": {
-      cursor: "pointer",
+      color: lightGreen[100],
+    },
+    [theme.breakpoints.down(960)]: {
+      backgroundColor: "white",
+      color: lightGreen[700],
+      width: 35,
+      height: 35,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: "50%",
     },
   },
   link: {
@@ -87,15 +97,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     paddingLeft: theme.spacing(1),
     alignItems: "center",
+    cursor: "pointer",
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     "&:hover": {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     borderRadius: theme.shape.borderRadius,
     width: "30%",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("md")]: {
+      width: "45%",
+    },
+    [theme.breakpoints.down(768)]: {
       display: (props: Props) => (props.open ? "flex" : "none"),
-      width: "70%",
+      width: "80%",
     },
   },
   input: {
@@ -103,13 +117,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: theme.spacing(1),
   },
   cancel: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up(768)]: {
       display: "none",
     },
   },
   icons: {
-    alignItems: "end",
+    alignItems: "baseline",
     display: (props: Props) => (props.open ? "none" : "flex"),
+    [theme.breakpoints.down(768)]: {
+      alignItems: "center",
+      marginLeft: "2rem",
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: "0",
+    },
   },
   routerLink: {
     color: "inherit",
@@ -123,89 +144,39 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       cursor: "pointer",
     },
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
+  mobileMenuBtn: {
+    cursor: "pointer",
+    display: "none",
+    [theme.breakpoints.down("xs")]: {
+      display: "block",
+    },
   },
   searchButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
+    backgroundColor: "white",
+    color: lightGreen[700],
+    width: 35,
+    height: 35,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "50%",
+    padding: "4px",
+    [theme.breakpoints.up(768)]: {
+      display: "none",
+    },
+  },
+  hideMobile: {
+    [theme.breakpoints.down("xs")]: {
       display: "none",
     },
   },
 }));
 const Navbar = () => {
-  const DUMMY_DATA = [
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-    {
-      firstName: "Leo",
-      lastName: "Ortega",
-      pofile: "img/auth/default.jpeg",
-      message: "liked your post",
-    },
-  ];
   const location = useLocation();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -215,15 +186,14 @@ const Navbar = () => {
   const authUser = useSelector((state: any) => state.userAuthReducer);
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+  const [showMenu, setShowMenu] = React.useState(false);
   const [searchResult, setSearchResult] = React.useState([]);
   const [showNotifications, setShowNotifcations] = React.useState(false);
   // Will need to use redux here!
-  const [notifications, setNotifcations] = React.useState(DUMMY_DATA);
+  const [notifications, setNotifcations] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
   const socket = useSelector((state: any) => state.socketReducer);
-  console.log("hello fro  navbar");
-  console.log(socket);
   // Note that we will be using useEffect in order to update the notifucations for socket
   React.useEffect(() => {
     const token = user?.token;
@@ -265,8 +235,11 @@ const Navbar = () => {
   React.useEffect(() => {
     if (authUser.authData) {
       setNotifcations(authUser.authData.result.notifications);
+    } else if (user) {
+      setNotifcations(user.result.notifications);
     }
-  }, [authUser]);
+  }, [authUser, user]);
+
   const classes = useStyles({ open });
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -290,6 +263,14 @@ const Navbar = () => {
       dispatch(editUserDetails({ notifications: [] }));
       //clearNotifications(user.result?._id);
     }
+  };
+  const handleMobileBtn = () => {
+    setShowMenu(!showMenu);
+    if (showNotifications) setShowNotifcations(false);
+  };
+  const handleNotifBtn = () => {
+    setShowNotifcations(!showNotifications);
+    if (showMenu) setShowMenu(false);
   };
   const logout = () => {
     dispatch({ type: "LOGOUT" });
@@ -350,7 +331,7 @@ const Navbar = () => {
 
   return (
     <React.Fragment>
-      <AppBar position="fixed" style={{ backgroundColor: lightGreen[700] }}>
+      <AppBar position="fixed" className={classes.nav}>
         <Toolbar className={classes.toolbar}>
           {/* Variant is style, component is tag */}
           <Typography variant="h6" className={classes.logoLg}>
@@ -382,19 +363,19 @@ const Navbar = () => {
               className={classes.searchButton}
               onClick={() => setOpen(true)}
             />
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/" className={classes.link}>
                 <Home />
                 <Typography className={classes.text}>Homepage</Typography>
               </Link>
             </div>
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/friends" className={classes.link}>
                 <Person />
                 <Typography className={classes.text}>Friends</Typography>
               </Link>
             </div>
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/resources" className={classes.link}>
                 <LibraryBooks />
                 <Typography className={classes.text}>Resources</Typography>
@@ -406,12 +387,10 @@ const Navbar = () => {
                 <Typography className={classes.text}>Messages</Typography>
               </Link>
             </div>
-            <div
-              className={classes.item}
-              onClick={() => setShowNotifcations(!showNotifications)}
-            >
-              <Badge color="secondary" badgeContent={notifications.length}>
-                <NotificationsIcon />
+            <div className={classes.item} onClick={handleNotifBtn}>
+              {/* <Badge color="secondary" badgeContent={notifications.length}></Badge> */}
+              <Badge color="secondary" badgeContent={99}>
+                <NotificationsIcon style={{ marginBottom: "4px" }} />
               </Badge>
 
               <Typography className={classes.text}>Notifications</Typography>
@@ -422,6 +401,7 @@ const Navbar = () => {
               orientation="vertical"
               flexItem
               style={{ marginRight: 10 }}
+              className={classes.hideMobile}
             />
 
             <Avatar
@@ -434,22 +414,37 @@ const Navbar = () => {
                   : "img/auth/default.jpeg"
               }
             />
-            <ExpandMore style={{ marginLeft: 10 }} />
+            <ExpandMore
+              style={{ marginLeft: 10 }}
+              className={classes.hideMobile}
+            />
             <Divider
               orientation="vertical"
               flexItem
+              className={classes.hideMobile}
               style={{ marginLeft: 10 }}
             />
           </div>
+          {/* Mobile Menu */}
+          <div className={classes.mobileMenuBtn} onClick={handleMobileBtn}>
+            <div style={{ transform: "scale(1.5)" }}>
+              {showMenu ? <Close /> : <MenuIcon />}
+            </div>
+          </div>
+
+          <MobileNav
+            active={showMenu}
+            setActive={setShowMenu}
+            logout={logout}
+          />
         </Toolbar>
       </AppBar>
       {renderMenu}
-      {showNotifications && (
-        <Notifications
-          notifications={notifications}
-          clearNotifications={handleNotifications}
-        />
-      )}
+      <Notifications
+        isActive={showNotifications}
+        notifications={notifications}
+        clearNotifications={handleNotifications}
+      />
     </React.Fragment>
   );
 };

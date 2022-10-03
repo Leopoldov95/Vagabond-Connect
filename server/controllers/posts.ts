@@ -154,8 +154,9 @@ export const likePost = async (req: any, res: Response) => {
 
   const post = await Posts.findById(id);
   const user = await Users.findById(_id); // the client who liked the post
-  const { ownerId } = post;
-  const { notifications } = user; // getting the existing notifcation array from the database
+  const { ownerId } = post; // owner _id of the post owner
+  const targetUser = await Users.findById(ownerId);
+  const { notifications } = targetUser; // getting the existing notifcation array from the database
   const message = `${user.firstName} ${user.lastName} has liked your post`;
   // creating a new single notification
   const singleUpdate = {
@@ -185,12 +186,12 @@ export const likePost = async (req: any, res: Response) => {
     user.likedPosts.push(id);
     // add notifcation <-- may want to specify which post was liked, maybe add an image thumbail of it
     // updting the target user's database with the new notifcation array
-    await Users.findByIdAndUpdate(
+    const updatedTargetUser = await Users.findByIdAndUpdate(
       ownerId,
       { notifications: notifications },
       { new: true }
     );
-    updateNotification(ownerId, notifications);
+    updateNotification(ownerId, updatedTargetUser.notifications);
   } else {
     // dislike a post
     post.likes = post.likes.filter((id) => id !== String(req.userId));
@@ -209,12 +210,14 @@ export const likePost = async (req: any, res: Response) => {
           return (doesExist = true);
         }
       });
+      // the nptifcation does exist and has not been cleared
       if (doesExist) {
-        await Users.findByIdAndUpdate(
+        const updatedTargetUser = await Users.findByIdAndUpdate(
           ownerId,
           { notifications: notifications },
           { new: true }
         );
+        updateNotification(ownerId, updatedTargetUser.notifications);
       }
     }
   }
@@ -230,13 +233,13 @@ export const likePost = async (req: any, res: Response) => {
 
 export const createComment = async (req: any, res: Response) => {
   try {
-    const userId = req?.userId;
-    const { id: _id } = req.params;
+    const userId = req?.userId; // target user's id, the post owner
+    const { id: _id } = req.params; // current users id
     const { formData } = req.body;
     if (!req.userId) return res.json({ message: "Unauthenticated" });
     if (!mongoose.Types.ObjectId.isValid(_id))
       return res.status(404).send("Not A Valid Post Id!");
-    // find the post
+    // find the post that is to have the comment
     const post = await Posts.findById(_id);
     post.comments.push({
       commentOwnerId: req.userId,
@@ -251,6 +254,7 @@ export const createComment = async (req: any, res: Response) => {
 };
 
 // Delete a comment from the post
+// if the previous notification is still in taret users record, then delete it
 export const deleteComment = async (req: any, res: Response) => {
   try {
     const userId = req?.userId;

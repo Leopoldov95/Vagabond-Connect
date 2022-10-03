@@ -5,8 +5,15 @@ import dotenv from "dotenv";
 import userRoutes from "./routes/users";
 import postsRoutes from "./routes/posts";
 import messageRoutes from "./routes/message";
-import { setSession, addNewUser, getUser, removeUser } from "./socket";
+import {
+  setSession,
+  addNewUser,
+  getUser,
+  removeUser,
+  typingNotification,
+} from "./socket";
 
+const originURL = "http://localhost:3000";
 const socket = require("socket.io");
 const app = express();
 dotenv.config();
@@ -25,13 +32,6 @@ app.get("/", (req, res) => {
 app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
 app.use("/message", messageRoutes);
-
-// method to keep app awake in heroku
-// setInterval(() => {
-//   app.get("/", (req, res) => {
-//     res.send("Keeping App awake");
-//   });
-// }, 25 * 60 * 1000); // pings the application every 25 minutes
 
 mongoose
   .connect(process.env.CONNECTION_URL, {
@@ -70,7 +70,7 @@ const server = app.listen(PORT, async () => {
 const io = socket(server, {
   pingTimeout: 60000,
   cors: {
-    origin: "http://localhost:3000", // where we want socket io to listen to
+    origin: originURL, // where we want socket io to listen to
     credentials: true,
   },
 });
@@ -87,6 +87,10 @@ io.on("connection", (socket) => {
 
   socket.on("newUser", (userId) => {
     addNewUser(userId, socket.id); // we are getting the Socket object as a result of the on socket connection
+  });
+
+  socket.on("typing", (userId) => {
+    typingNotification(userId);
   });
 
   socket.on("disconnect", () => {

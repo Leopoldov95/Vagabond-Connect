@@ -51,6 +51,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.down("sm")]: {
       fontSize: "1.6rem",
     },
+    [theme.breakpoints.down("sm")]: {
+      fontSize: "1.6rem",
+    },
   },
   link: {
     color: "inherit",
@@ -68,6 +71,9 @@ const useStyles = makeStyles((theme: Theme) => ({
     [theme.breakpoints.down("sm")]: {
       flexBasis: "auto",
       margin: "auto",
+    },
+    [theme.breakpoints.down("xs")]: {
+      padding: "0 !important",
     },
   },
 }));

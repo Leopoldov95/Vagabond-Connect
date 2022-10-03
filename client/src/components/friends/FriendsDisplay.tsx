@@ -15,9 +15,10 @@ import FriendCard from "./FriendCard";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
     padding: "1rem 2rem 2rem 2rem",
+    maxWidth: 1280,
+    margin: "auto",
     display: "flex",
     position: "relative",
-    justifyContent: "center",
     [theme.breakpoints.down("sm")]: {
       padding: "2rem 1rem",
     },

@@ -13,13 +13,20 @@ const useStyles = makeStyles((theme: Theme) => ({
   container: {
     position: "fixed",
     zIndex: 9999,
-    top: "60px",
-    right: theme.spacing(15),
+    top: "65px",
+    right: "-100%",
     width: "300px",
     height: "auto",
     overflow: "scroll",
     maxHeight: "90%",
     padding: theme.spacing(2),
+    transition: "all ease-in-out 200ms",
+    [theme.breakpoints.down("xs")]: {
+      top: theme.spacing(7),
+    },
+  },
+  active: {
+    right: 0,
   },
   header: {
     display: "flex",
@@ -50,11 +57,11 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 // Badge has to be a top level stte. will be using redux
-const Notifications = ({ notifications, clearNotifications }) => {
+const Notifications = ({ isActive, notifications, clearNotifications }) => {
   const classes = useStyles();
 
   return (
-    <Paper className={classes.container}>
+    <Paper className={`${classes.container} ${isActive && classes.active}`}>
       <div className={classes.header}>
         <h4>Notifications</h4>
         <Button onClick={clearNotifications} color="primary" size="small">

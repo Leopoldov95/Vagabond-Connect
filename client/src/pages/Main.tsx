@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme: Theme) => ({
       padding: 0,
     },
   },
+  hideMobile: {
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
 }));
 const Main = () => {
   const classes = useStyles();
@@ -55,7 +60,7 @@ const Main = () => {
 
   return (
     <Grid container className={classes.container}>
-      <Grid item md={2} sm={4} xs={12}>
+      <Grid item md={2} sm={4} className={classes.hideMobile}>
         <LeftProfile />
       </Grid>
       <Grid item md={7} sm={8} xs={12}>

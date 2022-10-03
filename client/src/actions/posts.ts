@@ -8,12 +8,23 @@ import {
   FETCH_USER_POSTS,
   SNACKBAR_SUCCESS,
   IS_MORE_POSTS,
+  CONNECTION_CHECK,
 } from "../constants/actionTypes";
 import * as api from "../api";
 
 // Action creators
 // redux thunk, redux async
 // instead of using return, have to use dispatch
+
+export const checkConnection = () => async (dispatch: any) => {
+  try {
+    const { status } = await api.connectionCheck();
+    dispatch({ type: CONNECTION_CHECK, payload: status });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const getAllPosts = (filterForm: any) => async (dispatch: any) => {
   try {
     //const { data }: any = await api.fetchPosts(id);

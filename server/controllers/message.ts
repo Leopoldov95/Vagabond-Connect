@@ -3,11 +3,11 @@ import mongoose from "mongoose";
 import Messages from "../models/messages";
 import Users from "../models/users";
 import { Request, Response } from "express";
-
+import { updateMessageSocket } from "../socket";
 // fetch all open messages from users message db
 export const fetchAllContacts = async (req: any, res: Response) => {
   const _id = req.userId;
-  const contactList = [];
+  const contactList: any[] = [];
 
   try {
     // get the users message db
@@ -20,15 +20,23 @@ export const fetchAllContacts = async (req: any, res: Response) => {
     } else {
       // the user is part of messaging rooms
       for (let room of messageRooms) {
+        interface tempObj {
+          _id: String;
+          profile_cloudinary: String;
+          firstName: String;
+          lastName: String;
+        }
         const existingRoom: any = await Messages.findById(room);
         const targetUser = existingRoom.users.filter((user) => user !== _id); // exclude current user from result
-        let tempObj = {};
+
         const { profile_cloudinary, firstName, lastName } =
           await Users.findById(targetUser);
-        tempObj["_id"] = targetUser;
-        tempObj["profile_cloudinary"] = profile_cloudinary;
-        tempObj["firstName"] = firstName;
-        tempObj["lastName"] = lastName;
+        let tempObj: tempObj = {
+          _id: targetUser,
+          profile_cloudinary: profile_cloudinary,
+          firstName: firstName,
+          lastName: lastName,
+        };
         contactList.push(tempObj);
       }
     }
@@ -135,7 +143,10 @@ export const postMessage = async (req: any, res: Response) => {
     },
     { new: true }
   );
-  return res.json(updatedMessages[0]);
+  // here we want to use socket to update message reciever
+  updateMessageSocket(_id, updatedMessages.messages);
+
+  return res.json(updatedMessages);
   // otherwise we can simply push to collection
 
   // let userMessageThread = await Messages.find({ ownerId: userId });

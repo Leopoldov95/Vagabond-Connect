@@ -33,8 +33,7 @@ export const Messages = ({ socket }) => {
   )?.result;
   const messageReducer = useSelector((state: any) => state.messageReducer);
   const [selectedUser, setSelectedUser] = React.useState(null);
-  const [roomId, setRoomId] = React.useState(null);
-  const [socketConnected, setSocketConnected] = React.useState(false);
+
   // throws a warning that the user must be logged in in order to view the messages
   // only makes a connection to socket.io if there is an active user
   // React.useEffect(() => {
@@ -60,13 +59,13 @@ export const Messages = ({ socket }) => {
     }
   }, []);
   React.useEffect(() => {
-    if (roomId !== null && user) {
-      socket = io(baseURL);
-      socket.emit("setup", user._id);
-      socket.on("connected", () => {
-        setSocketConnected(true);
-      });
-    }
+    // if (roomId !== null && user) {
+    //   socket = io(baseURL);
+    //   socket.emit("setup", user._id);
+    //   socket.on("connected", () => {
+    //     setSocketConnected(true);
+    //   });
+    // }
   }, [user]);
   React.useEffect(() => {
     if (id) {
@@ -101,18 +100,17 @@ export const Messages = ({ socket }) => {
   // }, [selectedUser]);
   return (
     <Grid container>
-      <Grid item sm={4}>
+      <Grid item sm={3}>
         <MessageList
-          selectedUser={selectedUser}
-          setSelectedUser={setSelectedUser}
+        // selectedUser={selectedUser}
+        // setSelectedUser={setSelectedUser}
         />
       </Grid>
-      <Grid item sm={8}>
+      <Grid item sm={9}>
         <MessageContent
           selectedUser={selectedUser}
           setSelectedUser={setSelectedUser}
           selectedChatCompare={selectedChatCompare}
-          setRoomId={setRoomId}
         />
       </Grid>
     </Grid>

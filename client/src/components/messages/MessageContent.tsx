@@ -1,18 +1,27 @@
 // This component will display the active messages for a selected person
 // will assume a user is logged in
 import * as React from "react";
-import { Typography, Container, makeStyles, Theme } from "@material-ui/core";
+import {
+  Typography,
+  Container,
+  makeStyles,
+  Theme,
+  Avatar,
+} from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { MailOutlined } from "@material-ui/icons";
 import CreateMessage from "./CreateMessage";
+import SelectedProfile from "./SelectedProfile";
 import MessageBox from "./MessageBox";
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    paddingTop: theme.spacing(9),
+    paddingTop: theme.spacing(15),
+    height: "85vh",
   },
   messageContainer: {
     overflow: "auto",
+    height: "100%",
   },
   noMail: {
     display: "flex",
@@ -21,27 +30,58 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: "center",
     color: "gray",
     marginTop: theme.spacing(2),
+    flexDirection: "column",
+  },
+  typingContainer: {
+    display: "flex",
+    alignItems: "center",
+    position: "absolute",
+    bottom: "92px",
   },
 }));
-const MessageContent = ({
-  selectedUser,
-  setSelectedUser,
-  selectedChatCompare,
-  setRoomId,
-}) => {
+const MessageContent = () => {
   const { id }: any = useParams();
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const messageReducer = useSelector((state: any) => state.messageReducer);
   const userProfile = useSelector((state: any) => state.singleUser);
+  const selectedUser = useSelector((state: any) => state.singleUser);
+  const socket = useSelector((state: any) => state.socketReducer);
   const classes = useStyles();
 
+  const [isTyping, setIsTypeing] = React.useState(false);
+
+  React.useEffect(() => {
+    if (socket) {
+      socket.on("composing", (data) => {
+        setIsTypeing(true);
+      });
+      socket.on("newMessage", (data) => {
+        console.log("You recieved a new message");
+        console.log(data);
+      });
+    }
+    // setIsTypeing(true);
+  }, [socket]);
+
+  React.useEffect(() => {
+    if (isTyping) {
+      console.log("someone is typing you!");
+      setTimeout(() => {
+        setIsTypeing(false);
+      }, 3000);
+    }
+  }, [isTyping]);
   // this code is a bit redundant, may need to remove later
 
   ////// ************* //////////
   //console.log(messageReducer);
+
   return (
     <Container className={classes.container}>
       <div className={classes.messageContainer}>
+        {id && selectedUser && <SelectedProfile />}
         {user &&
         !messageReducer.hasOwnProperty("message") &&
         messageReducer.hasOwnProperty("messages") ? (
@@ -61,13 +101,22 @@ const MessageContent = ({
           ))
         ) : (
           <div className={classes.noMail}>
-            <Typography variant="h4">{messageReducer.message}</Typography>
+            <Typography variant="h4">No Messages!</Typography>
             <MailOutlined fontSize="large" style={{ marginLeft: 10 }} />
           </div>
         )}
       </div>
 
       {id && selectedUser && <CreateMessage selectedUser={selectedUser._id} />}
+      {isTyping && (
+        <div className={classes.typingContainer}>
+          <Avatar
+            style={{ margin: "0 40px 0 10px" }}
+            src={userProfile.profile_cloudinary}
+          />
+          <div className="dot-flashing"></div>
+        </div>
+      )}
     </Container>
   );
 };

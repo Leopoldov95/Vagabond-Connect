@@ -15,14 +15,17 @@ const useStyles = makeStyles((theme: Theme) => ({
     textAlign: "center",
   },
 }));
-const MessageList = ({ selectedUser, setSelectedUser }) => {
+const MessageList = () => {
   //const dispatch = useDispatch();
-  //const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const contactList = useSelector((state: any) => state.contactsReducer);
   //const { id }: any = useParams();
   const classes = useStyles();
-  const [alluser, setAllUsers] = React.useState([]); // this state is to manage the users that will appear on the left hand side of the message bar
+  const [selectedUser, setSelectedUser]: any = React.useState(null);
+  const [alluser, setAllUsers]: any = React.useState([]); // this state is to manage the users that will appear on the left hand side of the message bar
   // populate the local state if user has active messages
   // React.useEffect(() => {
   //   if (user) {
@@ -54,6 +57,7 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
 
   // have the current user I'm messaging be highlighted
   // its okay to have prospective messages here, if I don't send a message to prospective user, won't save to db
+
   return (
     <Paper>
       <ul className={classes.container}>
@@ -75,9 +79,11 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
                     />
                   )
               )}
-            {userProfile && Object.keys(userProfile).length > 0 && (
-              <ListUser selectedUser={selectedUser?._id} user={userProfile} />
-            )}
+            {userProfile &&
+              Object.keys(userProfile).length > 0 &&
+              userProfile._id !== user._id && (
+                <ListUser selectedUser={selectedUser?._id} user={userProfile} />
+              )}
           </React.Fragment>
         )}
       </ul>
@@ -86,3 +92,19 @@ const MessageList = ({ selectedUser, setSelectedUser }) => {
 };
 
 export default MessageList;
+
+// /  <div className={classes.actionContent}>
+// <Link to={`/profile/${user._id}`}>
+//   <IconButton className={classes.icon}>
+//     <Visibility />
+//   </IconButton>
+// </Link>
+
+//   <IconButton className={classes.icon}>
+//     <MailOutline />
+//   </IconButton>
+// </Link>
+// <IconButton className={classes.icon} color="secondary">
+//   <Delete />
+// </IconButton>
+// </div>

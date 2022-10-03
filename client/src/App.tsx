@@ -10,7 +10,9 @@ import Settings from "./pages/Settings";
 import Messages from "./pages/Messages";
 import { Route, Switch, BrowserRouter as Router } from "react-router-dom";
 import "./App.css";
+import "./loader.scss";
 import Navbar from "./components/Navbar";
+import { checkConnection } from "./actions/posts";
 
 const SERVER_URL = "http://localhost:5000";
 // Socket.io server path
@@ -20,11 +22,21 @@ const App = () => {
   const dispatch = useDispatch();
   // const [socket, setSocket] = React.useState<any>(null);
   const socket = useSelector((state: any) => state.socketReducer);
+  const status = useSelector((state: any) => state.connectionReducer);
+  // const posts = useSelector((state: any) => state.postsReducer);
 
+  const [loading, setLoading] = React.useState(true);
   // set the socket on page load, using redux to set it as a global state
   React.useEffect(() => {
+    dispatch(checkConnection());
     dispatch({ type: "SET_SOCKET", payload: io(SERVER_URL) });
   }, []);
+
+  React.useEffect(() => {
+    if (status === 200 && loading) {
+      setLoading(false);
+    }
+  }, [status]);
 
   // if an authorized user is active, send there information to the server
   React.useEffect(() => {
@@ -47,6 +59,20 @@ const App = () => {
           <Route path="/auth" exact component={Auth} />
         </Switch>
       </Router>
+      {loading && (
+        <div className="page-load">
+          <div className="loading">
+            <div className="loading__square"></div>
+            <div className="loading__square"></div>
+            <div className="loading__square"></div>
+            <div className="loading__square"></div>
+            <div className="loading__square"></div>
+            <div className="loading__square"></div>
+            <div className="loading__square"></div>
+          </div>
+          <span>Waiting for Server to wake up...</span>
+        </div>
+      )}
     </div>
   );
 };

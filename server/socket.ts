@@ -25,6 +25,21 @@ export const setSession = (setIo, setSocket) => {
 
 export const updateNotification = (mongoId, notifications) => {
   const target = getUser(mongoId);
-  console.log(target);
   io.to(target.socketId).emit("notification", notifications);
+};
+
+export const typingNotification = (mongoId) => {
+  const target = getUser(mongoId);
+  if (target) {
+    io.to(target.socketId).emit("composing", true);
+  }
+};
+
+export const updateMessageSocket = (mongoId, messages) => {
+  const target = getUser(mongoId);
+  if (target) {
+    io.to(target.socketId).emit("newMessage", messages);
+  } else {
+    console.error("user not found!");
+  }
 };

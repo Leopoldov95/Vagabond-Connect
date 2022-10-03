@@ -10,7 +10,7 @@ import {
   Button,
   TextField,
 } from "@material-ui/core";
-import { Edit, Close } from "@material-ui/icons";
+import { Edit, Close, MailOutline } from "@material-ui/icons";
 import { followUser } from "../../actions/users";
 import countries from "../country/countries";
 import { lightGreen } from "@material-ui/core/colors";
@@ -176,14 +176,13 @@ const ProfileBio = () => {
                   Follow
                 </Button>
               )}
-              {/* Messaging feature disabled */}
-              {/* {authUser && authUser?._id !== displayUser?._id && (
-              <Link to={`/messages/${displayUser._id}`}>
-                <Button variant="outlined" className={classes.btnEdit}>
-                  <MailOutline />
-                </Button>
-              </Link>
-            )} */}
+              {authUser && authUser?._id !== displayUser?._id && (
+                <Link to={`/messages/${displayUser._id}`}>
+                  <Button variant="outlined" className={classes.btnEdit}>
+                    <MailOutline />
+                  </Button>
+                </Link>
+              )}
               {authUser && authUser?._id === displayUser?._id && (
                 <Button
                   variant="outlined"

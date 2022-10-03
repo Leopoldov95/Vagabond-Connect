@@ -1,0 +1,14 @@
+sockets
+ - notifcation records being written to BOTH users **
+ - create socket for commenting
+ - create socket for messaging
+ -- create socket for typing **
+    -- socket not always connecting properly
+
+State
+- need to show current users REAL-TIME notifications on pgae load/refresh
+
+UI
+- message list has double 
+- Continue working on mobile nav
+- notiifcations should slide form right

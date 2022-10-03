@@ -12,16 +12,21 @@ const useStyles = makeStyles((theme: Theme) => ({
     justifyContent: "right",
     flexDirection: "row-reverse",
   },
-
-  comment: {
+  date: {
+    fontSize: 12,
+  },
+  message: {
     borderRadius: 18,
-    padding: theme.spacing(2),
+    padding: "0.25rem 0.5rem",
     display: "inline-block",
     flexDirection: "column",
     alignItems: "flex-start",
   },
   avatar: {
     margin: "0 10px",
+  },
+  text: {
+    fontSize: 14,
   },
 }));
 const MessageBox = ({ createdAt, message, messageOwner, isUser, avatar }) => {
@@ -32,10 +37,10 @@ const MessageBox = ({ createdAt, message, messageOwner, isUser, avatar }) => {
     >
       <Avatar src={avatar} className={classes.avatar} />
       <div
-        className={classes.comment}
+        className={classes.message}
         style={{ backgroundColor: isUser ? blue[500] : lightGreen[500] }}
       >
-        <Typography>
+        <Typography className={classes.date}>
           <strong>
             {new Date(createdAt).toLocaleString("en-US", {
               day: "2-digit",
@@ -44,7 +49,7 @@ const MessageBox = ({ createdAt, message, messageOwner, isUser, avatar }) => {
             })}
           </strong>
         </Typography>
-        <Typography>{message}</Typography>
+        <Typography className={classes.text}>{message}</Typography>
       </div>
     </div>
   );

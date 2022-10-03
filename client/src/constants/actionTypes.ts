@@ -1,3 +1,5 @@
+// Connection
+export const CONNECTION_CHECK = "CONNECTION_CHECK";
 // Posts
 export const FETCH_ALL_POSTS = "FETCH_ALL_POSTS"; // retrieve all posts
 export const FETCH_MORE_POSTS = "FETCH_MORE_POSTS"; // Loads more posts

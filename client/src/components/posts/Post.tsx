@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
       height: 250,
     },
   },
+  profileMedia: {
+    height: "200px",
+  },
   card: {
     marginBottom: theme.spacing(5),
     textAlign: "center",
@@ -59,6 +62,11 @@ const useStyles = makeStyles((theme) => ({
     display: "none",
     [theme.breakpoints.down(450)]: {
       display: "block",
+    },
+  },
+  cardContent: {
+    [theme.breakpoints.down("xs")]: {
+      padding: "4px 1rem",
     },
   },
   icon: {
@@ -276,11 +284,11 @@ const Post = (props: any) => {
         </div>
       </div>
       <CardMedia
-        className={classes.media}
+        className={props.isProfile ? classes.profileMedia : classes.media}
         title="travel"
         image={post.cloudinary_url}
       />
-      <CardContent>
+      <CardContent className={classes.cardContent}>
         <Typography className={classes.cardTitle} gutterBottom variant="h5">
           {post.title}
         </Typography>

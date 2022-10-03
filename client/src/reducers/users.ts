@@ -45,7 +45,6 @@ export const userAuthReducer = (state = { authData: null }, action: any) => {
       return { ...state, authData: action?.data };
     default:
       return state;
-      break;
   }
 };
 

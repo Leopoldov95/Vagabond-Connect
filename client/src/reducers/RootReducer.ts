@@ -7,6 +7,7 @@ import {
   userCommentInfo,
   socketReducer,
 } from "./users";
+import { connectionReducer } from "./connection";
 import { snackbarMessage } from "./snackbar";
 import { isMorePostsReducer, isMoreUsersReducer } from "./isMore";
 import postsReducer from "./posts";
@@ -17,6 +18,7 @@ const RootReducer = combineReducers({
   contactsReducer,
   postsReducer,
   socketReducer,
+  connectionReducer,
   isMorePostsReducer,
   isMoreUsersReducer,
   snackbar: snackbarMessage,

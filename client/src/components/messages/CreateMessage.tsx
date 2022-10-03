@@ -7,7 +7,7 @@ import {
   Button,
   Paper,
 } from "@material-ui/core";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { lightGreen, blueGrey } from "@material-ui/core/colors";
 import { Send } from "@material-ui/icons";
 import { postMessage } from "../../actions/message";
@@ -45,12 +45,19 @@ const useStyles = makeStyles((theme: Theme) => ({
 }));
 
 const CreateMessage = ({ selectedUser }) => {
-  const user = JSON.parse(localStorage.getItem("profile"))?.result;
+  const user = JSON.parse(
+    localStorage.getItem("vagabond_connect_profile")
+  )?.result;
   const classes = useStyles();
   const dispatch = useDispatch();
+  const socket = useSelector((state: any) => state.socketReducer);
   const [message, setMessage] = React.useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (socket && selectedUser) {
+      socket.emit("typing", selectedUser);
+    }
+    //socket.emit("typing",)
     setMessage(e.target.value);
   };
 
