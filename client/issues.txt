@@ -9,6 +9,9 @@ State
 - need to show current users REAL-TIME notifications on pgae load/refresh
 
 UI
-- message list has double 
-- Continue working on mobile nav
+- Fix chosen user informaition
 - notiifcations should slide form right
+
+Server
+- Messages are showing in wrong chat
+- Sever not creating new chat for new user

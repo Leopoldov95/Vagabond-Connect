@@ -5,6 +5,7 @@ import {
   Avatar,
   IconButton,
   Typography,
+  Divider,
 } from "@material-ui/core";
 import { MailOutline, Delete, Visibility } from "@material-ui/icons";
 import { lightGreen } from "@material-ui/core/colors";
@@ -20,11 +21,29 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       backgroundColor: lightGreen[100],
     },
+    [theme.breakpoints.down(960)]: {
+      justifyContent: "center",
+      padding: theme.spacing(1),
+    },
+    [theme.breakpoints.down("xs")]: {
+      justifyContent: "space-between",
+      padding: "8px 1rem",
+    },
+  },
+  avatar: {
+    [theme.breakpoints.down(960)]: {
+      width: 60,
+      height: 60,
+    },
+    [theme.breakpoints.down("xs")]: {
+      width: 80,
+      height: 80,
+    },
   },
   icon: {
     backgroundColor: "white",
     borderRadius: "50%",
-    padding: "6px",
+    padding: theme.spacing(1),
     marginLeft: theme.spacing(1),
   },
   selected: {
@@ -32,34 +51,69 @@ const useStyles = makeStyles((theme: Theme) => ({
     color: "white",
   },
   actionContent: {
-    display: "flex",
+    display: "none",
     alignItems: "center",
     justifyContent: "center",
+    gap: theme.spacing(1),
+    [theme.breakpoints.down("xs")]: {
+      display: "flex",
+    },
+  },
+  userName: {
+    marginLeft: theme.spacing(2),
+    [theme.breakpoints.down(960)]: {
+      display: "none",
+    },
+    [theme.breakpoints.down("xs")]: {
+      display: "block",
+    },
   },
 }));
 
-const ListUser = ({ user, selectedUser }) => {
+const ListUser = ({ user, selectedUser, handleMobileNav, notifications }) => {
   const classes = useStyles();
+  console.log(user);
+  console.log(notifications);
   return (
-    <li
-      className={`${classes.listItem} ${
-        user._id === selectedUser && classes.selected
-      }`}
-    >
-      <Link to={`/messages/${user._id}`}>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar
-            alt="account_icon"
-            aria-label="account of current user"
-            aria-haspopup="true"
-            src={user.profile_cloudinary}
-          />
-          <Typography style={{ marginLeft: 16 }} variant="h6">
-            {user.firstName} {user.lastName}
-          </Typography>
+    <React.Fragment>
+      <li
+        onClick={handleMobileNav}
+        className={`${classes.listItem} ${
+          user._id === selectedUser && classes.selected
+        }`}
+      >
+        <Link to={`/messages/${user._id}`}>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <Avatar
+              alt="account_icon"
+              aria-label="account of current user"
+              aria-haspopup="true"
+              className={classes.avatar}
+              src={user.profile_cloudinary}
+            />
+            <Typography className={classes.userName} variant="h6">
+              {user.firstName} {user.lastName}
+            </Typography>
+          </div>
+        </Link>
+        <div className={classes.actionContent}>
+          <Link to={`/profile/${user._id}`}>
+            <IconButton className={classes.icon}>
+              <Visibility />
+            </IconButton>
+          </Link>
+          <Link to={`/messages/${user._id}`}>
+            <IconButton className={classes.icon}>
+              <MailOutline />
+            </IconButton>
+          </Link>
+          <IconButton className={classes.icon} color="secondary">
+            <Delete />
+          </IconButton>
         </div>
-      </Link>
-    </li>
+      </li>
+      <Divider />
+    </React.Fragment>
   );
 };
 

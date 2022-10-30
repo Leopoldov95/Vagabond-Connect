@@ -191,6 +191,7 @@ export const likePost = async (req: any, res: Response) => {
       { notifications: notifications },
       { new: true }
     );
+    // socket io
     updateNotification(ownerId, updatedTargetUser.notifications);
   } else {
     // dislike a post

@@ -183,14 +183,19 @@ const Navbar = () => {
   const [user, setUser] = React.useState(
     JSON.parse(localStorage.getItem("vagabond_connect_profile"))
   ); // profile is being access from local storage, which was set in the reducer file auth.js
-  const authUser = useSelector((state: any) => state.userAuthReducer);
+  const msgNotificationReducer = useSelector(
+    (state: any) => state.msgNotificationReducer
+  );
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
   const [showMenu, setShowMenu] = React.useState(false);
   const [searchResult, setSearchResult] = React.useState([]);
   const [showNotifications, setShowNotifcations] = React.useState(false);
+  const [showMessageNotifications, setShowMessageNotifcations] =
+    React.useState(false);
   // Will need to use redux here!
   const [notifications, setNotifcations] = React.useState([]);
+  const [messageNotifications, setMessageNotifcations] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
   const socket = useSelector((state: any) => state.socketReducer);
@@ -224,21 +229,75 @@ const Navbar = () => {
     }
   }, [search]);
   React.useEffect(() => {
+    // NOTE - this has to be a REDUX flow
     if (socket) {
       // this event is being emmitted fom the server
       socket.on("notification", (data) => {
         setNotifcations(data);
       });
+      socket.on("newMessage", (data) => {
+        console.log("socket data");
+        console.log(data);
+        //setMessageNotifcations(data.socketNotif);
+        // we will need to UPDATE the local storage to store the new user db data
+        updateLocalStoage(data.updatedTargetUser);
+        // update msg notificationnredux
+        dispatch({
+          type: "UPDATE_MSG_NOTIFICATIONS",
+          payload: data.socketNotif,
+        });
+        //  setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
+        // displatch(updateMsgNotification(messageNotification))
+      });
     }
   }, [socket]);
   // sets inital notifcations
   React.useEffect(() => {
-    if (authUser.authData) {
-      setNotifcations(authUser.authData.result.notifications);
-    } else if (user) {
-      setNotifcations(user.result.notifications);
+    console.log("navbar notification deful triggered");
+    if (notifications.length < 1) {
+      if (user) {
+        setNotifcations(user.result.notifications);
+      }
     }
-  }, [authUser, user]);
+    // Still need to update localstorage user data for notifciations
+    // retrieiving messageNotificafroms from localstorage NOT db
+    if (messageNotifications.length < 1) {
+      // if (authUser.authData) {
+      //   console.log("Message reducer triggered for Auth user!");
+      //   //setMessageNotifcations(authUser.authData.result.messageNotifications);
+      //   dispatch({
+      //     type: "UPDATE_MSG_NOTIFICATIONS",
+      //     payload: authUser.authData.result.messageNotifications,
+      //   });
+      // } else
+      if (user) {
+        console.log("Message reducer triggered for local user!");
+        setMessageNotifcations(user.result.messageNotifications);
+        dispatch({
+          type: "UPDATE_MSG_NOTIFICATIONS",
+          payload: user.result.messageNotifications,
+        });
+      }
+    }
+  }, [user]);
+
+  React.useEffect(() => {
+    console.log("detected a change in the msgNotificationReducer reducer");
+    console.log(msgNotificationReducer);
+    setMessageNotifcations(msgNotificationReducer);
+  }, [msgNotificationReducer]);
+
+  // This method gets the updated User data from the DB via a socket emitter
+  // Then updates the localstorage data, the prupose of this is so that when the user reloads/refreshes the page
+  // the latest data from the DB is still available
+  const updateLocalStoage = (data) => {
+    let existing = JSON.parse(localStorage.getItem("vagabond_connect_profile"));
+    existing.result = { ...data };
+    localStorage.setItem(
+      "vagabond_connect_profile",
+      JSON.stringify({ ...existing })
+    );
+  };
 
   const classes = useStyles({ open });
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
@@ -382,14 +441,18 @@ const Navbar = () => {
               </Link>
             </div>
             <div className={classes.item}>
-              <Link to="/messages" className={classes.link}>
-                <Mail />
-                <Typography className={classes.text}>Messages</Typography>
-              </Link>
+              <Badge
+                color="secondary"
+                badgeContent={Object.keys(messageNotifications).length}
+              >
+                <Link to="/messages" className={classes.link}>
+                  <Mail />
+                </Link>
+              </Badge>
+              <Typography className={classes.text}>Messages</Typography>
             </div>
             <div className={classes.item} onClick={handleNotifBtn}>
-              {/* <Badge color="secondary" badgeContent={notifications.length}></Badge> */}
-              <Badge color="secondary" badgeContent={99}>
+              <Badge color="secondary" badgeContent={notifications.length}>
                 <NotificationsIcon style={{ marginBottom: "4px" }} />
               </Badge>
 
@@ -440,6 +503,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
       {renderMenu}
+      {/* Post like notifcation */}
       <Notifications
         isActive={showNotifications}
         notifications={notifications}

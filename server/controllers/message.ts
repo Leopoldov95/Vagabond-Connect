@@ -20,7 +20,7 @@ export const fetchAllContacts = async (req: any, res: Response) => {
     } else {
       // the user is part of messaging rooms
       for (let room of messageRooms) {
-        interface tempObj {
+        interface userObj {
           _id: String;
           profile_cloudinary: String;
           firstName: String;
@@ -31,8 +31,8 @@ export const fetchAllContacts = async (req: any, res: Response) => {
 
         const { profile_cloudinary, firstName, lastName } =
           await Users.findById(targetUser);
-        let tempObj: tempObj = {
-          _id: targetUser,
+        let tempObj: userObj = {
+          _id: targetUser[0],
           profile_cloudinary: profile_cloudinary,
           firstName: firstName,
           lastName: lastName,
@@ -40,20 +40,6 @@ export const fetchAllContacts = async (req: any, res: Response) => {
         contactList.push(tempObj);
       }
     }
-
-    // const data = userMessages;
-
-    // for (let user in data) {
-    //   let tempObj = {};
-    //   const { profile_cloudinary, firstName, lastName } = await Users.findById(
-    //     user
-    //   );
-    //   tempObj["_id"] = user;
-    //   tempObj["profile_cloudinary"] = profile_cloudinary;
-    //   tempObj["firstName"] = firstName;
-    //   tempObj["lastName"] = lastName;
-    //   contactList.push(tempObj);
-    // }
     return res.status(200).json(contactList);
     // make sure on the frontend that the first index user is automatically selected and that message thread called and applied
   } catch (error) {
@@ -75,7 +61,7 @@ export const fetchUserMessage = async (req: any, res: Response) => {
     }
 
     const messageCollection = await Messages.find({
-      users: { $in: [userId, _id] },
+      $and: [{ users: { $in: [userId] } }, { users: { $in: [_id] } }],
     });
 
     if (messageCollection.length < 1) {
@@ -102,13 +88,13 @@ export const fetchUserMessage = async (req: any, res: Response) => {
 };
 // this will post a new message to the thread
 export const postMessage = async (req: any, res: Response) => {
-  const { id: _id } = req.params;
+  const { id: _id } = req.params; // message raceiver user id
   const userId = req.userId; // authenticated user ID
   const data = req.body;
   let existingMessageCollection;
   // check if an instance of a message collection already exists, if not then need to create one
   existingMessageCollection = await Messages.find({
-    users: { $in: [userId, _id] },
+    $and: [{ users: { $in: [userId] } }, { users: { $in: [_id] } }],
   });
 
   if (existingMessageCollection.length < 1) {
@@ -119,7 +105,7 @@ export const postMessage = async (req: any, res: Response) => {
 
     // Once a message room has been created, immeditaltey update the variable
     existingMessageCollection = await Messages.find({
-      users: { $in: [userId, _id] },
+      $and: [{ users: { $in: [userId] } }, { users: { $in: [_id] } }],
     });
     // add to both users messageArray tracker
     await Users.findByIdAndUpdate(userId, {
@@ -143,8 +129,40 @@ export const postMessage = async (req: any, res: Response) => {
     },
     { new: true }
   );
+
+  let { messageNotifications }: any = await Users.findById(_id);
+  // if no messageNotifcation instance exists, create a new one
+  if (!messageNotifications) {
+    messageNotifications = {};
+    messageNotifications[existingMessageCollection[0]._id] = 1;
+  } else {
+    if (messageNotifications[existingMessageCollection[0]._id]) {
+      messageNotifications[existingMessageCollection[0]._id]++;
+    } else {
+      messageNotifications[existingMessageCollection[0]._id] = 1;
+    }
+  }
+  // update database
+  // since it doesnt make sense to have a notification menu for the Message nav, instead we need to have a sort of counter for each chat
+  /* 
+ {
+  RoomID: unreadMsg number,
+
+ }
+ */
+  // CLIENT - we want to ONLY show latest message per user on the notification menu with a snippet of the latest message
+  // CLIENT - on message, scroll to bottom of messages
+  // this will be the updated DB data for the receiver
+  const updatedTargetUser = await Users.findByIdAndUpdate(
+    _id,
+    { messageNotifications: messageNotifications },
+    { new: true }
+  );
+
   // here we want to use socket to update message reciever
-  updateMessageSocket(_id, updatedMessages.messages);
+  const socketMessage = updatedMessages.messages;
+  const socketNotif = updatedTargetUser.messageNotifications;
+  updateMessageSocket(_id, { socketMessage, socketNotif, updatedTargetUser });
 
   return res.json(updatedMessages);
   // otherwise we can simply push to collection
@@ -214,4 +232,22 @@ export const postMessage = async (req: any, res: Response) => {
 export const deleteMessages = async (req: any, res: Response) => {
   const { id: _id } = req.params;
   const userId = req.userId;
+};
+
+// Clear Notifications
+export const clearMessageNotifications = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { id: _id } = req.params;
+    const user = await Users.findByIdAndUpdate(
+      _id,
+      { messageNotifications: [] },
+      { new: true }
+    );
+    res.send(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
 };

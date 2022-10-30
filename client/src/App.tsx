@@ -54,7 +54,7 @@ const App = () => {
           <Route path="/resources" exact component={Resources} />
           <Route path="/profile/:id" exact component={Profile} />
           <Route path="/friends" exact component={Friends} />
-          <Route path="/messages/:id?" component={Messages} />
+          <Route path="/messages/:id?" exact component={Messages} />
           <Route path="/settings/:id" exact component={Settings} />
           <Route path="/auth" exact component={Auth} />
         </Switch>

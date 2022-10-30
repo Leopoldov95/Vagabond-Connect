@@ -57,7 +57,12 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 // Badge has to be a top level stte. will be using redux
-const Notifications = ({ isActive, notifications, clearNotifications }) => {
+const Notifications = ({
+  isActive,
+  notifications,
+  clearNotifications,
+  hasLink = false,
+}) => {
   const classes = useStyles();
 
   return (
@@ -72,8 +77,8 @@ const Notifications = ({ isActive, notifications, clearNotifications }) => {
       <div className={classes.subContainer}>
         {/* This section will need to be mapped over */}
         {notifications.length > 0 ? (
-          notifications.map((item) => (
-            <React.Fragment>
+          notifications.map((item, idx) => (
+            <React.Fragment key={idx}>
               <div className={classes.item}>
                 <Avatar
                   className={classes.avatar}

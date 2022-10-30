@@ -15,13 +15,16 @@ const useStyles = makeStyles((theme: Theme) => ({
     textAlign: "center",
   },
 }));
-const MessageList = () => {
+const MessageList = ({ handleMobileNav }) => {
   //const dispatch = useDispatch();
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
   const userProfile = useSelector((state: any) => state.singleUser);
   const contactList = useSelector((state: any) => state.contactsReducer);
+  const msgNotificationReducer = useSelector(
+    (state: any) => state.msgNotificationReducer
+  );
   //const { id }: any = useParams();
   const classes = useStyles();
   const [selectedUser, setSelectedUser]: any = React.useState(null);
@@ -57,7 +60,6 @@ const MessageList = () => {
 
   // have the current user I'm messaging be highlighted
   // its okay to have prospective messages here, if I don't send a message to prospective user, won't save to db
-
   return (
     <Paper>
       <ul className={classes.container}>
@@ -70,19 +72,34 @@ const MessageList = () => {
             {/* This check ensures that a duplicate user is not listed when selected AND in the users message db */}
             {alluser.length > 0 &&
               alluser.map(
-                (listUser) =>
+                (listUser, idx) =>
                   listUser._id !== userProfile._id && (
                     <ListUser
-                      key={listUser}
+                      key={idx}
                       user={listUser}
                       selectedUser={selectedUser?._id}
+                      handleMobileNav={handleMobileNav}
+                      notifications={
+                        msgNotificationReducer.hasOwnProperty(selectedUser?._id)
+                          ? true
+                          : 0
+                      }
                     />
                   )
               )}
             {userProfile &&
               Object.keys(userProfile).length > 0 &&
               userProfile._id !== user._id && (
-                <ListUser selectedUser={selectedUser?._id} user={userProfile} />
+                <ListUser
+                  selectedUser={selectedUser?._id}
+                  user={userProfile}
+                  handleMobileNav={handleMobileNav}
+                  notifications={
+                    msgNotificationReducer.hasOwnProperty(selectedUser?._id)
+                      ? msgNotificationReducer[selectedUser?._id]
+                      : 0
+                  }
+                />
               )}
           </React.Fragment>
         )}

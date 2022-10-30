@@ -14,11 +14,34 @@ import { SNACKBAR_WARNING } from "../constants/actionTypes";
 import { getSingleUser } from "../actions/users";
 import { fetchMessageThread, fetchAllContacts } from "../actions/message";
 
-let socket, selectedChatCompare;
+let selectedChatCompare;
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {
-    paddingTop: theme.spacing(9),
+    [theme.breakpoints.down("xs")]: {
+      maxHeight: "100vh",
+      position: "relative",
+    },
+  },
+  mobilePage: {
+    [theme.breakpoints.down("xs")]: {
+      position: "absolute",
+      top: 0,
+      left: 0,
+      width: "100%",
+      transform: "translateX(0)",
+      transition: "all ease-in-out 300ms",
+    },
+  },
+  mobileHide: {
+    [theme.breakpoints.down("xs")]: {
+      transform: "translateY(-100%)",
+    },
+  },
+  mobileActive: {
+    [theme.breakpoints.down("xs")]: {
+      transform: "translateX(0)",
+    },
   },
 }));
 export const Messages = ({ socket }) => {
@@ -33,6 +56,7 @@ export const Messages = ({ socket }) => {
   )?.result;
   const messageReducer = useSelector((state: any) => state.messageReducer);
   const [selectedUser, setSelectedUser] = React.useState(null);
+  const [listActive, setListActive] = React.useState(true);
 
   // throws a warning that the user must be logged in in order to view the messages
   // only makes a connection to socket.io if there is an active user
@@ -98,19 +122,40 @@ export const Messages = ({ socket }) => {
   //   }
   //   // Now that we have established the sleected user, we can now do the message thread call here
   // }, [selectedUser]);
+  const handleMobileNav: VoidFunction = () => {
+    setListActive(!listActive);
+  };
   return (
-    <Grid container>
-      <Grid item sm={3}>
+    <Grid container className={classes.container}>
+      <Grid
+        className={`${listActive ? classes.mobileActive : classes.mobileHide} ${
+          classes.mobilePage
+        }`}
+        item
+        xs={12}
+        sm={2}
+        md={3}
+      >
         <MessageList
-        // selectedUser={selectedUser}
-        // setSelectedUser={setSelectedUser}
+          handleMobileNav={handleMobileNav}
+          // selectedUser={selectedUser}
+          // setSelectedUser={setSelectedUser}
         />
       </Grid>
-      <Grid item sm={9}>
+      <Grid
+        className={`${listActive ? classes.mobileHide : classes.mobileActive} ${
+          classes.mobilePage
+        }`}
+        item
+        xs={12}
+        sm={10}
+        md={9}
+      >
         <MessageContent
           selectedUser={selectedUser}
           setSelectedUser={setSelectedUser}
           selectedChatCompare={selectedChatCompare}
+          handleMobileNav={handleMobileNav}
         />
       </Grid>
     </Grid>

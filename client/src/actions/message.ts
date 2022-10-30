@@ -4,6 +4,7 @@ import {
   DELETE_MESSAGE,
   FETCH_CONTACTS,
   TARGET_ID,
+  UPDATE_MSG_NOTIFICATIONS,
 } from "../constants/actionTypes";
 import * as api from "../api";
 
@@ -35,4 +36,16 @@ export const postMessage =
       console.log(error);
     }
   };
+
+// this will trigger when clicking on the user thread
+// will also need to update when a user logs in, a change is made to ther users db, and when a socket event occurs
+// export const updateMessageNotification =
+//   (roomId: any) => async (dispatch: any) => {
+//     try {
+//       //const {data} = api call
+//       //dispatch(type: UPDATE_MSG_NOTIFICATIONS, payload: data)
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
 // export const deleteMessageThread = (id: any) => async (dispatch: any) => {};

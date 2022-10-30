@@ -16,7 +16,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     fontSize: 12,
   },
   message: {
-    borderRadius: 18,
+    borderRadius: 14,
     padding: "0.25rem 0.5rem",
     display: "inline-block",
     flexDirection: "column",

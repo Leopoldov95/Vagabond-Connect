@@ -38,5 +38,6 @@ export const POST_MESSAGE = "POST_MESSAGE";
 export const DELETE_MESSAGE = "DELETE_MESSAGE";
 export const FETCH_CONTACTS = "FETCH_CONTACTS";
 export const TARGET_ID = "TARGET_ID";
+export const UPDATE_MSG_NOTIFICATIONS = "UPDATE_MSG_NOTIFICATIONS";
 // Socket
 export const SET_SOCKET = "SET_SOCKET";

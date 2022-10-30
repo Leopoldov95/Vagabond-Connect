@@ -11,7 +11,11 @@ import { connectionReducer } from "./connection";
 import { snackbarMessage } from "./snackbar";
 import { isMorePostsReducer, isMoreUsersReducer } from "./isMore";
 import postsReducer from "./posts";
-import { messageReducer, contactsReducer } from "./message";
+import {
+  messageReducer,
+  contactsReducer,
+  msgNotificationReducer,
+} from "./message";
 const RootReducer = combineReducers({
   userAuthReducer,
   messageReducer,
@@ -21,6 +25,7 @@ const RootReducer = combineReducers({
   connectionReducer,
   isMorePostsReducer,
   isMoreUsersReducer,
+  msgNotificationReducer,
   snackbar: snackbarMessage,
   singleUser: userInfoReducer,
   allUsers: allUsersReducer,

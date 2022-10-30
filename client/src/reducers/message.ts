@@ -5,6 +5,7 @@ import {
   DELETE_MESSAGE,
   TARGET_ID,
   FETCH_CONTACTS,
+  UPDATE_MSG_NOTIFICATIONS,
 } from "../constants/actionTypes";
 
 export const messageReducer = (messages: any = [], action: any) => {
@@ -25,5 +26,18 @@ export const contactsReducer = (contacts: any = [], action: any) => {
       return action.payload;
     default:
       return contacts;
+  }
+};
+
+export const msgNotificationReducer = (
+  notifications: any = {},
+  action: any
+) => {
+  console.log("This msgNotificationReduce has been triggered!");
+  switch (action.type) {
+    case UPDATE_MSG_NOTIFICATIONS:
+      return action.payload;
+    default:
+      return notifications;
   }
 };

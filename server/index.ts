@@ -89,8 +89,8 @@ io.on("connection", (socket) => {
     addNewUser(userId, socket.id); // we are getting the Socket object as a result of the on socket connection
   });
 
-  socket.on("typing", (userId) => {
-    typingNotification(userId);
+  socket.on("typing", (data) => {
+    typingNotification(data);
   });
 
   socket.on("disconnect", () => {

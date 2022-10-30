@@ -9,7 +9,7 @@ import {
   Avatar,
 } from "@material-ui/core";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, useLocation } from "react-router-dom";
 import { MailOutlined } from "@material-ui/icons";
 import CreateMessage from "./CreateMessage";
 import SelectedProfile from "./SelectedProfile";
@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   container: {
     paddingTop: theme.spacing(15),
     height: "85vh",
+    [theme.breakpoints.down("xs")]: {
+      height: "98vh",
+    },
   },
   messageContainer: {
     overflow: "auto",
@@ -39,7 +42,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     bottom: "92px",
   },
 }));
-const MessageContent = () => {
+const MessageContent = ({ handleMobileNav }) => {
   const { id }: any = useParams();
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
@@ -48,14 +51,21 @@ const MessageContent = () => {
   const userProfile = useSelector((state: any) => state.singleUser);
   const selectedUser = useSelector((state: any) => state.singleUser);
   const socket = useSelector((state: any) => state.socketReducer);
+  const location = useLocation();
   const classes = useStyles();
-
+  const [param, setParam] = React.useState(id);
   const [isTyping, setIsTypeing] = React.useState(false);
+
+  console.log(messageReducer);
 
   React.useEffect(() => {
     if (socket) {
-      socket.on("composing", (data) => {
-        setIsTypeing(true);
+      socket.on("composing", (senderId) => {
+        console.log("param url");
+        console.log(param);
+        if (param === senderId) {
+          setIsTypeing(true);
+        }
       });
       socket.on("newMessage", (data) => {
         console.log("You recieved a new message");
@@ -67,13 +77,18 @@ const MessageContent = () => {
 
   React.useEffect(() => {
     if (isTyping) {
-      console.log("someone is typing you!");
       setTimeout(() => {
         setIsTypeing(false);
       }, 3000);
     }
   }, [isTyping]);
-  // this code is a bit redundant, may need to remove later
+  React.useEffect(() => {
+    const updated = id;
+    console.log(location);
+    console.log(id);
+    setParam(updated);
+  }, [location]);
+  // // this code is a bit redundant, may need to remove later
 
   ////// ************* //////////
   //console.log(messageReducer);
@@ -81,7 +96,9 @@ const MessageContent = () => {
   return (
     <Container className={classes.container}>
       <div className={classes.messageContainer}>
-        {id && selectedUser && <SelectedProfile />}
+        {id && selectedUser && (
+          <SelectedProfile handleMobileNav={handleMobileNav} />
+        )}
         {user &&
         !messageReducer.hasOwnProperty("message") &&
         messageReducer.hasOwnProperty("messages") ? (
