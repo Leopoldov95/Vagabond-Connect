@@ -60,6 +60,9 @@ const MessageList = ({ handleMobileNav }) => {
 
   // have the current user I'm messaging be highlighted
   // its okay to have prospective messages here, if I don't send a message to prospective user, won't save to db
+
+  // 10-23-22 The reson why the listUseris not updating is because we are using the _id from the Message collextion
+
   return (
     <Paper>
       <ul className={classes.container}>
