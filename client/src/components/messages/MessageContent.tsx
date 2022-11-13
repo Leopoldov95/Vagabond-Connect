@@ -58,6 +58,10 @@ const MessageContent = ({ handleMobileNav }) => {
 
   console.log(messageReducer);
 
+  // React.useEffect(() => {
+  //   window.scrollTo(300);
+  // }, []);
+
   React.useEffect(() => {
     if (socket) {
       socket.on("composing", (senderId) => {
@@ -88,6 +92,7 @@ const MessageContent = ({ handleMobileNav }) => {
     console.log(id);
     setParam(updated);
   }, [location]);
+
   // // this code is a bit redundant, may need to remove later
 
   ////// ************* //////////
