@@ -1,5 +1,5 @@
 import axios from "axios";
-export const baseURL = "https://vagaond-connect-api.onrender.com/";
+export const baseURL = "https://drab-gray-hippo-slip.cyclic.app/";
 // so by using this url, we can use the backend logic
 export const API = axios.create({
   baseURL,
