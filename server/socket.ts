@@ -38,28 +38,13 @@ export const typingNotification = (data) => {
   }
 };
 
+// this method is being used to update the message list AND notifications in real time
 export const updateMessageSocket = (mongoId, data) => {
-  //console.log(mongoId);
-  //console.log(onlineUsers);
   // 10/16/2022 - becuase there is not active online user, no need to emitt a socket signal
   const target = getUser(mongoId);
   if (target) {
-    console.log(data);
+    // 11/14/22 -> issue with msg notification badge, this is being sent to the cient containining ONLY user id, but we need chatroom id in order to append msgNotification to client
     io.to(target.socketId).emit("newMessage", data);
-    // 10/10/22 left off here
-    /**
-     * SERVER
-     * Message will be created onto database
-     * Update will be made for target user message notifications array in database
-     * This will trigger a socket action that updates necessary users of the new message array
-     * CLIENT
-     * Reveiver will get message, Message will ONLY populate if receiver is in Message page
-     * This will trigger a react useEffect
-     * IF user is in current chat room with sender, then filter out message notifications for that user AND DO NOT UPATE CLIENT NAV MESSAGE BADGE
-     ** This should also update the database to clear the message notification form active sender
-     * ELSE IF user is in anohter chat room or page, then update nav notifcations as usual
-     * make notifications take you to chat room on click and CLEAR notificiations
-     */
   } else {
     console.error("user not found!");
   }

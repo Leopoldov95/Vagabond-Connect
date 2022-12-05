@@ -11,6 +11,7 @@ import {
   Divider,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
+import React from "react";
 import { sections, information } from "./resources/resource";
 
 const useStyles = makeStyles((theme: Theme) => ({
@@ -91,16 +92,16 @@ const Resources = () => {
           Travel Resources
         </Typography>
         <Typography variant="h6" className={classes.text}>
-          Trying to decide which companies to book your trip with? Over the last
-          fifteen years of travel, I’ve used hundreds of companies. Some have
-          been great, some have been awful. Below is a list of the companies I
-          come back to time and time again. They are the exact ones I use when I
-          am booking my travel. I’m a firm believer in them and that’s why they
-          are listed. They are the best out there and continually offer the best
-          deals. Use them to book your trip!
+          Trying to select which company to choose to arrange your trip? There
+          are certainly tons of companies out there. Some have been excellent,
+          while others have been atrocious. The firms listed below are ones I
+          return to time and time again. They are exactly the ones I use when I
+          schedule my vacation. I believe in them, which is why they are
+          mentioned. They are the best around and always have the finest deals.
+          Make use of them to plan your vacation!
         </Typography>
         {sections.map((section, index) => (
-          <>
+          <React.Fragment>
             <div className={classes.section} key={index}>
               <Typography className={classes.title} variant="h2">
                 {section}
@@ -149,7 +150,7 @@ const Resources = () => {
               </Grid>
             </div>
             <Divider style={{ backgroundColor: lightGreen[200] }} />
-          </>
+          </React.Fragment>
         ))}
       </Container>
     </div>

@@ -1,5 +1,5 @@
 import express from "express";
-import mongoose, { ConnectOptions, mongo } from "mongoose";
+import mongoose, { ConnectOptions } from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import userRoutes from "./routes/users";
@@ -8,12 +8,11 @@ import messageRoutes from "./routes/message";
 import {
   setSession,
   addNewUser,
-  getUser,
   removeUser,
   typingNotification,
 } from "./socket";
 
-const originURL = "http://localhost:3000";
+const originURL = "https://vagabondconnect.netlify.app/";
 const socket = require("socket.io");
 const app = express();
 dotenv.config();
@@ -49,23 +48,6 @@ const server = app.listen(PORT, async () => {
   console.log(`Listening on port ${PORT}`);
 });
 
-////// FUTURE FEATURE, MESSAGING ///////
-
-// // socket.io configure
-// will use this to track all online users AS WELL AS THERE MONGODB ID!!
-// if the user is not online will still write the notificatioin to the DB,
-/* 
-  [
-    {
-      userId: {MONGO_ID},
-      socketId: {SOCKET_ID}
-    },{
-      userId: {MONGO_ID},
-      socketId: {SOCKET_ID}
-    }
-  ]
-*/
-
 // // so socket.io is INDEPENDANT of Mongodb and operates without it, it only tracks changes from the data it recieves DIRECTLY from the frontend and not from any mongodb databse...
 const io = socket(server, {
   pingTimeout: 60000,
@@ -80,10 +62,6 @@ io.on("connection", (socket) => {
   setSession(io, socket); // defines the session in another file wo we can use socket events externally
   console.log("connected to socket.io");
   // during the socket setup process, we want to grab both usersId
-  // test
-  socket.on("sample", (message) => {
-    console.log(message);
-  });
 
   socket.on("newUser", (userId) => {
     addNewUser(userId, socket.id); // we are getting the Socket object as a result of the on socket connection
@@ -95,8 +73,12 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     removeUser(socket.id);
+    console.log(`${socket.id} has left the session`);
   });
 });
+
+// DEPRECATE - keep as a reference
+
 /* 
 // should we always connect the two or only one once a user is online?
   socket.on("setup", (userId) => {

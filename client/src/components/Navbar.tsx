@@ -236,24 +236,41 @@ const Navbar = () => {
         setNotifcations(data);
       });
       socket.on("newMessage", (data) => {
-        console.log("socket data");
+        console.log("YOU RECIEVED A SOCKET NOTIIFCATION!");
         console.log(data);
         //setMessageNotifcations(data.socketNotif);
         // we will need to UPDATE the local storage to store the new user db data
-        updateLocalStoage(data.updatedTargetUser);
+        updateLocalStorage(data.updatedTargetUser);
+        // IF I recieve a message from a user that IS NOT active on my messaging list, I need to update the local user object
+
         // update msg notificationnredux
         dispatch({
           type: "UPDATE_MSG_NOTIFICATIONS",
           payload: data.socketNotif,
         });
+        // update messageContent reducer
+        dispatch({
+          type: "POST_MESSAGE",
+          payload: data.socketMessage,
+        });
+
+        // If we are recieving a message from a user
+        if (data.contactList) {
+          dispatch({
+            type: "UPDATE_CONTACT_SOCKET",
+            payload: data.contactList,
+          });
+        }
         //  setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
         // displatch(updateMsgNotification(messageNotification))
+      });
+      socket.on("composing", (data) => {
+        console.log("hey i'm actually working lol");
       });
     }
   }, [socket]);
   // sets inital notifcations
   React.useEffect(() => {
-    console.log("navbar notification deful triggered");
     if (notifications.length < 1) {
       if (user) {
         setNotifcations(user.result.notifications);
@@ -283,14 +300,13 @@ const Navbar = () => {
 
   React.useEffect(() => {
     console.log("detected a change in the msgNotificationReducer reducer");
-    console.log(msgNotificationReducer);
     setMessageNotifcations(msgNotificationReducer);
   }, [msgNotificationReducer]);
 
   // This method gets the updated User data from the DB via a socket emitter
   // Then updates the localstorage data, the prupose of this is so that when the user reloads/refreshes the page
   // the latest data from the DB is still available
-  const updateLocalStoage = (data) => {
+  const updateLocalStorage = (data) => {
     let existing = JSON.parse(localStorage.getItem("vagabond_connect_profile"));
     existing.result = { ...data };
     localStorage.setItem(
@@ -333,6 +349,7 @@ const Navbar = () => {
   };
   const logout = () => {
     dispatch({ type: "LOGOUT" });
+    dispatch({ type: "CLEAR_MSG_NOTIFICATIONS" });
     history.push("/");
     dispatch({ type: "SNACKBAR_SUCCESS", payload: "You Have Logged Out." });
     setUser(null);
@@ -443,6 +460,7 @@ const Navbar = () => {
             <div className={classes.item}>
               <Badge
                 color="secondary"
+                overlap="circular"
                 badgeContent={Object.keys(messageNotifications).length}
               >
                 <Link to="/messages" className={classes.link}>
@@ -452,7 +470,11 @@ const Navbar = () => {
               <Typography className={classes.text}>Messages</Typography>
             </div>
             <div className={classes.item} onClick={handleNotifBtn}>
-              <Badge color="secondary" badgeContent={notifications.length}>
+              <Badge
+                color="secondary"
+                overlap="circular"
+                badgeContent={notifications.length}
+              >
                 <NotificationsIcon style={{ marginBottom: "4px" }} />
               </Badge>
 

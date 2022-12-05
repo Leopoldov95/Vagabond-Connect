@@ -1,17 +1,10 @@
-sockets
- - notifcation records being written to BOTH users **
- - create socket for commenting
- - create socket for messaging
- -- create socket for typing **
-    -- socket not always connecting properly
 
-State
-- need to show current users REAL-TIME notifications on pgae load/refresh
+
+- Message Notifications are not updating when user logs in, updates AFRTER manually page refresh
 
 UI
-- Fix chosen user informaition
-- notiifcations should slide form right
+- Fix chosen user informaition?
+- notifications are not showing when user logins!
 
-Server
-- Messages are showing in wrong chat
-- Sever not creating new chat for new user
+
+

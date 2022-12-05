@@ -112,7 +112,6 @@ export const Messages = ({ socket }) => {
       //console.log("hello, the message reducr is active");
       //setRoomId(messageReducer);
       selectedChatCompare = messageReducer;
-      console.log(selectedChatCompare);
     }
   }, [messageReducer]);
   // React.useEffect(() => {

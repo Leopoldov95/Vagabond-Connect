@@ -1,3 +1,0 @@
-notifications
-- post like, post comment, 
-messaging sockets

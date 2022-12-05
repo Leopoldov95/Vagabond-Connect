@@ -6,6 +6,7 @@ import {
   IconButton,
   Typography,
   Divider,
+  Badge,
 } from "@material-ui/core";
 import { MailOutline, Delete, Visibility } from "@material-ui/icons";
 import { lightGreen } from "@material-ui/core/colors";
@@ -72,8 +73,6 @@ const useStyles = makeStyles((theme: Theme) => ({
 
 const ListUser = ({ user, selectedUser, handleMobileNav, notifications }) => {
   const classes = useStyles();
-  console.log(user);
-  console.log(notifications);
   return (
     <React.Fragment>
       <li
@@ -84,13 +83,19 @@ const ListUser = ({ user, selectedUser, handleMobileNav, notifications }) => {
       >
         <Link to={`/messages/${user._id}`}>
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Avatar
-              alt="account_icon"
-              aria-label="account of current user"
-              aria-haspopup="true"
-              className={classes.avatar}
-              src={user.profile_cloudinary}
-            />
+            <Badge
+              badgeContent={notifications && notifications}
+              color="secondary"
+              overlap="circular"
+            >
+              <Avatar
+                alt="account_icon"
+                aria-label="account of current user"
+                aria-haspopup="true"
+                className={classes.avatar}
+                src={user.profile_cloudinary}
+              />
+            </Badge>
             <Typography className={classes.userName} variant="h6">
               {user.firstName} {user.lastName}
             </Typography>

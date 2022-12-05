@@ -1,5 +1,6 @@
 import { Typography, Theme, makeStyles, Avatar } from "@material-ui/core";
 import { lightGreen, blue } from "@material-ui/core/colors";
+import React from "react";
 
 const useStyles = makeStyles((theme: Theme) => ({
   container: {

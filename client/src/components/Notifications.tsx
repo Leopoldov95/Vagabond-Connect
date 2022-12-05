@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     right: "-100%",
     width: "300px",
     height: "auto",
-    overflow: "scroll",
+    overflowY: "auto",
     maxHeight: "90%",
     padding: theme.spacing(2),
     transition: "all ease-in-out 200ms",

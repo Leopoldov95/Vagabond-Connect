@@ -96,8 +96,9 @@ export const userCommentInfo = (userImg: any = new Map(), action: any) => {
 export const socketReducer = (socket: any = null, action: any) => {
   switch (action.type) {
     case SET_SOCKET:
-      console.log("you have set th socket!");
-      return action?.payload;
+      const { initSocket, id } = action?.payload;
+      initSocket?.emit("newUser", id);
+      return initSocket;
     default:
       return socket;
   }

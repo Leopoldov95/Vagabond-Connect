@@ -63,10 +63,11 @@ const useStyles = makeStyles((theme: Theme) => ({
     },
   },
 }));
-const SelectedProfile = ({ width, handleMobileNav }) => {
+const SelectedProfile = ({ width, handleMobileNav, handleDelete }) => {
   const selectedUser = useSelector((state: any) => state.singleUser);
   const classes = useStyles();
   const isSmallScreen = /xs|sm/.test(width);
+
   return (
     <Paper className={classes.container}>
       <div className={classes.left}>
@@ -102,6 +103,7 @@ const SelectedProfile = ({ width, handleMobileNav }) => {
           color="secondary"
           size={isSmallScreen ? "small" : "medium"}
           className={classes.btn}
+          onClick={() => handleDelete(selectedUser._id)}
         >
           {isSmallScreen ? <Delete /> : "Delete Chat"}
         </Button>

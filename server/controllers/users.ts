@@ -5,8 +5,8 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { updateNotification } from "../socket";
-const { uploadCloudinary, deleteCloudinaryImg } = require("./cloudinaryHelper");
-const { updateUsersPosts } = require("./helper");
+import { uploadCloudinary, deleteCloudinaryImg } from "./cloudinaryHelper";
+import { updateUsersPosts } from "./helper";
 
 const ignore = {
   country: 0,
@@ -499,6 +499,37 @@ export const clearNotifications = async (req: Request, res: Response) => {
       { new: true }
     );
     res.send(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong." });
+  }
+};
+
+// update message notification array from user db
+// since this is ONLY concerning one user, don't need sockets
+export const updateMessageNotification = async (req: any, res: Response) => {
+  try {
+    const { id: _id } = req.params; // user _id of the person whom we want to remove the notification from our message notification array
+    const userId = req?.userId; // user_id of person who we want to update the DB
+
+    // validate that userId is a valid String type
+    if (!mongoose.Types.ObjectId.isValid(userId))
+      return res.status(404).send("Not A Valid User Id!");
+
+    const user = await Users.findById(userId);
+    if (!user) return res.status(404).send("No user with that ID");
+
+    const { messageNotifications } = user;
+    delete messageNotifications[_id];
+
+    const updatedUser = await Users.findByIdAndUpdate(
+      userId,
+      {
+        messageNotifications: messageNotifications,
+      },
+      { new: true }
+    );
+
+    res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong." });
   }

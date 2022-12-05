@@ -16,20 +16,17 @@ import { checkConnection } from "./actions/posts";
 
 const SERVER_URL = "http://localhost:5000";
 // Socket.io server path
-//const socket = io("http://localhost:5000"); // creates a Socket object which contains important properties we will need to use
 const App = () => {
   const user = JSON.parse(localStorage.getItem("vagabond_connect_profile"));
+  const authUser = useSelector((state: any) => state.userAuthReducer);
   const dispatch = useDispatch();
-  // const [socket, setSocket] = React.useState<any>(null);
   const socket = useSelector((state: any) => state.socketReducer);
   const status = useSelector((state: any) => state.connectionReducer);
-  // const posts = useSelector((state: any) => state.postsReducer);
 
   const [loading, setLoading] = React.useState(true);
   // set the socket on page load, using redux to set it as a global state
   React.useEffect(() => {
     dispatch(checkConnection());
-    dispatch({ type: "SET_SOCKET", payload: io(SERVER_URL) });
   }, []);
 
   React.useEffect(() => {
@@ -40,11 +37,16 @@ const App = () => {
 
   // if an authorized user is active, send there information to the server
   React.useEffect(() => {
-    if (user && socket) {
-      console.log("event emitted! New user added to Socket server");
-      socket?.emit("newUser", user?.result._id);
+    if (user && !socket) {
+      const tmp = {};
+      tmp["initSocket"] = io(SERVER_URL);
+      tmp["id"] = user?.result._id;
+      dispatch({
+        type: "SET_SOCKET",
+        payload: tmp,
+      });
     }
-  }, [socket, user]);
+  }, [authUser, user]);
   return (
     <div className="App">
       <Router>

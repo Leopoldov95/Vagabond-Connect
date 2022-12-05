@@ -1,6 +1,6 @@
 import axios from "axios";
-//export const baseURL = "https://vagabond-connect-api.herokuapp.com/";
-export const baseURL = "http://localhost:5000";
+export const baseURL = "https://drab-gray-hippo-slip.cyclic.app/";
+//export const baseURL = "http://localhost:5000";
 // so by using this url, we can use the backend logic
 export const API = axios.create({
   baseURL,
@@ -66,11 +66,12 @@ export const fetchAllContacts = () => API.get("message/get/all");
 export const fetchMessageThread = (id: any) => API.get(`/message/get/${id}`);
 export const postMessage = (id: any, formData: any) =>
   API.post(`/message/post/${id}`, formData);
-
 export const deleteMessageThread = (id: any) =>
-  API.delete(`/message/delete/${id}`);
+  API.patch(`/message/remove/${id}`);
 
 // NOTIFICATION ROUTES
 
 export const clearNotifications = (id: any) =>
   API.patch(`/users/patch/clearNotification/${id}`);
+export const updateMessageNotification = (id: String) =>
+  API.patch(`/users/patch/updateMessageNotification/${id}`);
