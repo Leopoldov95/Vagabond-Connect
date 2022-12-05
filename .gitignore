@@ -4,3 +4,5 @@ server/.env
 server/.env.local
 client/issues.txt
 client/testUser.txt
+.DS_Store
+server/.DS_Store
