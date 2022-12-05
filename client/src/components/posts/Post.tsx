@@ -34,20 +34,18 @@ import { Link } from "react-router-dom";
 const useStyles = makeStyles((theme) => ({
   media: {
     height: "400px",
-    borderRadius: theme.spacing(1),
     [theme.breakpoints.down("md")]: {
       height: 300,
     },
     [theme.breakpoints.down("sm")]: {
       height: 250,
     },
-    [theme.breakpoints.down("xs")]: {
-      height: 150,
-    },
+  },
+  profileMedia: {
+    height: "200px",
   },
   card: {
     marginBottom: theme.spacing(5),
-    padding: theme.spacing(2),
     textAlign: "center",
   },
   textLg: {
@@ -66,6 +64,11 @@ const useStyles = makeStyles((theme) => ({
       display: "block",
     },
   },
+  cardContent: {
+    [theme.breakpoints.down("xs")]: {
+      padding: "4px 1rem",
+    },
+  },
   icon: {
     marginRight: theme.spacing(1),
   },
@@ -77,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
     display: "flex",
     justifyContent: "space-between",
+    alignItems: "center",
   },
   mapText: {
     fontSize: 14,
@@ -102,6 +106,10 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       fontSize: "1.2rem",
     },
+  },
+  cardHeader: {
+    display: "flex",
+    padding: "1rem 1rem 0 1rem",
   },
 }));
 // MAKE SURE TO HAVE POST CREATOR ID
@@ -245,7 +253,7 @@ const Post = (props: any) => {
   return (
     <Card className={classes.card}>
       <div className={classes.postOwner}>
-        <div style={{ display: "flex" }}>
+        <div className={classes.cardHeader}>
           <div>
             <Avatar
               style={{ marginRight: 10 }}
@@ -276,11 +284,11 @@ const Post = (props: any) => {
         </div>
       </div>
       <CardMedia
-        className={classes.media}
+        className={props.isProfile ? classes.profileMedia : classes.media}
         title="travel"
         image={post.cloudinary_url}
       />
-      <CardContent>
+      <CardContent className={classes.cardContent}>
         <Typography className={classes.cardTitle} gutterBottom variant="h5">
           {post.title}
         </Typography>

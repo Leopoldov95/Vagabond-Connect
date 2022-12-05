@@ -7,6 +7,7 @@ import {
   API_ERROR,
   FETCH_ALL_USER,
   FETCH_COMMENT_USER,
+  SET_SOCKET,
 } from "../constants/actionTypes";
 
 // Note that EDIT_User can be used in all instances in which a logged in user makes modifications to their profile
@@ -44,7 +45,6 @@ export const userAuthReducer = (state = { authData: null }, action: any) => {
       return { ...state, authData: action?.data };
     default:
       return state;
-      break;
   }
 };
 
@@ -88,5 +88,18 @@ export const userCommentInfo = (userImg: any = new Map(), action: any) => {
     // return [...userImg, action?.payload];
     default:
       return userImg;
+  }
+};
+
+// Socket reducer
+
+export const socketReducer = (socket: any = null, action: any) => {
+  switch (action.type) {
+    case SET_SOCKET:
+      const { initSocket, id } = action?.payload;
+      initSocket?.emit("newUser", id);
+      return initSocket;
+    default:
+      return socket;
   }
 };

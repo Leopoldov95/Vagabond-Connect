@@ -1,3 +1,5 @@
+// Connection
+export const CONNECTION_CHECK = "CONNECTION_CHECK";
 // Posts
 export const FETCH_ALL_POSTS = "FETCH_ALL_POSTS"; // retrieve all posts
 export const FETCH_MORE_POSTS = "FETCH_MORE_POSTS"; // Loads more posts
@@ -33,6 +35,11 @@ export const IS_MORE_USERS = "IS_MORE_USERS";
 // Message
 export const FETCH_MESSAGES = "FETCH_MESSAGES";
 export const POST_MESSAGE = "POST_MESSAGE";
-export const DELETE_MESSAGE = "DELETE_MESSAGE";
+export const DELETE_CONTACT = "DELETE_CONTACT";
 export const FETCH_CONTACTS = "FETCH_CONTACTS";
+export const UPDATE_CONTACT_SOCKET = "UPDATE_CONTACT_SOCKET";
 export const TARGET_ID = "TARGET_ID";
+export const UPDATE_MSG_NOTIFICATIONS = "UPDATE_MSG_NOTIFICATIONS";
+export const CLEAR_MSG_NOTIFICATIONS = "CLEAR_MSG_NOTIFICATIONS";
+// Socket
+export const SET_SOCKET = "SET_SOCKET";

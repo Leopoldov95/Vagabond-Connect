@@ -143,7 +143,7 @@ const ProfileView = () => {
           </Tabs>
         </Paper>
         <TabPanel value={value} index={0}>
-          <Feed />
+          <Feed isProfile={true} />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <FriendsDisplay

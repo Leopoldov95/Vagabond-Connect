@@ -1,12 +1,26 @@
 import * as React from "react";
-import { Container } from "@material-ui/core";
+import { Container, makeStyles, Theme } from "@material-ui/core";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router";
 import Posts from "./Posts";
 import PostForm from "./PostForm";
 import Add from "./Add";
+
+const useStyles = makeStyles((theme: Theme) => ({
+  profileContainer: {
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gridColumnGap: theme.spacing(2),
+    alignItems: "baseline",
+    [theme.breakpoints.down(900)]: {
+      gridTemplateColumns: "1fr",
+    },
+  },
+}));
+
 // there should always be posts on the feed, perhaps add some sort of error handling if no posts are available or if posts failed to load
 const Feed = (props: any) => {
+  const classes = useStyles();
   const params = useParams();
   const user = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
@@ -29,8 +43,18 @@ const Feed = (props: any) => {
       ) : (
         ""
       )}
-
-      <Posts setEditPostId={setEditPostId} open={open} setOpen={setOpen} />
+      {props.isProfile ? (
+        <div className={classes.profileContainer}>
+          <Posts
+            isProfile={true}
+            setEditPostId={setEditPostId}
+            open={open}
+            setOpen={setOpen}
+          />
+        </div>
+      ) : (
+        <Posts setEditPostId={setEditPostId} open={open} setOpen={setOpen} />
+      )}
       <PostForm
         open={open}
         setOpen={setOpen}

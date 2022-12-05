@@ -11,7 +11,7 @@ import {
 import { Link } from "react-router-dom";
 import { lightGreen } from "@material-ui/core/colors";
 import countries from "../country/countries";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { ProfileIcons } from "./ProfileIcons";
 import { fetchAllFollowers, fetchAllFollowing } from "../../api";
 
@@ -130,7 +130,7 @@ const LeftProfile = () => {
             <Typography gutterBottom variant="h6">
               {user ? `${user?.firstName} ${user?.lastName}` : "GUEST"}
             </Typography>
-            <Typography gutterBottom className={classes.bioText}>
+            <div className={classes.bioText}>
               <img
                 className={user ? classes.profileImg : ""}
                 alt={user ? user?.country : ""}
@@ -140,12 +140,15 @@ const LeftProfile = () => {
                     : ""
                 }
               />
-              {user
-                ? `${countries[user?.country].name}, ${
-                    countries[user?.country].continent
-                  }`
-                : "UNKOWN"}
-            </Typography>
+              {user ? (
+                <React.Fragment>
+                  <Typography>{countries[user?.country].name}</Typography>
+                  <Typography>{countries[user?.country].continent}</Typography>
+                </React.Fragment>
+              ) : (
+                "UNKOWN"
+              )}
+            </div>
           </div>
         </div>
         {/* <Divider className={classes.divider} /> */}

@@ -1,5 +1,4 @@
 import * as React from "react";
-import { API_ERROR } from "../../constants/actionTypes";
 import PropTypes from "prop-types";
 import {
   Avatar,
@@ -9,7 +8,6 @@ import {
   Grid,
   Typography,
   Container,
-  useMediaQuery,
   CircularProgress,
   withWidth,
 } from "@material-ui/core";

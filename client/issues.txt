@@ -1,0 +1,10 @@
+
+
+- Message Notifications are not updating when user logs in, updates AFRTER manually page refresh
+
+UI
+- Fix chosen user informaition?
+- notifications are not showing when user logins!
+
+
+

@@ -1,6 +1,6 @@
 // Since Navbar will be present on ALL pages, we will manage user auth here
 import * as React from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import decode from "jwt-decode";
 import {
   alpha,
@@ -14,13 +14,13 @@ import {
   Menu,
   MenuItem,
   Divider,
+  Badge,
 } from "@material-ui/core";
 import { lightGreen } from "@material-ui/core/colors";
 import {
   Mail,
   Search,
   Cancel,
-  Public,
   ExpandMore,
   Home,
   Person,
@@ -28,33 +28,35 @@ import {
   Settings,
   ExitToApp,
   Lock,
+  Close,
+  Menu as MenuIcon,
+  Notifications as NotificationsIcon,
 } from "@material-ui/icons";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { searchUsers } from "../api";
 import SearchResults from "./search/Search";
+import Notifications from "./Notifications";
+import { MobileNav } from "./MobileNav";
+import { editUserDetails } from "../actions/users";
 interface Props {
   open: boolean;
 }
 
 const useStyles = makeStyles((theme: Theme) => ({
+  nav: {
+    backgroundColor: lightGreen[700],
+  },
   toolbar: {
     display: "flex",
     justifyContent: "space-between",
     backgroundColor: lightGreen[700],
+    maxWidth: 1440,
+    width: "100%",
+    margin: "auto",
   },
   logoLg: {
     display: "none",
-    [theme.breakpoints.up("sm")]: {
-      display: "block",
-    },
-  },
-  logoSm: {
-    display: "none",
-    lineHeight: 1,
-    [theme.breakpoints.down("sm")]: {
-      display: "block",
-    },
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("md")]: {
       display: "none",
     },
   },
@@ -63,8 +65,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     flexDirection: "column",
     alignItems: "center",
     marginRight: theme.spacing(2),
+    cursor: "pointer",
     "&:hover": {
-      cursor: "pointer",
+      color: lightGreen[100],
+    },
+    [theme.breakpoints.down(960)]: {
+      backgroundColor: "white",
+      color: lightGreen[700],
+      width: 35,
+      height: 35,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: "50%",
     },
   },
   link: {
@@ -84,15 +97,19 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: "flex",
     paddingLeft: theme.spacing(1),
     alignItems: "center",
+    cursor: "pointer",
     backgroundColor: alpha(theme.palette.common.white, 0.15),
     "&:hover": {
       backgroundColor: alpha(theme.palette.common.white, 0.25),
     },
     borderRadius: theme.shape.borderRadius,
     width: "30%",
-    [theme.breakpoints.down("xs")]: {
+    [theme.breakpoints.down("md")]: {
+      width: "45%",
+    },
+    [theme.breakpoints.down(768)]: {
       display: (props: Props) => (props.open ? "flex" : "none"),
-      width: "70%",
+      width: "80%",
     },
   },
   input: {
@@ -100,13 +117,20 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginLeft: theme.spacing(1),
   },
   cancel: {
-    [theme.breakpoints.up("sm")]: {
+    [theme.breakpoints.up(768)]: {
       display: "none",
     },
   },
   icons: {
-    alignItems: "end",
+    alignItems: "baseline",
     display: (props: Props) => (props.open ? "none" : "flex"),
+    [theme.breakpoints.down(768)]: {
+      alignItems: "center",
+      marginLeft: "2rem",
+    },
+    [theme.breakpoints.down("xs")]: {
+      marginLeft: "0",
+    },
   },
   routerLink: {
     color: "inherit",
@@ -120,10 +144,34 @@ const useStyles = makeStyles((theme: Theme) => ({
     "&:hover": {
       cursor: "pointer",
     },
+    [theme.breakpoints.down("xs")]: {
+      display: "none",
+    },
+  },
+  mobileMenuBtn: {
+    cursor: "pointer",
+    display: "none",
+    [theme.breakpoints.down("xs")]: {
+      display: "block",
+    },
   },
   searchButton: {
     marginRight: theme.spacing(2),
-    [theme.breakpoints.up("sm")]: {
+    backgroundColor: "white",
+    color: lightGreen[700],
+    width: 35,
+    height: 35,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: "50%",
+    padding: "4px",
+    [theme.breakpoints.up(768)]: {
+      display: "none",
+    },
+  },
+  hideMobile: {
+    [theme.breakpoints.down("xs")]: {
       display: "none",
     },
   },
@@ -135,15 +183,25 @@ const Navbar = () => {
   const [user, setUser] = React.useState(
     JSON.parse(localStorage.getItem("vagabond_connect_profile"))
   ); // profile is being access from local storage, which was set in the reducer file auth.js
+  const msgNotificationReducer = useSelector(
+    (state: any) => state.msgNotificationReducer
+  );
   const [open, setOpen] = React.useState(false);
   const [search, setSearch] = React.useState("");
+  const [showMenu, setShowMenu] = React.useState(false);
   const [searchResult, setSearchResult] = React.useState([]);
+  const [showNotifications, setShowNotifcations] = React.useState(false);
+  const [showMessageNotifications, setShowMessageNotifcations] =
+    React.useState(false);
+  // Will need to use redux here!
+  const [notifications, setNotifcations] = React.useState([]);
+  const [messageNotifications, setMessageNotifcations] = React.useState([]);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const isMenuOpen = Boolean(anchorEl);
-
+  const socket = useSelector((state: any) => state.socketReducer);
+  // Note that we will be using useEffect in order to update the notifucations for socket
   React.useEffect(() => {
     const token = user?.token;
-
     // JWT ...
     if (token) {
       // decodes the token, checking if tken is expired. If so, user must sign back in
@@ -152,8 +210,9 @@ const Navbar = () => {
         logout();
       }
     }
-
     setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
+    // hise the notifications on page change
+    setShowNotifcations(false);
   }, [location]);
   React.useEffect(() => {
     if (search.length > 0) {
@@ -169,6 +228,93 @@ const Navbar = () => {
       setSearchResult([]);
     }
   }, [search]);
+  React.useEffect(() => {
+    // NOTE - this has to be a REDUX flow
+    if (socket) {
+      // this event is being emmitted fom the server
+      socket.on("notification", (data) => {
+        setNotifcations(data);
+      });
+      socket.on("newMessage", (data) => {
+        console.log("YOU RECIEVED A SOCKET NOTIIFCATION!");
+        console.log(data);
+        //setMessageNotifcations(data.socketNotif);
+        // we will need to UPDATE the local storage to store the new user db data
+        updateLocalStorage(data.updatedTargetUser);
+        // IF I recieve a message from a user that IS NOT active on my messaging list, I need to update the local user object
+
+        // update msg notificationnredux
+        dispatch({
+          type: "UPDATE_MSG_NOTIFICATIONS",
+          payload: data.socketNotif,
+        });
+        // update messageContent reducer
+        dispatch({
+          type: "POST_MESSAGE",
+          payload: data.socketMessage,
+        });
+
+        // If we are recieving a message from a user
+        if (data.contactList) {
+          dispatch({
+            type: "UPDATE_CONTACT_SOCKET",
+            payload: data.contactList,
+          });
+        }
+        //  setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
+        // displatch(updateMsgNotification(messageNotification))
+      });
+      socket.on("composing", (data) => {
+        console.log("hey i'm actually working lol");
+      });
+    }
+  }, [socket]);
+  // sets inital notifcations
+  React.useEffect(() => {
+    if (notifications.length < 1) {
+      if (user) {
+        setNotifcations(user.result.notifications);
+      }
+    }
+    // Still need to update localstorage user data for notifciations
+    // retrieiving messageNotificafroms from localstorage NOT db
+    if (messageNotifications.length < 1) {
+      // if (authUser.authData) {
+      //   console.log("Message reducer triggered for Auth user!");
+      //   //setMessageNotifcations(authUser.authData.result.messageNotifications);
+      //   dispatch({
+      //     type: "UPDATE_MSG_NOTIFICATIONS",
+      //     payload: authUser.authData.result.messageNotifications,
+      //   });
+      // } else
+      if (user) {
+        console.log("Message reducer triggered for local user!");
+        setMessageNotifcations(user.result.messageNotifications);
+        dispatch({
+          type: "UPDATE_MSG_NOTIFICATIONS",
+          payload: user.result.messageNotifications,
+        });
+      }
+    }
+  }, [user]);
+
+  React.useEffect(() => {
+    console.log("detected a change in the msgNotificationReducer reducer");
+    setMessageNotifcations(msgNotificationReducer);
+  }, [msgNotificationReducer]);
+
+  // This method gets the updated User data from the DB via a socket emitter
+  // Then updates the localstorage data, the prupose of this is so that when the user reloads/refreshes the page
+  // the latest data from the DB is still available
+  const updateLocalStorage = (data) => {
+    let existing = JSON.parse(localStorage.getItem("vagabond_connect_profile"));
+    existing.result = { ...data };
+    localStorage.setItem(
+      "vagabond_connect_profile",
+      JSON.stringify({ ...existing })
+    );
+  };
+
   const classes = useStyles({ open });
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -185,8 +331,25 @@ const Navbar = () => {
     logout();
     //handleMobileMenuClose();
   };
+  const handleNotifications = () => {
+    if (user) {
+      // need to run a dispatch and update the records in the databse, THEN use the nptifications socket listeneer and send the newly updated empty db onto the client
+      setNotifcations([]);
+      dispatch(editUserDetails({ notifications: [] }));
+      //clearNotifications(user.result?._id);
+    }
+  };
+  const handleMobileBtn = () => {
+    setShowMenu(!showMenu);
+    if (showNotifications) setShowNotifcations(false);
+  };
+  const handleNotifBtn = () => {
+    setShowNotifcations(!showNotifications);
+    if (showMenu) setShowMenu(false);
+  };
   const logout = () => {
     dispatch({ type: "LOGOUT" });
+    dispatch({ type: "CLEAR_MSG_NOTIFICATIONS" });
     history.push("/");
     dispatch({ type: "SNACKBAR_SUCCESS", payload: "You Have Logged Out." });
     setUser(null);
@@ -244,14 +407,11 @@ const Navbar = () => {
 
   return (
     <React.Fragment>
-      <AppBar position="fixed" style={{ backgroundColor: lightGreen[700] }}>
+      <AppBar position="fixed" className={classes.nav}>
         <Toolbar className={classes.toolbar}>
           {/* Variant is style, component is tag */}
           <Typography variant="h6" className={classes.logoLg}>
             Vagabond Connect
-          </Typography>
-          <Typography variant="h6" className={classes.logoSm}>
-            <Public />
           </Typography>
           <div className={classes.search}>
             <Search />
@@ -279,30 +439,46 @@ const Navbar = () => {
               className={classes.searchButton}
               onClick={() => setOpen(true)}
             />
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/" className={classes.link}>
                 <Home />
                 <Typography className={classes.text}>Homepage</Typography>
               </Link>
             </div>
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/friends" className={classes.link}>
                 <Person />
                 <Typography className={classes.text}>Friends</Typography>
               </Link>
             </div>
-            <div className={classes.item}>
+            <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/resources" className={classes.link}>
                 <LibraryBooks />
                 <Typography className={classes.text}>Resources</Typography>
               </Link>
             </div>
+            <div className={classes.item}>
+              <Badge
+                color="secondary"
+                overlap="circular"
+                badgeContent={Object.keys(messageNotifications).length}
+              >
+                <Link to="/messages" className={classes.link}>
+                  <Mail />
+                </Link>
+              </Badge>
+              <Typography className={classes.text}>Messages</Typography>
+            </div>
+            <div className={classes.item} onClick={handleNotifBtn}>
+              <Badge
+                color="secondary"
+                overlap="circular"
+                badgeContent={notifications.length}
+              >
+                <NotificationsIcon style={{ marginBottom: "4px" }} />
+              </Badge>
 
-            <div className={classes.item} style={{ display: "none" }}>
-              <Link to="/messages" className={classes.link}>
-                <Mail />
-                <Typography className={classes.text}>Messages</Typography>
-              </Link>
+              <Typography className={classes.text}>Notifications</Typography>
             </div>
           </div>
           <div className={classes.avatar} onClick={handleProfileMenuOpen}>
@@ -310,6 +486,7 @@ const Navbar = () => {
               orientation="vertical"
               flexItem
               style={{ marginRight: 10 }}
+              className={classes.hideMobile}
             />
 
             <Avatar
@@ -322,16 +499,38 @@ const Navbar = () => {
                   : "img/auth/default.jpeg"
               }
             />
-            <ExpandMore style={{ marginLeft: 10 }} />
+            <ExpandMore
+              style={{ marginLeft: 10 }}
+              className={classes.hideMobile}
+            />
             <Divider
               orientation="vertical"
               flexItem
+              className={classes.hideMobile}
               style={{ marginLeft: 10 }}
             />
           </div>
+          {/* Mobile Menu */}
+          <div className={classes.mobileMenuBtn} onClick={handleMobileBtn}>
+            <div style={{ transform: "scale(1.5)" }}>
+              {showMenu ? <Close /> : <MenuIcon />}
+            </div>
+          </div>
+
+          <MobileNav
+            active={showMenu}
+            setActive={setShowMenu}
+            logout={logout}
+          />
         </Toolbar>
       </AppBar>
       {renderMenu}
+      {/* Post like notifcation */}
+      <Notifications
+        isActive={showNotifications}
+        notifications={notifications}
+        clearNotifications={handleNotifications}
+      />
     </React.Fragment>
   );
 };

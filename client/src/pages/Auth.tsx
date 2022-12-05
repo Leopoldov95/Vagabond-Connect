@@ -1,5 +1,5 @@
 import * as React from "react";
-import { makeStyles, Snackbar, Theme } from "@material-ui/core";
+import { makeStyles, Theme } from "@material-ui/core";
 import SignUp from "../components/auth/SignUp";
 import SnackbarTool from "../components/snackbar/SnackbarTool";
 const useStyles = makeStyles((theme: Theme) => ({
