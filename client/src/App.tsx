@@ -14,7 +14,7 @@ import "./loader.scss";
 import Navbar from "./components/Navbar";
 import { checkConnection } from "./actions/posts";
 
-const SERVER_URL = "https://drab-gray-hippo-slip.cyclic.app";
+const SOCKET_URL = "https://drab-gray-hippo-slip.cyclic.app/";
 // Socket.io server path
 const App = () => {
   const user = JSON.parse(localStorage.getItem("vagabond_connect_profile"));
@@ -39,7 +39,9 @@ const App = () => {
   React.useEffect(() => {
     if (user && !socket) {
       const tmp = {};
-      tmp["initSocket"] = io(SERVER_URL);
+      tmp["initSocket"] = io(SOCKET_URL, {
+        transports: ["websocket", "polling"],
+      });
       tmp["id"] = user?.result._id;
       dispatch({
         type: "SET_SOCKET",

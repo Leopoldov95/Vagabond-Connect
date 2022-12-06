@@ -54,9 +54,11 @@ const io = socket(server, {
   cors: {
     origin: "*", // where we want socket io to listen to
     // credentials: true,
-    // methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+    methods: ["GET", "POST", "PATCH", "PUT", "DELETE"],
+    transports: ["websocket", "polling"],
     // allowedHeaders: ["vagabond-header"],
   },
+  allowEIO3: true,
 });
 
 // "connection" is the listener to use when anyone visites our website
