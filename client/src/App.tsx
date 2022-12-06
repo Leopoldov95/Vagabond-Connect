@@ -39,7 +39,12 @@ const App = () => {
   React.useEffect(() => {
     if (user && !socket) {
       const tmp = {};
-      tmp["initSocket"] = io(SERVER_URL);
+      tmp["initSocket"] = io(SERVER_URL, {
+        withCredentials: true,
+        extraHeaders: {
+          "vagabond-header": "travel_social",
+        },
+      });
       tmp["id"] = user?.result._id;
       dispatch({
         type: "SET_SOCKET",
