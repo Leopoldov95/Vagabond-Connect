@@ -14,6 +14,7 @@ import "./loader.scss";
 import Navbar from "./components/Navbar";
 import { checkConnection } from "./actions/posts";
 
+//const SOCKET_URL = "http://localhost:5000";
 const SOCKET_URL = "https://drab-gray-hippo-slip.cyclic.app/";
 // Socket.io server path
 const App = () => {
@@ -39,9 +40,10 @@ const App = () => {
   React.useEffect(() => {
     if (user && !socket) {
       const tmp = {};
-      tmp["initSocket"] = io(SOCKET_URL, {
-        transports: ["websocket", "polling"],
-      });
+      tmp["initSocket"] = io(SOCKET_URL);
+      //   , {
+      //   transports: ["websocket", "polling"],
+      // });
       tmp["id"] = user?.result._id;
       dispatch({
         type: "SET_SOCKET",

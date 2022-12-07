@@ -236,7 +236,6 @@ const Navbar = () => {
         setNotifcations(data);
       });
       socket.on("newMessage", (data) => {
-        console.log("YOU RECIEVED A SOCKET NOTIIFCATION!");
         console.log(data);
         //setMessageNotifcations(data.socketNotif);
         // we will need to UPDATE the local storage to store the new user db data
@@ -261,12 +260,8 @@ const Navbar = () => {
             payload: data.contactList,
           });
         }
-        //  setUser(JSON.parse(localStorage.getItem("vagabond_connect_profile")));
-        // displatch(updateMsgNotification(messageNotification))
       });
-      socket.on("composing", (data) => {
-        console.log("hey i'm actually working lol");
-      });
+      socket.on("composing", (data) => {});
     }
   }, [socket]);
   // sets inital notifcations
@@ -288,7 +283,6 @@ const Navbar = () => {
       //   });
       // } else
       if (user) {
-        console.log("Message reducer triggered for local user!");
         setMessageNotifcations(user.result.messageNotifications);
         dispatch({
           type: "UPDATE_MSG_NOTIFICATIONS",
@@ -299,7 +293,6 @@ const Navbar = () => {
   }, [user]);
 
   React.useEffect(() => {
-    console.log("detected a change in the msgNotificationReducer reducer");
     setMessageNotifcations(msgNotificationReducer);
   }, [msgNotificationReducer]);
 
