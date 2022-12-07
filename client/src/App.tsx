@@ -41,7 +41,7 @@ const App = () => {
     if (user && !socket) {
       const tmp = {};
       tmp["initSocket"] = io(SOCKET_URL, {
-        transports: ["websocket", "polling"],
+        transports: ["polling"],
       });
       tmp["id"] = user?.result._id;
       dispatch({
