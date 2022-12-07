@@ -40,10 +40,9 @@ const App = () => {
   React.useEffect(() => {
     if (user && !socket) {
       const tmp = {};
-      tmp["initSocket"] = io(SOCKET_URL);
-      //   , {
-      //   transports: ["websocket", "polling"],
-      // });
+      tmp["initSocket"] = io(SOCKET_URL, {
+        transports: ["websocket", "polling"],
+      });
       tmp["id"] = user?.result._id;
       dispatch({
         type: "SET_SOCKET",
