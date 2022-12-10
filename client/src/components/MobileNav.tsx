@@ -77,7 +77,7 @@ export const MobileNav = ({ active, setActive, logout }) => {
   return (
     <Paper
       className={classes.mobileMenu}
-      style={{ right: active ? 0 : "-100%" }}
+      style={{ right: active ? 0 : "-125%" }}
     >
       {/* Profile information */}
       <div className={classes.mobileHeader}>
