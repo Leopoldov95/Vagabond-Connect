@@ -126,7 +126,6 @@ const MessageContent = ({ handleMobileNav }) => {
     if (users) {
       if (users.indexOf(id) !== -1) {
         setMessages(messageReducer);
-        console.log("the lopcal state has been populated");
         scrollToBottom();
       }
     }
@@ -136,7 +135,6 @@ const MessageContent = ({ handleMobileNav }) => {
 
   const handleDelete = (id: String) => {
     // this will dispatch an API function, that will remove this chat from the user's list of active chats
-    console.log("You want to delete??????????????");
     const { messageRoom } = contactList.filter((item) => item._id === id)[0];
     if (messageRoom) {
       dispatch(deleteMessageThread(messageRoom));

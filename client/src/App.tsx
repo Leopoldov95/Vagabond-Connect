@@ -15,7 +15,7 @@ import Navbar from "./components/Navbar";
 import { checkConnection } from "./actions/posts";
 
 //const SOCKET_URL = "http://localhost:5000";
-const SOCKET_URL = "https://drab-gray-hippo-slip.cyclic.app/";
+const SOCKET_URL = "https://vagabond-connect-api.adaptable.app/";
 // Socket.io server path
 const App = () => {
   const user = JSON.parse(localStorage.getItem("vagabond_connect_profile"));

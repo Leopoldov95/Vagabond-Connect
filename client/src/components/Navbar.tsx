@@ -236,7 +236,6 @@ const Navbar = () => {
         setNotifcations(data);
       });
       socket.on("newMessage", (data) => {
-        console.log(data);
         //setMessageNotifcations(data.socketNotif);
         // we will need to UPDATE the local storage to store the new user db data
         updateLocalStorage(data.updatedTargetUser);
