@@ -65,46 +65,22 @@ const MessageContent = ({ handleMobileNav }) => {
   const location = useLocation();
   const classes = useStyles();
   const messagesEndRef: any = React.useRef(null);
-  // const [param, setParam] = React.useState(id);
+
   const [isTyping, setIsTyping] = React.useState(false);
   const [messages, setMessages] = React.useState(messageReducer?.messages);
-  //const [render, setRender] = React.useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
   };
 
-  // const scrollRef: any = React.useRef(null);
-  // React.useLayoutEffect(() => {
-  //   if (scrollRef.current) {
-  //     scrollRef.current.scrollIntoView();
-  //   }
-  // }, []);
-
-  // React.useEffect(() => {
-  //   console.log("hi plz");
-  //   // setRender(true);
-  //   scrollToBottom();
-  // }, []);
-
-  //React.useEffect(() => {
   // removed useffect as it was causing weird render issues
   if (socket) {
-    // console.log(id);
     socket.on("composing", (senderId) => {
       if (id === senderId) {
         setIsTyping(true);
       }
     });
-    // socket.on("newMessage", (data) => {
-    //   console.log("You recieved a new message");
-    //   // a new message was detected by the server
-    //   // we need to update the message reducer state
-    //   // then display that info to the client
-    // });
   }
-  // setIsTyping(true);
-  // }, []);
 
   React.useEffect(() => {
     if (isTyping) {
@@ -113,12 +89,6 @@ const MessageContent = ({ handleMobileNav }) => {
       }, 3000);
     }
   }, [isTyping]);
-  // React.useEffect(() => {
-  //   // const updated = id;
-  //   setParam(id);
-  //   console.log("location changed!!");
-  //   //console.log(updated);
-  // }, [location, id]);
 
   React.useEffect(() => {
     // only update the local chat IF user is in correct channel
@@ -153,9 +123,6 @@ const MessageContent = ({ handleMobileNav }) => {
         )}
         {user &&
         id &&
-        // !messageReducer.hasOwnProperty("message") &&
-        // messageReducer.hasOwnProperty("messages") ? (
-        //   messageReducer.messages.map((message, i) => (
         messages !== undefined &&
         messages.hasOwnProperty("messages") ? (
           messages.messages.map((message, i) => (
@@ -179,7 +146,6 @@ const MessageContent = ({ handleMobileNav }) => {
           </div>
         )}
         <div ref={messagesEndRef} />
-        {/* <div style={{ height: 100 }} ref={scrollRef}></div> */}
       </div>
 
       {id && selectedUser && <CreateMessage selectedUser={selectedUser._id} />}

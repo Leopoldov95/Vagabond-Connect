@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   Avatar,
@@ -20,9 +20,6 @@ const useStyles = makeStyles((theme: Theme) => ({
     alignItems: "center",
     marginTop: theme.spacing(2),
     padding: "0 1rem 1rem 1rem",
-    // [theme.breakpoints.down("xs")]: {
-    //   display: "none",
-    // },
   },
   comment: {
     width: "70%",

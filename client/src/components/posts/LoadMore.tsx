@@ -47,7 +47,6 @@ const LoadMore = ({ filter, toggle }) => {
   const currentPosts = useSelector((state: any) => state.postsReducer);
   const isMore = useSelector((state: any) => state.isMorePostsReducer);
   const [loading, setLoading] = React.useState(false);
-  //const [isMore, setIsMore] = React.useState(true); // set to false if no more posts can be loaded
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     let filterForm = {};

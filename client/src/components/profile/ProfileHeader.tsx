@@ -149,6 +149,17 @@ const ProfileHeader = () => {
     });
     setOpenHandler(true);
   };
+
+  const handleBackgroundImage = () => {
+    if (user?._id === displayUser?._id) {
+      return user?.background_cloudinary
+        ? user?.background_cloudinary
+        : "/img/profile/default.jpg";
+    }
+    return displayUser?.background_cloudinary
+      ? displayUser?.background_cloudinary
+      : "/img/profile/default.jpg";
+  };
   const classes = useStyles();
   return (
     <div>
@@ -157,11 +168,7 @@ const ProfileHeader = () => {
           <div
             className={classes.backgroundImageContainer}
             style={{
-              background: `url(${
-                displayUser?.background_cloudinary
-                  ? displayUser?.background_cloudinary
-                  : "/img/profile/default.jpg"
-              }) no-repeat center/cover`,
+              background: `url(${handleBackgroundImage()}) no-repeat center/cover`,
             }}
           >
             <div className={classes.backgroundInputContainer}>
@@ -205,7 +212,7 @@ const ProfileHeader = () => {
                   openImgTool(
                     user?.profile_cloudinary
                       ? user?.profile_cloudinary
-                      : "/img/profile/default.jpg",
+                      : "/img/profile/profile_placeholder.jpeg",
                     "profile_cloudinary"
                   )
                 }
@@ -219,7 +226,11 @@ const ProfileHeader = () => {
             <Avatar
               alt="profile_pic"
               className={classes.avatar}
-              src={displayUser?.profile_cloudinary}
+              src={
+                user?._id === displayUser?._id
+                  ? user?.profile_cloudinary
+                  : displayUser?.profile_cloudinary
+              }
             />
           </div>
         </Container>

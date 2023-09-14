@@ -1,6 +1,3 @@
-// NOTE TO FUTURE SELF
-// This is the main component for the planned live messaging feature for the web application
-// If I want to successfully implement this, I will need to implement a web socket such as Socket.io
 import * as React from "react";
 import io from "socket.io-client";
 import { useSelector } from "react-redux";
@@ -51,25 +48,18 @@ export const Messages = ({ socket }) => {
   const history = useHistory();
   const location = useLocation();
   const { id }: any = useParams();
+
   const user: any = JSON.parse(
     localStorage.getItem("vagabond_connect_profile")
   )?.result;
   const messageReducer = useSelector((state: any) => state.messageReducer);
   const [selectedUser, setSelectedUser] = React.useState(null);
   const [listActive, setListActive] = React.useState(true);
+  const [currentId, setCurrentId] = React.useState<string | any>(null);
 
   // throws a warning that the user must be logged in in order to view the messages
   // only makes a connection to socket.io if there is an active user
-  // React.useEffect(() => {
-  //   if (user) {
-  //     socket = io(baseURL);
-  //     socket.emit("setup", user._id);
-  //     socket.on("connected", () => {
-  //       setSocketConnected(true);
-  //     });
-  //     // socket.current.emit("add-user", user._id);
-  //   }
-  // }, [user]);
+
   React.useEffect(() => {
     if (!user) {
       history.push("/auth");
@@ -83,47 +73,31 @@ export const Messages = ({ socket }) => {
     }
   }, []);
   React.useEffect(() => {
-    // if (roomId !== null && user) {
-    //   socket = io(baseURL);
-    //   socket.emit("setup", user._id);
-    //   socket.on("connected", () => {
-    //     setSocketConnected(true);
-    //   });
-    // }
-  }, [user]);
-  React.useEffect(() => {
     if (id) {
-      id && dispatch(getSingleUser(id)); // this may be redunsnat as I am already brabbing a minified user list onn page load
+      id && dispatch(getSingleUser(id)); // this may be redunsnat as I am already grabbing a minified user list onn page load
       // this will fetch the message thread for the individual
       // double authentication
       user && id && dispatch(fetchMessageThread(id));
+      // if location does not match, then we know that it will always be a new message
+      setCurrentId(id);
+      if (id !== currentId) {
+        setListActive(false);
+      }
     }
   }, [id, location]);
-  // React.useEffect(() => {
-  //   if (roomId) {
-  //     socket.emit("join room", roomId._id);
-  //   }
-  // }, [roomId]);
   React.useEffect(() => {
     if (messageReducer.hasOwnProperty("messages")) {
       socket = io(baseURL);
 
       socket.emit("join room", messageReducer._id);
-      //console.log("hello, the message reducr is active");
       //setRoomId(messageReducer);
       selectedChatCompare = messageReducer;
     }
   }, [messageReducer]);
-  // React.useEffect(() => {
-  //   if (selectedUser) {
-  //     Object.keys(selectedUser).length > 0 &&
-  //       dispatch(fetchMessageThread(selectedUser._id));
-  //   }
-  //   // Now that we have established the sleected user, we can now do the message thread call here
-  // }, [selectedUser]);
   const handleMobileNav: VoidFunction = () => {
     setListActive(!listActive);
   };
+
   return (
     <Grid container className={classes.container}>
       <Grid
@@ -135,11 +109,7 @@ export const Messages = ({ socket }) => {
         sm={2}
         md={3}
       >
-        <MessageList
-          handleMobileNav={handleMobileNav}
-          // selectedUser={selectedUser}
-          // setSelectedUser={setSelectedUser}
-        />
+        <MessageList handleMobileNav={handleMobileNav} />
       </Grid>
       <Grid
         className={`${listActive ? classes.mobileHide : classes.mobileActive} ${
