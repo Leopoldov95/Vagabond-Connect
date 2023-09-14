@@ -133,19 +133,3 @@ const MessageList = ({ handleMobileNav }) => {
 };
 
 export default MessageList;
-
-// /  <div className={classes.actionContent}>
-// <Link to={`/profile/${user._id}`}>
-//   <IconButton className={classes.icon}>
-//     <Visibility />
-//   </IconButton>
-// </Link>
-
-//   <IconButton className={classes.icon}>
-//     <MailOutline />
-//   </IconButton>
-// </Link>
-// <IconButton className={classes.icon} color="secondary">
-//   <Delete />
-// </IconButton>
-// </div>

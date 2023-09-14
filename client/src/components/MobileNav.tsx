@@ -121,7 +121,7 @@ export const MobileNav = ({ active, setActive, logout }) => {
       <Divider />
       <Link to="/friends" className={classes.link}>
         <Group />
-        <Typography className={classes.text}>Friends</Typography>
+        <Typography className={classes.text}>Users</Typography>
       </Link>
       <Divider />
       <Link to="/resources" className={classes.link}>

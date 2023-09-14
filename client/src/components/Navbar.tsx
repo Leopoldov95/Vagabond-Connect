@@ -244,7 +244,7 @@ const Navbar = () => {
         // update msg notificationnredux
         dispatch({
           type: "UPDATE_MSG_NOTIFICATIONS",
-          payload: data.socketNotif,
+          payload: data?.socketNotif,
         });
         // update messageContent reducer
         dispatch({
@@ -273,19 +273,11 @@ const Navbar = () => {
     // Still need to update localstorage user data for notifciations
     // retrieiving messageNotificafroms from localstorage NOT db
     if (messageNotifications.length < 1) {
-      // if (authUser.authData) {
-      //   console.log("Message reducer triggered for Auth user!");
-      //   //setMessageNotifcations(authUser.authData.result.messageNotifications);
-      //   dispatch({
-      //     type: "UPDATE_MSG_NOTIFICATIONS",
-      //     payload: authUser.authData.result.messageNotifications,
-      //   });
-      // } else
       if (user) {
         setMessageNotifcations(user.result.messageNotifications);
         dispatch({
           type: "UPDATE_MSG_NOTIFICATIONS",
-          payload: user.result.messageNotifications,
+          payload: user?.result?.messageNotifications,
         });
       }
     }
@@ -316,19 +308,16 @@ const Navbar = () => {
   };
   const handleMenuClose = () => {
     setAnchorEl(null);
-    //handleMobileMenuClose();
   };
   const handleMenuLogout = () => {
     setAnchorEl(null);
     logout();
-    //handleMobileMenuClose();
   };
   const handleNotifications = () => {
     if (user) {
       // need to run a dispatch and update the records in the databse, THEN use the nptifications socket listeneer and send the newly updated empty db onto the client
       setNotifcations([]);
       dispatch(editUserDetails({ notifications: [] }));
-      //clearNotifications(user.result?._id);
     }
   };
   const handleMobileBtn = () => {
@@ -440,7 +429,7 @@ const Navbar = () => {
             <div className={`${classes.item} ${classes.hideMobile}`}>
               <Link to="/friends" className={classes.link}>
                 <Person />
-                <Typography className={classes.text}>Friends</Typography>
+                <Typography className={classes.text}>Users</Typography>
               </Link>
             </div>
             <div className={`${classes.item} ${classes.hideMobile}`}>
@@ -453,7 +442,11 @@ const Navbar = () => {
               <Badge
                 color="secondary"
                 overlap="circular"
-                badgeContent={Object.keys(messageNotifications).length}
+                badgeContent={
+                  Object.keys(messageNotifications)?.length
+                    ? Object.keys(messageNotifications).length
+                    : null
+                }
               >
                 <Link to="/messages" className={classes.link}>
                   <Mail />

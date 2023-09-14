@@ -367,15 +367,6 @@ const Post = (props: any) => {
             setCommentId={setCommentId}
           />
         ))}
-      {/* {user && (
-        <Comments
-          editComment={editComment}
-          setEditComment={setEditComment}
-          postId={post._id}
-          commentId={commentId}
-          setCommentId={setCommentId}
-        />
-      )} */}
       {renderComments()}
       {renderMenu}
     </Card>

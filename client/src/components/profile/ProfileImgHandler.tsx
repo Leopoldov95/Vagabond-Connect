@@ -119,10 +119,17 @@ const ProfileImgHandler = (props: any) => {
     props.setOpen(false);
   };
   const handleCapture = ({ target }: any) => {
+    // reset error message
     setClientError(null);
-    if (target.files[0]) {
+    const file = target.files[0];
+
+    if (file) {
+      // check for 10MB limit
+      if (file.size > 10000000) {
+        return setClientError("Image Cannot Exceed 10MB!");
+      }
       const reader = new FileReader();
-      reader.readAsDataURL(target.files[0]);
+      reader.readAsDataURL(file);
       reader.onloadend = () => {
         setUploadedImg(reader.result);
       };
@@ -205,6 +212,7 @@ const ProfileImgHandler = (props: any) => {
             style={{ margin: 10 }}
             variant="outlined"
             color="primary"
+            disabled={uploadedImg ? false : true}
             onClick={handleImgUpload}
           >
             Save

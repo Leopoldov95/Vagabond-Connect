@@ -56,7 +56,6 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-///// IMPORTANT //////
 // use this component to handle master state changes
 const ProfileCountries = () => {
   const user = JSON.parse(

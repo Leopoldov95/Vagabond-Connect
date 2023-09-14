@@ -18,7 +18,6 @@ export const messageReducer = (messages: any = [], action: any) => {
       return action.payload;
     default:
       return messages;
-      break;
   }
 };
 
@@ -45,7 +44,7 @@ export const msgNotificationReducer = (
 ) => {
   switch (action.type) {
     case UPDATE_MSG_NOTIFICATIONS:
-      return action.payload;
+      return action.payload ? action.payload : notifications;
     case CLEAR_MSG_NOTIFICATIONS:
       return [];
     default:

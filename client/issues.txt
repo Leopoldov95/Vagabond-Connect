@@ -1,10 +1,9 @@
+09/10/23
 
-
-- Message Notifications are not updating when user logs in, updates AFRTER manually page refresh
-
-UI
-- Fix chosen user informaition?
-- notifications are not showing when user logins!
-
-
-
+* User profiles not updating when user makes an update - DONE
+* If empty user profile, then img tool showing bg image as the default - DONE
+* If user updates profile pic, navbar does not reflect in real time - IGNORE
+* Messaging breaks on reload - only seen in android 
+* Messaging breaks in mobile - 
+* If image too large, error in sever, limit image size. - DONE
+* On Netflify, page breaks on reload (we had a smiliar issue I thinnk with pokemin app), fix this

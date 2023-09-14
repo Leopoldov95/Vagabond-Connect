@@ -217,7 +217,6 @@ const PostForm = (props: any) => {
   };
 
   const handleSubmit = async (e: any) => {
-    // setOpenAlert(true) -- ned this at some point
     e.preventDefault();
 
     try {
