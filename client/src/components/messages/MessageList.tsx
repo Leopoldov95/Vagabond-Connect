@@ -28,18 +28,11 @@ const MessageList = ({ handleMobileNav }) => {
   const msgNotificationReducer = useSelector(
     (state: any) => state.msgNotificationReducer
   );
-  //const { id }: any = useParams();
+
   const classes = useStyles();
   const [selectedUser, setSelectedUser]: any = React.useState(null);
   const [allUsers, setAllUsers]: any = React.useState([]); // this state is to manage the users that will appear on the left hand side of the message bar
   // populate the local state if user has active messages
-  // React.useEffect(() => {
-  //   if (user) {
-  //     console.log("setAllUsers will be populated");
-  //   } else {
-  //     console.log("no users in db");
-  //   }
-  // }, []);
 
   // trigger a change when a different user is selected
   React.useEffect(() => {
@@ -56,11 +49,6 @@ const MessageList = ({ handleMobileNav }) => {
   React.useEffect(() => {
     setAllUsers(contactList);
   }, [contactList]);
-  // React.useEffect(() => {
-  //   setSelectedUser(userProfile);
-  //   // when we change the selected user, we will automitcally fetch the message thread for that user
-  //   selectedUser && dispatch(fetchMessageThread(selectedUser._id));
-  // }, [id, selectedUser]);
 
   // since we will only be messaging one user at a time, we can do the following
   // on page load, start to populate the current message p[age wioth existing messages from the authenticate user
@@ -111,20 +99,6 @@ const MessageList = ({ handleMobileNav }) => {
                     />
                   )
               )}
-            {/* {userProfile &&
-              Object.keys(userProfile).length > 0 &&
-              userProfile._id !== user._id && (
-                <ListUser
-                  selectedUser={selectedUser?._id}
-                  user={userProfile}
-                  handleMobileNav={handleMobileNav}
-                  notifications={
-                    msgNotificationReducer.hasOwnProperty(selectedUser?._id)
-                      ? msgNotificationReducer[selectedUser?._id]
-                      : 0
-                  }
-                />
-              )} */}
           </React.Fragment>
         )}
       </ul>

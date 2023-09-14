@@ -90,7 +90,6 @@ export const Messages = ({ socket }) => {
       socket = io(baseURL);
 
       socket.emit("join room", messageReducer._id);
-      //console.log("hello, the message reducr is active");
       //setRoomId(messageReducer);
       selectedChatCompare = messageReducer;
     }
@@ -99,7 +98,6 @@ export const Messages = ({ socket }) => {
     setListActive(!listActive);
   };
 
-  console.log(id);
   return (
     <Grid container className={classes.container}>
       <Grid
