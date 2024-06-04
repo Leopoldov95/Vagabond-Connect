@@ -1,5 +1,5 @@
 import axios from "axios";
-export const baseURL = "https://vagabond-connect-api.adaptable.app/";
+export const baseURL = "https://vagaond-connect-api.onrender.com/";
 //export const baseURL = "http://localhost:5000";
 // so by using this url, we can use the backend logic
 export const API = axios.create({
