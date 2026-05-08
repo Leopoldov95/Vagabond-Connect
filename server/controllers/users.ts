@@ -7,6 +7,7 @@ import { Request, Response } from "express";
 import { updateNotification } from "../socket";
 import { uploadCloudinary, deleteCloudinaryImg } from "./cloudinaryHelper";
 import { updateUsersPosts } from "./helper";
+import { config } from "../config";
 
 const ignore = {
   country: 0,
@@ -35,19 +36,19 @@ export const signin = async (req, res) => {
 
     const isPasswordCorrect = await bcrypt.compare(
       password,
-      existingUser.password
+      existingUser.password,
     );
 
     if (!isPasswordCorrect) {
       return res.status(400).json({ message: "Invalid credentials." });
     }
     // if user does exist by passing the above checks, then the user can proceed to logging in
-    // send a json web token to the frontend
-    // the 'test' string here is the secret key for the token
+    // send a json web token to the frontend using the centralized JWT secret from config
+    // This ensures all authentication uses the same secret and token expiration policy
     const token = jwt.sign(
       { email: existingUser.email, id: existingUser._id },
-      "vagabondtoken",
-      { expiresIn: "3h" }
+      config.auth.jwtSecret,
+      { expiresIn: config.auth.jwtExpiresIn },
     );
     res.status(200).json({ result: existingUser, token });
   } catch (error) {
@@ -89,13 +90,14 @@ export const signup = async (req: Request, res: Response) => {
       password: hashedPassword,
     });
 
-    // generate a jwt toke so that the user will be logged in immediatley after registering
+    // generate a jwt token so that the user will be logged in immediately after registering
+    // Uses centralized JWT configuration to ensure consistency across the application
     const token = jwt.sign(
       { email: result.email, id: result._id },
-      "vagabondtoken",
+      config.auth.jwtSecret,
       {
-        expiresIn: "3h",
-      }
+        expiresIn: config.auth.jwtExpiresIn,
+      },
     );
     res.status(200).json({ result: result, token });
     //res.status(200).json({ message: "User Created!" });
@@ -116,7 +118,7 @@ export const editProfileImg = async (req: any, res: Response) => {
     const existingCloudinaryId = user[profile] ? user[`${profile}_id`] : null;
     const cloudinaryImg = await uploadCloudinary(
       uploadedImg,
-      profile.split("_")[0]
+      profile.split("_")[0],
     );
 
     // create a temporary object to store new/existing properties in using the profile
@@ -126,7 +128,7 @@ export const editProfileImg = async (req: any, res: Response) => {
     const result = await Users.findByIdAndUpdate(
       _id,
       { $set: { ...propsToChange } },
-      { new: true }
+      { new: true },
     );
 
     // this updates the owners avatar on ALL posts
@@ -164,7 +166,7 @@ export const editUserDetails = async (req: any, res: Response) => {
     const result = await Users.findByIdAndUpdate(
       _id,
       { $set: { ...data } },
-      { new: true }
+      { new: true },
     );
 
     // only update the users post's if the first name or last name keys were updated, NOTE that image updates are handeled in a different function
@@ -203,7 +205,7 @@ export const fetchAllUsers = async (req: any, res: Response) => {
         {},
         {
           ...ignore,
-        }
+        },
       );
     } else {
       // we have an authenticad user
@@ -216,7 +218,7 @@ export const fetchAllUsers = async (req: any, res: Response) => {
         },
         {
           ...ignore,
-        }
+        },
       );
     }
     res.status(200).json(fetchedUsers);
@@ -238,7 +240,7 @@ export const fetchAllFollowing = async (req: any, res: Response) => {
       {
         _id: { $in: user["following"] },
       },
-      { ...ignore }
+      { ...ignore },
     );
     res.status(200).json(allFollowing);
   } catch (error) {
@@ -258,7 +260,7 @@ export const fetchAllFollowers = async (req: any, res: Response) => {
       {
         _id: { $in: user["followers"] },
       },
-      { ...ignore }
+      { ...ignore },
     );
     res.status(200).json(allFollowers);
   } catch (error) {
@@ -284,7 +286,7 @@ export const fetchSingleUser = async (req: Request, res: Response) => {
       { _id: id },
       {
         ...ignore,
-      }
+      },
     );
 
     res.status(200).json(result);
@@ -306,7 +308,7 @@ export const followUser = async (req: any, res: Response) => {
     const currentUser = await Users.findById(req?.userId);
     // checkicking if already following
     const index = targetUser.followers.findIndex(
-      (id) => id === String(req.userId)
+      (id) => id === String(req.userId),
     );
     if (index === -1) {
       // follow a user
@@ -315,10 +317,10 @@ export const followUser = async (req: any, res: Response) => {
     } else {
       // unfollow a user
       targetUser.followers = targetUser.followers.filter(
-        (id) => id !== String(req.userId)
+        (id) => id !== String(req.userId),
       );
       currentUser.following = currentUser.following.filter(
-        (id) => id !== String(_id)
+        (id) => id !== String(_id),
       );
     }
     // update targetted User db
@@ -328,7 +330,7 @@ export const followUser = async (req: any, res: Response) => {
     const updatedUser = await Users.findByIdAndUpdate(
       req?.userId,
       currentUser,
-      { new: true }
+      { new: true },
     );
 
     res.json(updatedUser);
@@ -344,9 +346,8 @@ export const fetchUserCommentInfo = async (req: Request, res: Response) => {
     // chacking of id is valid
     if (!mongoose.Types.ObjectId.isValid(_id))
       return res.status(404).send("No post with that ID");
-    const { profile_cloudinary, firstName, lastName } = await Users.findById(
-      _id
-    );
+    const { profile_cloudinary, firstName, lastName } =
+      await Users.findById(_id);
     // keep in mind that not all users will have a profile picture
 
     res.json({ profile_cloudinary, firstName, lastName });
@@ -370,7 +371,7 @@ export const editUserCountryList = async (req: any, res: Response) => {
     const result = await Users.findByIdAndUpdate(
       _id,
       { $set: { ...propsToChange } },
-      { new: true }
+      { new: true },
     );
     res.json(result);
   } catch (error) {
@@ -393,7 +394,7 @@ export const deleteUser = async (req: Request, res: Response) => {
       return res.status(404).json({ message: "User does not exist." });
     const isPasswordCorrect = await bcrypt.compare(
       password,
-      existingUser.password
+      existingUser.password,
     );
     if (!isPasswordCorrect)
       return res.status(400).json({ message: "Invalid credentials." });
@@ -443,7 +444,7 @@ export const deleteUser = async (req: Request, res: Response) => {
         const post = await Posts.findById(postId);
         if (post.comments.length > 0) {
           post.comments = post.comments.filter(
-            (comment) => comment.commentOwnerId !== String(_id)
+            (comment) => comment.commentOwnerId !== String(_id),
           );
         }
         await Posts.findByIdAndUpdate(postId, post, {
@@ -481,7 +482,7 @@ export const searchUsers = async (req: Request, res: Response) => {
       {
         firstName: { $regex: query, $options: "i" },
       },
-      { ...ignore }
+      { ...ignore },
     );
     res.status(200).json(result);
   } catch (error) {
@@ -496,7 +497,7 @@ export const clearNotifications = async (req: Request, res: Response) => {
     const user = await Users.findByIdAndUpdate(
       _id,
       { notifications: [] },
-      { new: true }
+      { new: true },
     );
     res.send(200).json(user);
   } catch (error) {
@@ -526,7 +527,7 @@ export const updateMessageNotification = async (req: any, res: Response) => {
       {
         messageNotifications: messageNotifications,
       },
-      { new: true }
+      { new: true },
     );
 
     res.status(200).json(updatedUser);

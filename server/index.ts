@@ -12,24 +12,28 @@ import {
   removeUser,
   typingNotification,
 } from "./socket";
+import { config } from "./config";
 
-//const originURL = "https://vagabondconnect.netlify.app/";
+// Load environment variables before any other initialization
+// This must happen before config is imported
+dotenv.config();
+
+// Initialize Express app and HTTP server
 const socket = require("socket.io");
 const app = express();
 const server = http.createServer(app);
-dotenv.config();
+
+// Configure CORS using centralized config
+// In development, accepts all origins. In production, should be restricted
+// via CORS_ORIGIN environment variable for security.
 const corsOptions = {
-  origin: "*",
+  origin: config.cors.origin,
   optionsSuccessStatus: 200,
 };
 
 app.use(cors(corsOptions));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "30mb" }));
-
-const PORT = process.env.PORT || 5000;
-const { MongoClient } = require("mongodb");
-const client = new MongoClient(process.env.CONNECTION_URL);
 
 app.get("/", (req, res) => {
   res.send("Hello To Vaggabond Connect API");
@@ -38,16 +42,19 @@ app.use("/users", userRoutes);
 app.use("/posts", postsRoutes);
 app.use("/message", messageRoutes);
 
+// Connect to MongoDB using centralized configuration
+// Configuration is validated at startup, so connectionUrl is guaranteed to exist
 mongoose
-  .connect(process.env.CONNECTION_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  } as ConnectOptions)
+  .connect(
+    config.mongodb.connectionUrl,
+    config.mongodb.connectionOptions as ConnectOptions,
+  )
   .then(() => {
-    console.log("DB Connetion Successfull");
+    console.log("DB Connection Successful");
   })
   .catch((err) => {
-    console.log(err.message);
+    console.error("Failed to connect to MongoDB:", err.message);
+    process.exit(1);
   });
 
 // // so socket.io is INDEPENDANT of Mongodb and operates without it, it only tracks changes from the data it recieves DIRECTLY from the frontend and not from any mongodb databse...
@@ -60,7 +67,8 @@ const io = socket(server, {
   transports: ["polling"],
 });
 
-// "connection" is the listener to use when anyone visites our website
+// Connection handler for real-time socket communication
+// Tracks online users and broadcasts events to specific clients
 io.on("connection", (socket) => {
   setSession(io, socket); // defines the session in another file wo we can use socket events externally
   console.log("connected to socket.io");
@@ -80,6 +88,9 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+// Start server using centralized port configuration
+server.listen(config.server.port, () => {
+  console.log(
+    `Server listening on port ${config.server.port} (${config.server.nodeEnv} environment)`,
+  );
 });
