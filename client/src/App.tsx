@@ -62,7 +62,7 @@ const App = () => {
           <Route path="/auth" exact component={Auth} />
         </Switch>
       </Router>
-      {loading && (
+      {!loading && (
         <div className="page-load">
           <div className="loading">
             <div className="loading__square"></div>
@@ -73,7 +73,11 @@ const App = () => {
             <div className="loading__square"></div>
             <div className="loading__square"></div>
           </div>
-          <span>Waiting for Server to wake up...</span>
+          <span>Cold start in progress.</span>
+          <span>
+            The backend is deployed on a free-tier instance that sleeps when
+            inactive.
+          </span>
         </div>
       )}
     </div>
