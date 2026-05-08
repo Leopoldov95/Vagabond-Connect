@@ -40,10 +40,12 @@ li {
   align-items: center;
   justify-content: center;
   left: 0;
-  background-color: #0000005e;
+  background-color: #000000cf;
   height: 100vh;
   width: 100%;
   z-index: 1500;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .page-load span {

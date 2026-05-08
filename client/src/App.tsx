@@ -73,7 +73,11 @@ const App = () => {
             <div className="loading__square"></div>
             <div className="loading__square"></div>
           </div>
-          <span>Waiting for Server to wake up...</span>
+          <span>Cold start in progress.</span>
+          <span>
+            The backend is deployed on a free-tier instance that sleeps when
+            inactive.
+          </span>
         </div>
       )}
     </div>
