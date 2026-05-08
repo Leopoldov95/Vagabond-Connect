@@ -62,7 +62,7 @@ const App = () => {
           <Route path="/auth" exact component={Auth} />
         </Switch>
       </Router>
-      {!loading && (
+      {loading && (
         <div className="page-load">
           <div className="loading">
             <div className="loading__square"></div>
